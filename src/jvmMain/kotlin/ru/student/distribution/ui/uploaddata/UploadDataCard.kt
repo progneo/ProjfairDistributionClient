@@ -1,4 +1,4 @@
-package ru.student.distribution.ui.uploadfiles
+package ru.student.distribution.ui.uploaddata
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -1,9 +1,5 @@
 package ru.student.distribution
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -13,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.student.distribution.data.remote.client.ProjectFairClient
-import ru.student.distribution.ui.uploadfiles.UploadFilesScreen
+import ru.student.distribution.data.repository.UploadDataRepositoryImpl
+import ru.student.distribution.domain.usecase.uploaddata.SyncDataUseCase
+import ru.student.distribution.ui.uploaddata.UploadDataViewModel
+import ru.student.distribution.ui.uploaddata.UploadFilesScreen
 
 fun main() = application {
     Window(
@@ -21,14 +20,22 @@ fun main() = application {
         state = WindowState(width = 800.dp, height = 600.dp),
         title = "Medium"
     ) {
-        rememberCoroutineScope().launch {
-            withContext(Dispatchers.IO) {
-                val response = ProjectFairClient.getClient().getProjects()
-                println(response)
-            }
-        }
+//        rememberCoroutineScope().launch {
+//            withContext(Dispatchers.IO) {
+//                val response = ProjectFairClient.getClient().getProjects()
+//                //println(response)
+//            }
+//        }
 
-        UploadFilesScreen()
+        UploadFilesScreen(
+            uploadDataViewModel = UploadDataViewModel(
+                syncDataUseCase = SyncDataUseCase(
+                    uploadDataRepository = UploadDataRepositoryImpl(
+                        ioDispatcher = Dispatchers.IO
+                    )
+                )
+            )
+        )
 
 //        UploadFileCard(
 //            fileTypeName = "Students",
