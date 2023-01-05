@@ -10,7 +10,7 @@ class UploadDataRepositoryImpl(
 
     override suspend fun syncData(): Boolean {
         return withContext(ioDispatcher) {
-            throw Exception()
+            //throw Exception()
             true
         }
     }

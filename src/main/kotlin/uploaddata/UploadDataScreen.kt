@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun UploadFilesScreen(
+fun UploadDataScreen(
     uploadDataViewModel: UploadDataViewModel
 ) {
     when (val screenState = uploadDataViewModel.uiState.collectAsState().value) {
@@ -36,7 +36,7 @@ fun UploadFilesScreen(
 }
 
 @Composable
-fun UploadFilesScreenView(
+fun UploadDataScreenView(
     uploadDataViewModel: UploadDataViewModel
 ) {
     //uploadDataViewModel.setIntent(UploadDataContract.Intent.SyncData)
@@ -46,7 +46,7 @@ fun UploadFilesScreenView(
         ) {
             UploadFileCard("Students", {})
             UploadFileCard("Teachers", {})
-            UpdateFilesButton()
+            //UpdateDataButton()
         }
     }
 }
@@ -74,7 +74,7 @@ fun UploadDataStateHandler(
         }
         is UploadDataContract.UploadDataState.Success -> {
             println("SUCCESS")
-            UploadFilesScreenView(uploadDataViewModel)
+            UploadDataScreenView(uploadDataViewModel)
         }
     }
 }

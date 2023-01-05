@@ -1,20 +1,19 @@
-package ru.student.distribution
-
-import androidx.compose.runtime.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import ru.student.distribution.data.remote.client.ProjectFairClient
-import ru.student.distribution.data.repository.UploadDataRepositoryImpl
-import ru.student.distribution.domain.usecase.uploaddata.SyncDataUseCase
-import ru.student.distribution.ui.uploaddata.UploadDataViewModel
-import ru.student.distribution.ui.uploaddata.UploadFilesScreen
+import dagger.Component
+import ru.student.distribution.di.AppComponent
+import ru.student.distribution.di.DaggerAppComponent
+import ui.uploaddata.di.UploadDataComponent
 
-fun main() = application {
+private val appComponent: AppComponent by lazy {
+    DaggerAppComponent
+        .factory()
+        .create()
+}
+
+fun main(args: Array<String>) = application {
     Window(
         onCloseRequest = ::exitApplication,
         state = WindowState(width = 800.dp, height = 600.dp),
@@ -27,15 +26,17 @@ fun main() = application {
 //            }
 //        }
 
-        UploadFilesScreen(
-            uploadDataViewModel = UploadDataViewModel(
-                syncDataUseCase = SyncDataUseCase(
-                    uploadDataRepository = UploadDataRepositoryImpl(
-                        ioDispatcher = Dispatchers.IO
-                    )
-                )
-            )
-        )
+//        UploadDataScreen(
+//            uploadDataViewModel = UploadDataViewModel(
+//                syncDataUseCase = SyncDataUseCase(
+//                    uploadDataRepository = UploadDataRepositoryImpl(
+//                        ioDispatcher = Dispatchers.IO
+//                    )
+//                )
+//            )
+//        )
+
+        UploadDataComponent(appComponent).render()
 
 //        UploadFileCard(
 //            fileTypeName = "Students",

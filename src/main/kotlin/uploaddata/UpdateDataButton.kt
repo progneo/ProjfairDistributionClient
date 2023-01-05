@@ -1,4 +1,4 @@
-package ru.student.distribution.ui.uploaddata
+package ui.uploaddata
 
 import androidx.compose.material.Button
 import androidx.compose.material.Text
