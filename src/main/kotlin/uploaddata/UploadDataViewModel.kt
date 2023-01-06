@@ -1,12 +1,13 @@
-package ru.student.distribution.ui.uploaddata
+package uploaddata
 
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.student.distribution.core.base.DataState
 import ru.student.distribution.core.base.mvi.BaseViewModel
 import ru.student.distribution.domain.usecase.uploaddata.SyncDataUseCase
+import javax.inject.Inject
 
-class UploadDataViewModel(
+class UploadDataViewModel @Inject constructor(
     private val syncDataUseCase: SyncDataUseCase
 ): BaseViewModel<UploadDataContract.Intent, UploadDataContract.ScreenState>() {
 

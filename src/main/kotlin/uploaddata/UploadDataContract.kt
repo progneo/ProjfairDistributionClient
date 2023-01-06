@@ -1,4 +1,4 @@
-package ru.student.distribution.ui.uploaddata
+package uploaddata
 
 import ru.student.distribution.core.base.mvi.UiIntent
 import ru.student.distribution.core.base.mvi.UiState

@@ -1,7 +1,10 @@
-package ru.student.distribution.di
+package di
 
 import dagger.Component
-import ui.uploaddata.di.UploadDataComponent
+import ru.student.distribution.di.CoroutineDispatcherModule
+import ru.student.distribution.di.RepositoryModule
+import ru.student.distribution.di.UseCaseModule
+import uploaddata.di.UploadDataComponent
 import javax.inject.Scope
 
 @Scope

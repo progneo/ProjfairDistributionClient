@@ -3,8 +3,9 @@ package ru.student.distribution.data.repository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import ru.student.distribution.domain.repository.UploadDataRepository
+import javax.inject.Inject
 
-class UploadDataRepositoryImpl(
+class UploadDataRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher
 ): UploadDataRepository{
 
