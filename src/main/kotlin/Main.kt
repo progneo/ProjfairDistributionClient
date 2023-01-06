@@ -33,6 +33,7 @@ fun main(args: Array<String>) = application {
         title = "StudentDistributionClient"
     ) {
         App()
+
 //        UploadFileCard(
 //            fileTypeName = "Students",
 //            onPickFileClicked = {

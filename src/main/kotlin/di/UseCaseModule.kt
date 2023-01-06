@@ -1,10 +1,10 @@
-package ru.student.distribution.di
+package di
 
 import dagger.Module
 import dagger.Provides
-import di.AppScope
+import domain.usecase.uploaddata.SyncDataUseCase
+import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import ru.student.distribution.domain.repository.UploadDataRepository
-import ru.student.distribution.domain.usecase.uploaddata.SyncDataUseCase
 
 @Module
 interface UseCaseModule {
@@ -15,6 +15,14 @@ interface UseCaseModule {
         @Provides
         fun provideSyncDataUseCase(uploadDataRepository: UploadDataRepository): SyncDataUseCase {
             return SyncDataUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideUploadExceptionalStudentsUseCase(uploadDataRepository: UploadDataRepository): UploadExceptionalStudentsUseCase {
+            return UploadExceptionalStudentsUseCase(
                 uploadDataRepository = uploadDataRepository
             )
         }

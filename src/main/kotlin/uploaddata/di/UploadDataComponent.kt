@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import di.AppComponent
 import navigation.NavController
 import ru.student.distribution.di.BaseComponent
-import uploaddata.UploadDataScreen
-import uploaddata.UploadDataViewModel
+import uploaddata.screen.UploadDataScreen
+import uploaddata.viewmodel.UploadDataViewModel
 import javax.inject.Inject
 
 //@Scope

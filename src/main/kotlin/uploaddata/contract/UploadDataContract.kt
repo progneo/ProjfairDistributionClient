@@ -1,13 +1,14 @@
-package uploaddata
+package uploaddata.contract
 
 import ru.student.distribution.core.base.mvi.UiIntent
 import ru.student.distribution.core.base.mvi.UiState
+import java.io.File
 
 class UploadDataContract {
 
     sealed class Intent: UiIntent {
         object SyncData: Intent()
-        object UploadExceptionalStudents: Intent()
+        data class UploadExceptionalStudents(val file: File): Intent()
     }
 
     sealed class ScreenState: UiState {
@@ -21,7 +22,6 @@ class UploadDataContract {
         object Loading: UploadDataState()
         object Success: UploadDataState()
         data class Error(val errorMessage: String?): UploadDataState()
-        //data class Empty(val emptyMessage: String?): UploadDataState()
     }
 
     sealed class SideEffect  {

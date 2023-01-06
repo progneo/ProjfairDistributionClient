@@ -8,22 +8,24 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.*
-import java.awt.FileDialog
-import java.io.File
+import common.theme.BlueMainDark
+import common.theme.BlueMainLight
 
 @Composable
 fun UploadFileCard(
     fileTypeName: String,
+    modifier: Modifier,
     onPickFileClicked: () -> Unit
 ) {
-    Column {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center
+    ) {
         Text(
             text = fileTypeName,
             fontSize = 16.sp,
@@ -62,16 +64,4 @@ fun UploadFileCard(
             )
         }
     }
-}
-
-fun openFileDialog(window: ComposeWindow, title: String, allowedExtensions: List<String>, allowMultiSelection: Boolean = true): Set<File> {
-    val fileDialog = FileDialog(window, title, FileDialog.LOAD).apply {
-        isMultipleMode = allowMultiSelection
-
-        file = allowedExtensions.joinToString(";") { "*$it" }
-
-        isVisible = true
-    }
-
-    return fileDialog.files.toSet()
 }

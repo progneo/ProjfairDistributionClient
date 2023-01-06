@@ -1,13 +1,20 @@
-package uploaddata
+package uploaddata.screen
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
+import androidx.compose.ui.unit.dp
+import common.file.openFileDialog
 import navigation.NavController
 import ru.student.distribution.ui.uploaddata.UploadFileCard
+import uploaddata.contract.UploadDataContract
+import uploaddata.viewmodel.UploadDataViewModel
+import uploaddata.widget.UpdateDataButton
 
 @Composable
 fun UploadDataScreen(
@@ -15,17 +22,15 @@ fun UploadDataScreen(
     uploadDataViewModel: UploadDataViewModel,
     id: Int,
 ) {
-    println(id)
     when (val screenState = uploadDataViewModel.uiState.collectAsState().value) {
         is UploadDataContract.ScreenState.Idle -> {
-            println("SCREEN IDLE")
             uploadDataViewModel.setIntent(
                 intent = UploadDataContract.Intent.SyncData
             )
         }
 
         is UploadDataContract.ScreenState.Loading -> {
-            println("SCREEN LOADING")
+
         }
 
         is UploadDataContract.ScreenState.SideEffect -> {
@@ -40,24 +45,6 @@ fun UploadDataScreen(
                 uploadDataState = screenState.uploadDataState,
                 uploadDataViewModel = uploadDataViewModel
             )
-        }
-    }
-}
-
-@Composable
-fun UploadDataScreenView(
-    navController: NavController,
-    uploadDataViewModel: UploadDataViewModel,
-) {
-    Box {
-        Column(
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            UploadFileCard("Students") {
-
-            }
-            UploadFileCard("Teachers", {})
-            //UpdateDataButton()
         }
     }
 }
@@ -89,6 +76,42 @@ fun UploadDataStateHandler(
         is UploadDataContract.UploadDataState.Success -> {
             println("SUCCESS")
             UploadDataScreenView(navController, uploadDataViewModel)
+        }
+    }
+}
+
+@Composable
+fun UploadDataScreenView(
+    navController: NavController,
+    uploadDataViewModel: UploadDataViewModel,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        UploadFileCard(
+            "Студенты-исключения",
+            modifier = Modifier
+                .align(Alignment.Center)
+        ) {
+            val file = openFileDialog(
+                window = ComposeWindow(),
+                title = "SHIT",
+                allowedExtensions = listOf(".xlsx", ".xls"),
+                allowMultiSelection = false
+            )
+
+            uploadDataViewModel.setIntent(
+                intent = UploadDataContract.Intent.UploadExceptionalStudents(file)
+            )
+        }
+        UpdateDataButton(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 64.dp)
+        ) {
+            uploadDataViewModel.setIntent(
+                intent = UploadDataContract.Intent.SyncData
+            )
         }
     }
 }
