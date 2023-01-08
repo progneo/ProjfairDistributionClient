@@ -2,6 +2,7 @@ package data.local.dao
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import data.local.dao.base.Dao
 import data.local.entity.GeneratedDistribution
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll

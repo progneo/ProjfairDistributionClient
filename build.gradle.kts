@@ -38,6 +38,9 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
     implementation("mysql:mysql-connector-java:8.0.30")
+
+    implementation("org.apache.poi:poi-ooxml:5.2.2")
+    implementation("com.grapecity.documents:gcexcel:5.0.3")
 }
 
 kapt {

@@ -2,7 +2,6 @@ package di
 
 import dagger.Component
 import ru.student.distribution.di.CoroutineDispatcherModule
-import ru.student.distribution.di.RepositoryModule
 import uploaddata.di.UploadDataComponent
 import javax.inject.Scope
 

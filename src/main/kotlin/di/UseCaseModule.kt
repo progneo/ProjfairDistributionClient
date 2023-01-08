@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
-import ru.student.distribution.domain.repository.UploadDataRepository
+import domain.repository.UploadDataRepository
 
 @Module
 interface UseCaseModule {

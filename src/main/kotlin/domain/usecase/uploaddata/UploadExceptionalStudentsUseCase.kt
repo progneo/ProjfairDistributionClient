@@ -1,23 +1,24 @@
 package domain.usecase.uploaddata
 
-import domain.usecase.base.BaseFlowUseCase
+import base.mvi.DataState
+import domain.repository.UploadDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import base.mvi.DataState
-import ru.student.distribution.domain.repository.UploadDataRepository
+import java.io.File
 import javax.inject.Inject
 
 class UploadExceptionalStudentsUseCase @Inject constructor(
-    private val uploadDataRepository: UploadDataRepository
-): BaseFlowUseCase<Boolean>() {
+    private val uploadDataRepository: UploadDataRepository,
+) {
 
-    override operator fun invoke(): Flow<DataState<Boolean>> = flow {
+    operator fun invoke(exceptionalStudentsFile: File): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
-            val response = uploadDataRepository.uploadExceptionalStudents()
+            val response = uploadDataRepository.uploadExceptionalStudents(exceptionalStudentsFile)
             emit(DataState.Success(response))
         } catch (e: Exception) {
             emit(DataState.Error(e))
         }
     }
 }
+

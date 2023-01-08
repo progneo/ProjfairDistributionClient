@@ -1,13 +1,16 @@
 package data.repository
 
+import data.local.dao.StudentDao
+import domain.repository.UploadDataRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import ru.student.distribution.domain.repository.UploadDataRepository
+import parsing.excel.student.ExceptionalStudentExcelReader
+import java.io.File
 import javax.inject.Inject
 
 class UploadDataRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher
-): UploadDataRepository{
+): UploadDataRepository {
 
     override suspend fun syncData(): Boolean {
         return withContext(ioDispatcher) {
@@ -15,7 +18,15 @@ class UploadDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadExceptionalStudents(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun uploadExceptionalStudents(file: File): Boolean {
+        return withContext(ioDispatcher) {
+            try {
+                val studentIds = ExceptionalStudentExcelReader().read(file.path)
+                StudentDao.markStudentsAsExceptional(studentIds)
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
     }
 }

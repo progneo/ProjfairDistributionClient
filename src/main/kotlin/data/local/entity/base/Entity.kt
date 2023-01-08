@@ -1,4 +1,4 @@
-package data.local.entity
+package data.local.entity.base
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table

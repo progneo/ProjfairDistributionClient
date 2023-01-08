@@ -1,5 +1,6 @@
 package data.local.dao
 
+import data.local.dao.base.Dao
 import data.local.entity.Project
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll

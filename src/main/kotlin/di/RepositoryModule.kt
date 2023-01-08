@@ -1,11 +1,10 @@
-package ru.student.distribution.di
+package di
 
 import dagger.Module
 import dagger.Provides
-import di.AppScope
-import kotlinx.coroutines.CoroutineDispatcher
 import data.repository.UploadDataRepositoryImpl
-import ru.student.distribution.domain.repository.UploadDataRepository
+import domain.repository.UploadDataRepository
+import kotlinx.coroutines.CoroutineDispatcher
 
 @Module
 interface RepositoryModule {
@@ -14,7 +13,9 @@ interface RepositoryModule {
 
         @AppScope
         @Provides
-        fun provideUploadDataRepository(ioDispatcher: CoroutineDispatcher): UploadDataRepository {
+        fun provideUploadDataRepository(
+            ioDispatcher: CoroutineDispatcher
+        ): UploadDataRepository {
             return UploadDataRepositoryImpl(
                 ioDispatcher = ioDispatcher
             )

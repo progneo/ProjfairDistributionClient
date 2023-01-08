@@ -1,5 +1,6 @@
 package data.local.dao
 
+import data.local.dao.base.Dao
 import data.local.entity.Student
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -45,6 +46,16 @@ object StudentDao: Dao<domain.model.Student>(Student) {
                 it[group] = item.group
                 it[shouldDistribute] = item.shouldDistribute
                 it[specialityId] = item.specialityId
+            }
+        }
+    }
+
+    suspend fun markStudentsAsExceptional(studentIds: List<Int>) {
+        newSuspendedTransaction {
+            for (id in studentIds) {
+                Student.update({ Student.id eq id }) {
+                    it[shouldDistribute] = false
+                }
             }
         }
     }

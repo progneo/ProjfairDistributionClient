@@ -1,6 +1,6 @@
-package data.local.dao
+package data.local.dao.base
 
-import data.local.entity.Entity
+import data.local.entity.base.Entity
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteAll

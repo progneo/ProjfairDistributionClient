@@ -1,13 +1,12 @@
 package uploaddata.widget
 
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.Composable
@@ -27,14 +26,16 @@ fun UpdateDataButton(
             onClick()
         },
         modifier = modifier
-            .size(70.dp)
             .clip(shape = RoundedCornerShape(50.dp)),
         colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White)
     ) {
         Icon(
             imageVector = Icons.Rounded.Refresh,
             contentDescription = "Синхронизировать данные",
-            modifier = Modifier.padding(8.dp).fillMaxSize()
+            modifier = Modifier.padding(8.dp)
+        )
+        Text(
+           text = "Sync data"
         )
     }
 }
