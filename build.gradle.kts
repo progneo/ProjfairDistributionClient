@@ -11,7 +11,11 @@ group = "ru.student.distribution"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    maven{
+        url = uri("https://jitpack.io")
+    }
 }
 
 val daggerVersion by extra("2.44.2")
@@ -41,6 +45,8 @@ dependencies {
 
     implementation("org.apache.poi:poi-ooxml:5.2.2")
     implementation("com.grapecity.documents:gcexcel:5.0.3")
+
+    implementation("com.github.mal1s:algorithm-student-distribution:1.0.0")
 }
 
 kapt {
