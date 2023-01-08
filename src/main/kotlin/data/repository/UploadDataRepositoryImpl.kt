@@ -1,4 +1,4 @@
-package ru.student.distribution.data.repository
+package data.repository
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -11,7 +11,6 @@ class UploadDataRepositoryImpl @Inject constructor(
 
     override suspend fun syncData(): Boolean {
         return withContext(ioDispatcher) {
-            //throw Exception()
             true
         }
     }

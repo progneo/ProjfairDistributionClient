@@ -1,4 +1,4 @@
-package ru.student.distribution.core.base
+package base.mvi
 
 sealed class DataState<out R> {
     data class Success<out T>(val data: T) : DataState<T>()

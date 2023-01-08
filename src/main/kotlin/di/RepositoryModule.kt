@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
-import ru.student.distribution.data.repository.UploadDataRepositoryImpl
+import data.repository.UploadDataRepositoryImpl
 import ru.student.distribution.domain.repository.UploadDataRepository
 
 @Module

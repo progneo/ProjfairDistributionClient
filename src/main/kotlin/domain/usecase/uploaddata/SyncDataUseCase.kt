@@ -3,7 +3,7 @@ package domain.usecase.uploaddata
 import domain.usecase.base.BaseFlowUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.student.distribution.core.base.DataState
+import base.mvi.DataState
 import ru.student.distribution.domain.repository.UploadDataRepository
 import javax.inject.Inject
 

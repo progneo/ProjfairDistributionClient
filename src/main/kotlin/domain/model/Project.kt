@@ -1,4 +1,4 @@
-package ru.student.distribution.domain.model
+package domain.model
 
 import com.google.gson.annotations.SerializedName
 

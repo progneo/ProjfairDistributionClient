@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
+import common.database.DatabaseConnection
 import di.AppComponent
 import di.DaggerAppComponent
 import navigation.CustomNavigationHost
@@ -32,19 +33,8 @@ fun main(args: Array<String>) = application {
         state = WindowState(width = 800.dp, height = 600.dp),
         title = "StudentDistributionClient"
     ) {
+        DatabaseConnection.connect()
         App()
-
-//        UploadFileCard(
-//            fileTypeName = "Students",
-//            onPickFileClicked = {
-//                openFileDialog(
-//                    window = window,
-//                    title = "SHIT",
-//                    allowedExtensions = listOf(".xlsx", ".xls"),
-//                    allowMultiSelection = false
-//                )
-//            }
-//        )
     }
 }
 

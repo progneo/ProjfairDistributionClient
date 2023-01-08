@@ -4,7 +4,7 @@ import domain.usecase.base.BaseFlowUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import ru.student.distribution.core.base.DataState
+import base.mvi.DataState
 import ru.student.distribution.core.base.mvi.BaseViewModel
 import domain.usecase.uploaddata.SyncDataUseCase
 import uploaddata.contract.UploadDataContract
