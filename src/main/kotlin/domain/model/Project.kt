@@ -8,6 +8,7 @@ data class Project(
     @SerializedName("updated_at") val updatedAt: String?,
     val title: String,
     val places: Int,
+    var freePlaces: Int = places,
     val goal: String?,
     val difficulty: Int,
     @SerializedName("date_start") val dateStart: String,

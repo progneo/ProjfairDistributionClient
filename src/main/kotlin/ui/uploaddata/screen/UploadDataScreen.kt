@@ -1,4 +1,4 @@
-package uploaddata.screen
+package ui.uploaddata.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +11,10 @@ import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.dp
 import common.file.openFileDialog
 import navigation.NavController
-import ru.student.distribution.ui.uploaddata.UploadFileCard
-import uploaddata.contract.UploadDataContract
-import uploaddata.viewmodel.UploadDataViewModel
-import uploaddata.widget.UpdateDataButton
+import ui.uploaddata.contract.UploadDataContract
+import ui.uploaddata.viewmodel.UploadDataViewModel
+import ui.uploaddata.widget.UpdateDataButton
+import ui.uploaddata.widget.UploadFileCard
 
 @Composable
 fun UploadDataScreen(

@@ -1,4 +1,4 @@
-package uploaddata.contract
+package ui.uploaddata.contract
 
 import ru.student.distribution.core.base.mvi.UiIntent
 import ru.student.distribution.core.base.mvi.UiState

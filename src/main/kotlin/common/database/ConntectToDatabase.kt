@@ -28,13 +28,13 @@ object DatabaseConnection {
             newSuspendedTransaction {
                 addLogger(StdOutSqlLogger)
                 SchemaUtils.create(
-                    data.local.entity.Speciality,
+                    data.local.entity.Specialty,
                     data.local.entity.Student,
                     data.local.entity.Project,
                     data.local.entity.Participation,
                     data.local.entity.Supervisor,
                     data.local.entity.ProjectSupervisor,
-                    data.local.entity.ProjectSpeciality,
+                    data.local.entity.ProjectSpecialty,
                     data.local.entity.GeneratedDistribution,
                 )
             }

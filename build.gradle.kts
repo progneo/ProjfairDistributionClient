@@ -46,7 +46,7 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.2.2")
     implementation("com.grapecity.documents:gcexcel:5.0.3")
 
-    implementation("com.github.mal1s:algorithm-student-distribution:1.0.0")
+    implementation("com.github.mal1s:algorithm-student-distribution:1.1.3")
 }
 
 kapt {

@@ -42,7 +42,7 @@ fun main(args: Array<String>) = application {
 fun App() {
     val navBarScreens = listOf(
         Screen(SharedScreen.UploadScreen),
-        Screen(SharedScreen.InfoScreen)
+        Screen(SharedScreen.AlgorithmScreen)
     )
     val navController by rememberNavController(navBarScreens[0])
     val currentScreen by remember {

@@ -18,7 +18,7 @@ object StudentDao: Dao<domain.model.Student>(Student) {
                         name = it[Student.name],
                         group =  it[Student.group],
                         shouldDistribute = it[Student.shouldDistribute],
-                        specialityId = it[Student.specialityId]
+                        specialtyId = it[Student.specialityId]
                     )
                 )
             }
@@ -33,7 +33,7 @@ object StudentDao: Dao<domain.model.Student>(Student) {
                 it[name] = item.name
                 it[group] = item.group
                 it[shouldDistribute] = item.shouldDistribute
-                it[specialityId] = item.specialityId
+                it[specialityId] = item.specialtyId
             }
         }
     }
@@ -45,7 +45,7 @@ object StudentDao: Dao<domain.model.Student>(Student) {
                 it[name] = item.name
                 it[group] = item.group
                 it[shouldDistribute] = item.shouldDistribute
-                it[specialityId] = item.specialityId
+                it[specialityId] = item.specialtyId
             }
         }
     }

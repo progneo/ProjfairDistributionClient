@@ -1,6 +1,6 @@
 package domain.model
 
-data class Speciality(
+data class Specialty(
     val id: Int,
     val name: String
 )

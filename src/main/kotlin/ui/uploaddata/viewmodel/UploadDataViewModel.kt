@@ -1,4 +1,4 @@
-package uploaddata.viewmodel
+package ui.uploaddata.viewmodel
 
 import base.mvi.DataState
 import domain.usecase.uploaddata.SyncDataUseCase
@@ -6,7 +6,7 @@ import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.student.distribution.core.base.mvi.BaseViewModel
-import uploaddata.contract.UploadDataContract
+import ui.uploaddata.contract.UploadDataContract
 import java.io.File
 import javax.inject.Inject
 

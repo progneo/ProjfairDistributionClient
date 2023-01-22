@@ -4,6 +4,6 @@ data class Student(
     val id: Int,
     val name: String,
     val group: String,
-    val shouldDistribute: Boolean,
-    val specialityId: Int
+    var shouldDistribute: Boolean,
+    val specialtyId: Int
 )

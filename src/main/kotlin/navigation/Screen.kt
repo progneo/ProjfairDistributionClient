@@ -12,7 +12,7 @@ data class Screen(
 
 enum class ScreenRoute {
     UPLOAD,
-    INFO
+    ALGORITHM
 }
 
 sealed class SharedScreen(
@@ -28,10 +28,10 @@ sealed class SharedScreen(
         icon = Icons.Filled.Add
     )
 
-    object InfoScreen : SharedScreen(
-        screenRoute = ScreenRoute.INFO,
-        parentScreenRoute = ScreenRoute.INFO,
-        title = "Инфо",
+    object AlgorithmScreen : SharedScreen(
+        screenRoute = ScreenRoute.ALGORITHM,
+        parentScreenRoute = ScreenRoute.ALGORITHM,
+        title = "Алгоритм",
         icon = Icons.Filled.Info
     )
 
@@ -39,7 +39,7 @@ sealed class SharedScreen(
         fun findByRoute(route: ScreenRoute): SharedScreen {
             return when (route) {
                 ScreenRoute.UPLOAD -> UploadScreen
-                ScreenRoute.INFO -> InfoScreen
+                ScreenRoute.ALGORITHM -> AlgorithmScreen
             }
         }
     }

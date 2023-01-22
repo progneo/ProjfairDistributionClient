@@ -2,23 +2,23 @@ package data.local.dao
 
 import data.local.dao.base.Dao
 import data.local.entity.Project
-import data.local.entity.ProjectSpeciality
+import data.local.entity.ProjectSpecialty
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 
-object ProjectSpecialityDao: Dao<domain.model.ProjectSpeciality>(ProjectSpeciality) {
+object ProjectSpecialityDao: Dao<domain.model.ProjectSpeciality>(ProjectSpecialty) {
 
     override suspend fun getAll(): List<domain.model.ProjectSpeciality> {
         return newSuspendedTransaction {
             val projectSpecialities = mutableListOf<domain.model.ProjectSpeciality>()
-            ProjectSpeciality.selectAll().forEach {
+            ProjectSpecialty.selectAll().forEach {
                 projectSpecialities.add(
                     domain.model.ProjectSpeciality(
-                        id = it[ProjectSpeciality.id],
-                        projectId = it[ProjectSpeciality.projectId],
-                        specialityId = it[ProjectSpeciality.specialityId]
+                        id = it[ProjectSpecialty.id],
+                        projectId = it[ProjectSpecialty.projectId],
+                        specialityId = it[ProjectSpecialty.specialityId]
                     )
                 )
             }
@@ -28,7 +28,7 @@ object ProjectSpecialityDao: Dao<domain.model.ProjectSpeciality>(ProjectSpeciali
 
     override suspend fun insert(item: domain.model.ProjectSpeciality) {
         newSuspendedTransaction {
-            ProjectSpeciality.insert {
+            ProjectSpecialty.insert {
                 it[id] = item.id
                 it[projectId] = item.projectId
                 it[specialityId] = item.specialityId
@@ -38,10 +38,10 @@ object ProjectSpecialityDao: Dao<domain.model.ProjectSpeciality>(ProjectSpeciali
 
     override suspend fun update(item: domain.model.ProjectSpeciality) {
         newSuspendedTransaction {
-            Project.update({ ProjectSpeciality.id eq item.id }) {
-                it[ProjectSpeciality.id] = item.id
-                it[ProjectSpeciality.projectId] = item.projectId
-                it[ProjectSpeciality.specialityId] = item.specialityId
+            Project.update({ ProjectSpecialty.id eq item.id }) {
+                it[ProjectSpecialty.id] = item.id
+                it[ProjectSpecialty.projectId] = item.projectId
+                it[ProjectSpecialty.specialityId] = item.specialityId
             }
         }
     }

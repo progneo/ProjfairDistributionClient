@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
-import uploaddata.viewmodel.UploadDataViewModel
+import ui.uploaddata.viewmodel.UploadDataViewModel
 
 @Module
 interface ViewModelModule {

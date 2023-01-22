@@ -1,11 +1,11 @@
-package uploaddata.di
+package ui.uploaddata.di
 
 import androidx.compose.runtime.Composable
 import di.AppComponent
 import navigation.NavController
 import ru.student.distribution.di.BaseComponent
-import uploaddata.screen.UploadDataScreen
-import uploaddata.viewmodel.UploadDataViewModel
+import ui.uploaddata.screen.UploadDataScreen
+import ui.uploaddata.viewmodel.UploadDataViewModel
 import javax.inject.Inject
 
 //@Scope
@@ -45,12 +45,6 @@ class UploadDataComponent(
     appComponent: AppComponent,
     private val navController: NavController
 ) : BaseComponent {
-
-    companion object {
-        fun create() {
-
-        }
-    }
 
     @Inject
     lateinit var uploadDataViewModel: UploadDataViewModel
