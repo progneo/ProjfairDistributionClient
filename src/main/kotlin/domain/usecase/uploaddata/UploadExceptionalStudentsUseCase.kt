@@ -15,8 +15,10 @@ class UploadExceptionalStudentsUseCase @Inject constructor(
         emit(DataState.Loading)
         try {
             val response = uploadDataRepository.uploadExceptionalStudents(exceptionalStudentsFile)
+            println(response)
             emit(DataState.Success(response))
         } catch (e: Exception) {
+            println(e)
             emit(DataState.Error(e))
         }
     }

@@ -1,8 +1,8 @@
 package data.local.dao
 
 import data.local.dao.base.Dao
+import data.local.dao.base.batchInsertOnDuplicateKeyUpdate
 import data.local.entity.ProjectSupervisor
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
@@ -27,10 +27,13 @@ object ProjectSupervisor : Dao<domain.model.ProjectSupervisor>(ProjectSupervisor
 
     override suspend fun insert(item: domain.model.ProjectSupervisor) {
         newSuspendedTransaction {
-            ProjectSupervisor.insert {
-                it[id] = item.id
-                it[projectId] = item.projectId
-                it[supervisorId] = item.supervisorId
+            ProjectSupervisor.batchInsertOnDuplicateKeyUpdate(
+                item,
+                listOf(ProjectSupervisor.projectId, ProjectSupervisor.supervisorId)
+            ) { batch, projectSupervisor ->
+                batch[id] = projectSupervisor.id
+                batch[projectId] = projectSupervisor.projectId
+                batch[supervisorId] = projectSupervisor.supervisorId
             }
         }
     }

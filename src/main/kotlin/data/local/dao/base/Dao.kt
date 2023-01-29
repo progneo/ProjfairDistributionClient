@@ -1,10 +1,10 @@
 package data.local.dao.base
 
 import data.local.entity.base.Entity
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteAll
-import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.statements.BatchInsertStatement
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 abstract class Dao<T>(private val tableObject: Table) {
@@ -17,6 +17,7 @@ abstract class Dao<T>(private val tableObject: Table) {
             }
         }
     }
+
     abstract suspend fun update(item: T)
     suspend fun delete(item: T) {
         newSuspendedTransaction {
@@ -25,9 +26,43 @@ abstract class Dao<T>(private val tableObject: Table) {
             }
         }
     }
+
     suspend fun deleteAll() {
         newSuspendedTransaction {
             tableObject.deleteAll()
         }
+    }
+    //protected abstract suspend fun insertOrUpdate(it: UpdateBuilder<Number>, item: T)
+}
+
+class BatchInsertUpdateOnDuplicate(table: Table, val onDupUpdate: List<Column<*>>) :
+    BatchInsertStatement(table, false) {
+    override fun prepareSQL(transaction: Transaction): String {
+        //println(onDupUpdate.joinToString { "${transaction.identity(it)}=${transaction.identity(it)}"})
+        val onUpdateSQL = if (onDupUpdate.isNotEmpty()) {
+            " ON CONFLICT(id) DO UPDATE SET " + onDupUpdate.joinToString {
+                "${transaction.identity(it)}=excluded.${
+                    transaction.identity(
+                        it
+                    )
+                }"
+            }
+        } else ""
+        return super.prepareSQL(transaction) + onUpdateSQL
+    }
+}
+
+fun <T : Table, E> T.batchInsertOnDuplicateKeyUpdate(
+    item: E,
+    onDupUpdateColumns: List<Column<*>>,
+    body: T.(BatchInsertUpdateOnDuplicate, E) -> Unit,
+) {
+    item?.let {
+        val insert = BatchInsertUpdateOnDuplicate(this, onDupUpdateColumns)
+
+        insert.addBatch()
+        body(insert, it)
+
+        TransactionManager.current().exec(insert)
     }
 }

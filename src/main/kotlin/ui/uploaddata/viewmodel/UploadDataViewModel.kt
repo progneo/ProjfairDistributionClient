@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class UploadDataViewModel @Inject constructor(
     private val syncDataUseCase: SyncDataUseCase,
-    private val uploadExceptionalStudentsUseCase: UploadExceptionalStudentsUseCase,
+    private val uploadExceptionalStudentsUseCase: UploadExceptionalStudentsUseCase
 ) : BaseViewModel<UploadDataContract.Intent, UploadDataContract.ScreenState>() {
 
     override fun createInitialState(): UploadDataContract.ScreenState {

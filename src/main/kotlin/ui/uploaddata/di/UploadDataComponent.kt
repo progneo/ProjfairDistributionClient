@@ -8,39 +8,6 @@ import ui.uploaddata.screen.UploadDataScreen
 import ui.uploaddata.viewmodel.UploadDataViewModel
 import javax.inject.Inject
 
-//@Scope
-//annotation class UploadDataScope
-//
-//@[UploadDataScope Component(
-//    dependencies = [
-//        AppComponent::class
-//    ],
-//    modules = [
-//        UploadDataViewModelModule::class
-//    ]
-//)]
-//interface UploadDataComponent {
-//
-//    @Component.Factory
-//    interface Factory {
-//
-//        fun create(): UploadDataComponent
-//    }
-//}
-
-//@Module
-//interface UploadDataViewModelModule {
-//
-//    companion object {
-//
-//        @UploadDataScope
-//        @Provides
-//        fun provideUploadDataViewModel(syncDataUseCase: SyncDataUseCase): UploadDataViewModel {
-//            return UploadDataViewModel(syncDataUseCase)
-//        }
-//    }
-//}
-
 class UploadDataComponent(
     appComponent: AppComponent,
     private val navController: NavController

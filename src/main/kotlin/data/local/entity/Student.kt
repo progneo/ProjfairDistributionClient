@@ -7,7 +7,7 @@ object Student: Table() {
     val name = varchar("name", 100)
     val group = varchar("group", 10)
     var shouldDistribute = bool("should_distribute")
-    val specialityId = integer("speciality_id").references(Specialty.id)
+    val specialtyId = integer("specialty_id").references(Specialty.id)
 
     override val primaryKey = PrimaryKey(id)
 }

@@ -2,9 +2,10 @@ package di
 
 import dagger.Module
 import dagger.Provides
+import domain.repository.UploadDataRepository
+import domain.usecase.student.InsertStudentUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
-import domain.repository.UploadDataRepository
 
 @Module
 interface UseCaseModule {
@@ -23,6 +24,14 @@ interface UseCaseModule {
         @Provides
         fun provideUploadExceptionalStudentsUseCase(uploadDataRepository: UploadDataRepository): UploadExceptionalStudentsUseCase {
             return UploadExceptionalStudentsUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideInsertStudentUseCase(uploadDataRepository: UploadDataRepository): InsertStudentUseCase {
+            return InsertStudentUseCase(
                 uploadDataRepository = uploadDataRepository
             )
         }

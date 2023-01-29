@@ -3,6 +3,7 @@ package navigation
 import androidx.compose.runtime.Composable
 import di.AppComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
+import ui.preview.di.PreviewComponent
 import ui.uploaddata.di.UploadDataComponent
 
 @Composable
@@ -18,6 +19,10 @@ fun CustomNavigationHost(
 
         composable(SharedScreen.AlgorithmScreen.screenRoute) {
             AlgorithmComponent(navController = navController, appComponent = appComponent).render()
+        }
+
+        composable(SharedScreen.PreviewScreen.screenRoute) {
+            PreviewComponent(navController = navController, appComponent = appComponent).render()
         }
     }.build()
 }

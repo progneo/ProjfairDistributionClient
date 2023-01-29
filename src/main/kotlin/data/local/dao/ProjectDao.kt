@@ -1,13 +1,13 @@
 package data.local.dao
 
 import data.local.dao.base.Dao
+import data.local.dao.base.batchInsertOnDuplicateKeyUpdate
 import data.local.entity.Project
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 
-object ProjectDao: Dao<domain.model.Project>(Project) {
+object ProjectDao : Dao<domain.model.Project>(Project) {
 
     override suspend fun getAll(): List<domain.model.Project> {
         return newSuspendedTransaction {
@@ -38,21 +38,38 @@ object ProjectDao: Dao<domain.model.Project>(Project) {
 
     override suspend fun insert(item: domain.model.Project) {
         newSuspendedTransaction {
-            Project.insert {
-                it[id] = item.id
-                it[createdAt] = item.createdAt ?: ""
-                it[updatedAt] = item.updatedAt ?: ""
-                it[title] = item.title
-                it[places] = item.places
-                it[goal] = item.goal ?: ""
-                it[difficulty] = item.difficulty
-                it[dateStart] = item.dateStart
-                it[dateEnd] = item.dateEnd
-                it[customer] = item.customer ?: ""
-                it[additionalInf] = item.additionalInf ?: ""
-                it[productResult] = item.productResult
-                it[studyResult] = item.studyResult
-                it[supervisors] = item.supervisors
+            Project.batchInsertOnDuplicateKeyUpdate(
+                item,
+                listOf(
+                    Project.createdAt,
+                    Project.updatedAt,
+                    Project.title,
+                    Project.places,
+                    Project.goal,
+                    Project.difficulty,
+                    Project.dateStart,
+                    Project.dateEnd,
+                    Project.customer,
+                    Project.additionalInf,
+                    Project.productResult,
+                    Project.studyResult,
+                    Project.supervisors
+                )
+            ) { batch, project ->
+                batch[id] = project.id
+                batch[createdAt] = project.createdAt ?: ""
+                batch[updatedAt] = project.updatedAt ?: ""
+                batch[title] = project.title
+                batch[places] = project.places
+                batch[goal] = project.goal ?: ""
+                batch[difficulty] = project.difficulty
+                batch[dateStart] = project.dateStart
+                batch[dateEnd] = project.dateEnd
+                batch[customer] = project.customer ?: ""
+                batch[additionalInf] = project.additionalInf ?: ""
+                batch[productResult] = project.productResult
+                batch[studyResult] = project.studyResult
+                batch[supervisors] = project.supervisors
             }
         }
     }

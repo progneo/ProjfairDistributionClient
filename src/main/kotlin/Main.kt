@@ -1,19 +1,19 @@
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import common.database.DatabaseConnection
+import common.theme.BlueMainLight
 import di.AppComponent
 import di.DaggerAppComponent
 import navigation.CustomNavigationHost
@@ -42,7 +42,8 @@ fun main(args: Array<String>) = application {
 fun App() {
     val navBarScreens = listOf(
         Screen(SharedScreen.UploadScreen),
-        Screen(SharedScreen.AlgorithmScreen)
+        Screen(SharedScreen.PreviewScreen),
+        Screen(SharedScreen.AlgorithmScreen),
     )
     val navController by rememberNavController(navBarScreens[0])
     val currentScreen by remember {
@@ -57,7 +58,7 @@ fun App() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 NavigationRail(
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.fillMaxHeight().shadow(2.dp)
                 ) {
                     navBarScreens.forEach {
                         NavigationRailItem(
@@ -65,11 +66,17 @@ fun App() {
                             icon = {
                                 Icon(
                                     imageVector = it.sharedScreen.icon!!,
-                                    contentDescription = it.sharedScreen.title
+                                    contentDescription = it.sharedScreen.title,
+                                    tint = if (currentScreen.sharedScreen.parentScreenRoute == it.sharedScreen.parentScreenRoute) BlueMainLight else Color.Gray
                                 )
                             },
                             label = {
-                                Text(it.sharedScreen.title!!)
+                                Text(
+                                    text = it.sharedScreen.title!!,
+                                    color = BlueMainLight,
+                                    modifier = Modifier
+                                        .padding(top = 4.dp)
+                                )
                             },
                             alwaysShowLabel = false,
                             onClick = {

@@ -1,13 +1,13 @@
 package data.local.dao
 
 import data.local.dao.base.Dao
+import data.local.dao.base.batchInsertOnDuplicateKeyUpdate
 import data.local.entity.Specialty
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 
-object SpecialityDao: Dao<domain.model.Specialty>(Specialty) {
+object SpecialtyDao: Dao<domain.model.Specialty>(Specialty) {
 
     override suspend fun getAll(): List<domain.model.Specialty> {
         return newSuspendedTransaction {
@@ -26,9 +26,12 @@ object SpecialityDao: Dao<domain.model.Specialty>(Specialty) {
 
     override suspend fun insert(item: domain.model.Specialty) {
         newSuspendedTransaction {
-            Specialty.insert {
-                it[id] = item.id
-                it[name] = item.name
+            Specialty.batchInsertOnDuplicateKeyUpdate(
+                item,
+                listOf(Specialty.name)
+            ) { batch, specialty ->
+                batch[id] = specialty.id
+                batch[name] = specialty.name
             }
         }
     }

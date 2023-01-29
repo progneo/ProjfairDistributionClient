@@ -2,6 +2,7 @@ package di
 
 import dagger.Module
 import dagger.Provides
+import data.repository.StudentRepositoryImpl
 import data.repository.UploadDataRepositoryImpl
 import domain.repository.UploadDataRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,6 +18,16 @@ interface RepositoryModule {
             ioDispatcher: CoroutineDispatcher
         ): UploadDataRepository {
             return UploadDataRepositoryImpl(
+                ioDispatcher = ioDispatcher
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideStudentRepository(
+            ioDispatcher: CoroutineDispatcher
+        ): StudentRepositoryImpl {
+            return StudentRepositoryImpl(
                 ioDispatcher = ioDispatcher
             )
         }
