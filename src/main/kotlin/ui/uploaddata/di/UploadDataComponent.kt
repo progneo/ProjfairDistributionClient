@@ -3,7 +3,7 @@ package ui.uploaddata.di
 import androidx.compose.runtime.Composable
 import di.AppComponent
 import navigation.NavController
-import ru.student.distribution.di.BaseComponent
+import di.BaseComponent
 import ui.uploaddata.screen.UploadDataScreen
 import ui.uploaddata.viewmodel.UploadDataViewModel
 import javax.inject.Inject

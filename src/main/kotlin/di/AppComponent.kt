@@ -1,7 +1,6 @@
 package di
 
 import dagger.Component
-import ru.student.distribution.di.CoroutineDispatcherModule
 import ui.preview.di.PreviewComponent
 import ui.uploaddata.di.UploadDataComponent
 import javax.inject.Scope
@@ -14,7 +13,8 @@ annotation class AppScope
         RepositoryModule::class,
         UseCaseModule::class,
         ViewModelModule::class,
-        CoroutineDispatcherModule::class
+        CoroutineDispatcherModule::class,
+        DatabaseModule::class
     ]
 )]
 interface AppComponent {

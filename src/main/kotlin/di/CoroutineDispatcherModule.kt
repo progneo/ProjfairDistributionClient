@@ -1,8 +1,7 @@
-package ru.student.distribution.di
+package di
 
 import dagger.Module
 import dagger.Provides
-import di.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 

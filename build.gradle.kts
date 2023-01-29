@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm") version "1.7.20"
     id("org.jetbrains.compose") version "1.2.1"
     id("org.jetbrains.kotlin.kapt") version "1.7.20"
+    id("io.realm.kotlin") version "1.5.0"
     application
 }
 
@@ -47,6 +48,10 @@ dependencies {
     implementation("com.grapecity.documents:gcexcel:5.0.3")
 
     implementation("com.github.mal1s:algorithm-student-distribution:1.1.3")
+
+    implementation("io.realm.kotlin:library-sync:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
+    implementation("io.realm.kotlin:library-base:1.5.0")
 }
 
 kapt {

@@ -1,9 +1,16 @@
 package domain.model
 
-data class Student(
-    val id: Int,
-    val name: String,
-    val group: String,
+import domain.model.base.Entity
+import io.realm.kotlin.types.RealmObject
+import io.realm.kotlin.types.annotations.PrimaryKey
+
+open class Student(
+    @PrimaryKey override var id: Int,
+    var name: String,
+    var group: String,
     var shouldDistribute: Boolean,
-    val specialtyId: Int
-)
+    var specialtyId: Int
+): Entity(), RealmObject {
+
+    constructor(): this(0, "", "", true, 0)
+}

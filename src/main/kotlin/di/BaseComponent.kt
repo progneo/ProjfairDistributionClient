@@ -1,4 +1,4 @@
-package ru.student.distribution.di
+package di
 
 import androidx.compose.runtime.Composable
 
