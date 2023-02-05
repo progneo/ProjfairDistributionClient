@@ -12,7 +12,6 @@ annotation class AppScope
     modules = [
         RepositoryModule::class,
         UseCaseModule::class,
-        ViewModelModule::class,
         CoroutineDispatcherModule::class,
         DatabaseModule::class
     ]

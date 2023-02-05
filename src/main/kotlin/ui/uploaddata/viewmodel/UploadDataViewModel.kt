@@ -1,11 +1,10 @@
 package ui.uploaddata.viewmodel
 
+import base.mvi.BaseViewModel
 import base.mvi.DataState
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import ru.student.distribution.core.base.mvi.BaseViewModel
+import kotlinx.coroutines.launch
 import ui.uploaddata.contract.UploadDataContract
 import java.io.File
 import javax.inject.Inject
@@ -27,15 +26,19 @@ class UploadDataViewModel @Inject constructor(
     }
 
     private fun syncData() {
-        syncDataUseCase().onEach {
-            handleRequest(it)
-        }.launchIn(coroutineScope)
+        coroutineScope.launch {
+            syncDataUseCase().collect {
+                handleRequest(it)
+            }
+        }
     }
 
     private fun uploadExceptionalStudents(file: File) {
-        uploadExceptionalStudentsUseCase(file).onEach {
-            handleRequest(it, file)
-        }.launchIn(coroutineScope)
+        coroutineScope.launch {
+            uploadExceptionalStudentsUseCase(file).collect {
+                handleRequest(it, file)
+            }
+        }
     }
 
     private fun handleRequest(it: DataState<Boolean>, file: File? = null) {

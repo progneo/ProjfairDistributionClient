@@ -1,14 +1,14 @@
 package domain.usecase.student
 
-import data.repository.StudentRepositoryImpl
 import domain.model.Student
+import domain.repository.StudentRepository
 import javax.inject.Inject
 
 class InsertStudentUseCase @Inject constructor(
-    private val studentRepositoryImpl: StudentRepositoryImpl
+    private val studentRepository: StudentRepository
 ) {
 
     suspend operator fun invoke(student: Student) {
-        studentRepositoryImpl.insertStudent(student)
+        studentRepository.insertStudent(student)
     }
 }
