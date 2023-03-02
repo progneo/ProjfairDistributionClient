@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.icon.IcProject
 import common.theme.BlueMainLight
@@ -82,22 +81,23 @@ fun TabItem(
 
 @Composable
 fun TabHome(
+    modifier: Modifier = Modifier,
     selectedTabIndex: Int,
     onSelectedTab: (TabPage) -> Unit,
+    values: List<TabPage>
 ) {
     Column(
         Modifier.fillMaxWidth()
     ) {
         TabRow(
-            modifier = Modifier
-                .size(width = 400.dp, height = Dp.Unspecified)
+            modifier = modifier
                 .align(Alignment.CenterHorizontally),
             selectedTabIndex = selectedTabIndex,
             backgroundColor = Color.Transparent,
             divider = {},
             indicator = {}
         ) {
-            TabPage.values().forEachIndexed { index, tabPage ->
+            values.forEachIndexed { index, tabPage ->
                 TabItem(
                     modifier = Modifier.wrapContentWidth(),
                     selected = index == selectedTabIndex,
@@ -114,10 +114,23 @@ fun TabHome(
     }
 }
 
-enum class TabPage(
-    val title: String,
-    val icon: ImageVector,
-) {
+interface TabPage {
+    val title: String
+    val icon: ImageVector
+}
+
+enum class PreviewTabPage(
+    override val title: String,
+    override val icon: ImageVector,
+): TabPage {
     Students("Студенты", FontAwesomeIcons.Regular.User),
     Projects("Проекты", YarmarkaIconPack.IcProject),
+}
+
+enum class StudentsTabPage(
+    override val title: String,
+    override val icon: ImageVector,
+): TabPage {
+    Enrolled("С заявками", FontAwesomeIcons.Regular.User),
+    Uncounted("Без заявок", FontAwesomeIcons.Regular.User),
 }
