@@ -2,6 +2,7 @@ package navigation
 
 import androidx.compose.runtime.Composable
 import di.AppComponent
+import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.preview.di.PreviewComponent
 import ui.uploaddata.di.UploadDataComponent
@@ -23,6 +24,13 @@ fun CustomNavigationHost(
 
         composable(SharedScreen.PreviewScreen.screenRoute) {
             PreviewComponent(navController = navController, appComponent = appComponent).render()
+        }
+
+        composable(SharedScreen.ProjectDetailsScreen.screenRoute) {
+            ProjectDetailsComponent(
+                navController = navController,
+                appComponent = appComponent
+            ).render()
         }
     }.build()
 }

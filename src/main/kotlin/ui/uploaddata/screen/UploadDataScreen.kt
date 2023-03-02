@@ -24,11 +24,9 @@ fun UploadDataScreen(
     uploadDataViewModel: UploadDataViewModel,
     id: Int,
 ) {
+    UploadDataScreenView(navController, uploadDataViewModel)
     when (val screenState = uploadDataViewModel.uiState.collectAsState().value) {
         is UploadDataContract.ScreenState.Idle -> {
-            uploadDataViewModel.setIntent(
-                intent = UploadDataContract.Intent.SyncData
-            )
         }
 
         is UploadDataContract.ScreenState.Loading -> {
@@ -42,11 +40,7 @@ fun UploadDataScreen(
         }
 
         is UploadDataContract.ScreenState.Data -> {
-            UploadDataStateHandler(
-                navController = navController,
-                uploadDataState = screenState.uploadDataState,
-                uploadDataViewModel = uploadDataViewModel
-            )
+            UploadDataStateHandler(navController, screenState.uploadDataState, uploadDataViewModel)
         }
     }
 }
@@ -77,7 +71,7 @@ fun UploadDataStateHandler(
 
         is UploadDataContract.UploadDataState.Success -> {
             println("SUCCESS")
-            UploadDataScreenView(navController, uploadDataViewModel)
+            //UploadDataScreenView(navController, uploadDataViewModel)
         }
     }
 }

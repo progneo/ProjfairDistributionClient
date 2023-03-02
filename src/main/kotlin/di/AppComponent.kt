@@ -1,6 +1,7 @@
 package di
 
 import dagger.Component
+import ui.details.project.di.ProjectDetailsComponent
 import ui.preview.di.PreviewComponent
 import ui.uploaddata.di.UploadDataComponent
 import javax.inject.Scope
@@ -13,7 +14,8 @@ annotation class AppScope
         RepositoryModule::class,
         UseCaseModule::class,
         CoroutineDispatcherModule::class,
-        DatabaseModule::class
+        DatabaseModule::class,
+        NetworkModule::class
     ]
 )]
 interface AppComponent {
@@ -26,4 +28,5 @@ interface AppComponent {
 
     fun inject(uploadDataComponent: UploadDataComponent)
     fun inject(previewComponent: PreviewComponent)
+    fun inject(projectDetailsComponent: ProjectDetailsComponent)
 }

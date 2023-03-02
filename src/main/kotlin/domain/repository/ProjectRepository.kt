@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProjectRepository {
     fun getProjects(): Flow<ResultsChange<Project>>
+    suspend fun uploadProjects()
     suspend fun updateProject(project: Project)
     suspend fun insertProject(project: Project)
     suspend fun insertProject(projects: List<Project>)

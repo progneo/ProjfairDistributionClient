@@ -3,6 +3,7 @@ package ui.preview.widget
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -24,6 +25,9 @@ import common.theme.BlueMainLight
 import common.theme.GrayLight
 import domain.model.Project
 import kotlinx.coroutines.launch
+import navigation.Bundle
+import navigation.NavController
+import navigation.ScreenRoute
 import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PREVIEW_PROJECTS"
@@ -100,6 +104,7 @@ fun ProjectTable(
     modifier: Modifier = Modifier,
     projects: List<Project>,
     previewViewModel: PreviewViewModel,
+    navController: NavController,
 ) {
     Column(
         modifier = modifier
@@ -129,10 +134,17 @@ fun ProjectTable(
                     }
                 ),
 
-        ) {
+            ) {
             items(projects) { project ->
                 ProjectTableItem(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val bundle = Bundle().apply {
+                                put("project", project)
+                            }
+                            navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
+                        },
                     project = project
                 )
                 Divider()

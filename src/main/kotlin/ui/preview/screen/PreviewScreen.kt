@@ -43,14 +43,16 @@ fun PreviewScreen(
                 StudentTable(
                     modifier = Modifier.padding(24.dp),
                     students = students.value,
-                    previewViewModel
+                    previewViewModel,
+                    navController
                 )
             }
             Projects -> {
                 ProjectTable(
                     modifier = Modifier.padding(24.dp),
                     projects = projects.value,
-                    previewViewModel
+                    previewViewModel,
+                    navController
                 )
             }
         }

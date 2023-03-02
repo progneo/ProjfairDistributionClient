@@ -1,9 +1,7 @@
 package data.repository
 
-import domain.model.Participation
-import domain.model.Project
-import domain.model.Specialty
 import domain.model.Student
+import domain.repository.ProjectRepository
 import domain.repository.StudentRepository
 import domain.repository.UploadDataRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,7 +13,8 @@ import javax.inject.Inject
 
 class UploadDataRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    private val studentRepository: StudentRepository
+    private val studentRepository: StudentRepository,
+    private val projectRepository: ProjectRepository
 ): UploadDataRepository {
 
     var id = 1000
@@ -52,100 +51,105 @@ class UploadDataRepositoryImpl @Inject constructor(
                     )
                 )
             }
-            studentRepository.insertStudent(students)
-            val projects = mutableListOf<Project>(
-                Project(
-                    id = 1,
-                    title = "Project 1",
-                    places = 15,
-                    freePlaces = 15,
-                    supervisors = "Supervisor 1",
-                    difficulty = 1,
-                    customer = "",
-                    goal = "",
-                    dateStart = "",
-                    dateEnd = "",
-                    productResult = "",
-                    studyResult = ""
-                ),
-                Project(
-                    id = 2,
-                    title = "Project 2",
-                    places = 15,
-                    freePlaces = 15,
-                    supervisors = "Supervisor 2",
-                    difficulty = 1,
-                    customer = "",
-                    goal = "",
-                    dateStart = "",
-                    dateEnd = "",
-                    productResult = "",
-                    studyResult = ""
-                ),
-            )
-            val participation = mutableListOf<Participation>()
 
-            participation.add(
-                Participation(
-                    id = 0,
-                    priority = 1,
-                    projectId = 1,
-                    studentId = 15
-                )
-            )
-            participation.add(
-                Participation(
-                    id = 1,
-                    priority = 1,
-                    projectId = 1,
-                    studentId = 16
-                )
-            )
-            participation.add(
-                Participation(
-                    id = 2,
-                    priority = 2,
-                    projectId = 2,
-                    studentId = 0
-                )
-            )
-            participation.add(
-                Participation(
-                    id = 3,
-                    priority = 1,
-                    projectId = 2,
-                    studentId = 1
-                )
-            )
-            participation.add(
-                Participation(
-                    id = 4,
-                    priority = 1,
-                    projectId = 2,
-                    studentId = 2
-                )
-            )
 
-            val institute = "Institute"
-            val specialities = mutableListOf(
-                Specialty(id = 0, name = "ИСТб"),
-                Specialty(id = 1, name = "АСУб")
-            )
-            val specialGroups = mutableListOf<String>()
 
-            try {
-//                SpecialtyDao.insert(specialities)
-//                StudentDao.insert(students)
-//                ProjectDao.insert(projects)
-//                ParticipationDao.insert(participation)
+//            val projects = mutableListOf<Project>(
+//                Project(
+//                    id = 1,
+//                    title = "Project 1",
+//                    places = 15,
+//                    freePlaces = 15,
+//                    supervisors = "Supervisor 1",
+//                    difficulty = 1,
+//                    customer = "",
+//                    goal = "",
+//                    dateStart = "",
+//                    dateEnd = "",
+//                    productResult = "",
+//                    studyResult = ""
+//                ),
+//                Project(
+//                    id = 2,
+//                    title = "Project 2",
+//                    places = 15,
+//                    freePlaces = 15,
+//                    supervisors = "Supervisor 2",
+//                    difficulty = 1,
+//                    customer = "",
+//                    goal = "",
+//                    dateStart = "",
+//                    dateEnd = "",
+//                    productResult = "",
+//                    studyResult = ""
+//                ),
+//            )
+//            val participation = mutableListOf<Participation>()
 //
-//                println(SpecialtyDao.getAll())
-//                println(StudentDao.getAll())
-//                println(ProjectDao.getAll())
-//                println(ParticipationDao.getAll())
+//            participation.add(
+//                Participation(
+//                    id = 0,
+//                    priority = 1,
+//                    projectId = 1,
+//                    studentId = 15
+//                )
+//            )
+//            participation.add(
+//                Participation(
+//                    id = 1,
+//                    priority = 1,
+//                    projectId = 1,
+//                    studentId = 16
+//                )
+//            )
+//            participation.add(
+//                Participation(
+//                    id = 2,
+//                    priority = 2,
+//                    projectId = 2,
+//                    studentId = 0
+//                )
+//            )
+//            participation.add(
+//                Participation(
+//                    id = 3,
+//                    priority = 1,
+//                    projectId = 2,
+//                    studentId = 1
+//                )
+//            )
+//            participation.add(
+//                Participation(
+//                    id = 4,
+//                    priority = 1,
+//                    projectId = 2,
+//                    studentId = 2
+//                )
+//            )
+//
+//            val institute = "Institute"
+//            val specialities = mutableListOf(
+//                Specialty(id = 0, name = "ИСТб"),
+//                Specialty(id = 1, name = "АСУб")
+//            )
+//            val specialGroups = mutableListOf<String>()
+//
+            try {
+                studentRepository.insertStudent(students)
+                projectRepository.uploadProjects()
+////                SpecialtyDao.insert(specialities)
+////                StudentDao.insert(students)
+////                ProjectDao.insert(projects)
+////                ParticipationDao.insert(participation)
+////
+////                println(SpecialtyDao.getAll())
+////                println(StudentDao.getAll())
+////                println(ProjectDao.getAll())
+////                println(ParticipationDao.getAll())
 
                 true
             } catch (e: Exception) {
+                println(e)
                 false
             }
         }

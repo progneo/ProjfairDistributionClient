@@ -3,6 +3,7 @@ package ui.preview.widget
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -24,6 +25,7 @@ import common.theme.BlueMainLight
 import common.theme.GrayLight
 import domain.model.Student
 import kotlinx.coroutines.launch
+import navigation.NavController
 import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PREVIEW_STUDENTS"
@@ -99,7 +101,8 @@ fun StudentTableHead(
 fun StudentTable(
     modifier: Modifier = Modifier,
     students: List<Student>,
-    previewViewModel: PreviewViewModel
+    previewViewModel: PreviewViewModel,
+    navController: NavController,
 ) {
     Column(
         modifier = modifier
@@ -129,10 +132,14 @@ fun StudentTable(
                     }
                 ),
 
-        ) {
+            ) {
             items(students) { student ->
                 StudentTableItem(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+
+                        },
                     student = student
                 )
                 Divider()

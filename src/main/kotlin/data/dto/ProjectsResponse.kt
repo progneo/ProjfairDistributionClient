@@ -1,8 +1,5 @@
-package ru.student.distribution.data.dto
-
-import domain.model.Project
+package data.dto
 
 data class ProjectsResponse(
-    val data: List<Project>,
-    val projectCount: Int
+    val data: List<ProjectResponse>,
 )

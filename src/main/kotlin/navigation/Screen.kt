@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class Screen(
@@ -14,7 +15,8 @@ data class Screen(
 enum class ScreenRoute {
     UPLOAD,
     ALGORITHM,
-    PREVIEW
+    PREVIEW,
+    PROJECT_DETAILS
 }
 
 sealed class SharedScreen(
@@ -44,12 +46,20 @@ sealed class SharedScreen(
         icon = Icons.Filled.List
     )
 
+    object ProjectDetailsScreen : SharedScreen(
+        screenRoute = ScreenRoute.PROJECT_DETAILS,
+        parentScreenRoute = ScreenRoute.PREVIEW,
+        title = "Детали проекта",
+        icon = Icons.Filled.Settings
+    )
+
     companion object {
         fun findByRoute(route: ScreenRoute): SharedScreen {
             return when (route) {
                 ScreenRoute.UPLOAD -> UploadScreen
                 ScreenRoute.ALGORITHM -> AlgorithmScreen
                 ScreenRoute.PREVIEW -> PreviewScreen
+                ScreenRoute.PROJECT_DETAILS -> ProjectDetailsScreen
             }
         }
     }

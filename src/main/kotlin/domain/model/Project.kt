@@ -12,12 +12,13 @@ open class Project(
     var freePlaces: Int = places,
     var goal: String?,
     var difficulty: Int,
+    var description: String?,
     @SerializedName("date_start") var dateStart: String,
     @SerializedName("date_end") var dateEnd: String,
     var customer: String?,
     @SerializedName("product_result") var productResult: String,
     @SerializedName("study_result") var studyResult: String,
-    var supervisors: String,
+    @SerializedName("supervisorsNames") var supervisors: String,
 ) : Entity(), RealmObject {
 
     constructor() : this(
@@ -27,6 +28,7 @@ open class Project(
         0,
         null,
         0,
+        null,
         "",
         "",
         null,

@@ -1,9 +1,13 @@
-package ru.student.distribution.data.remote.client
+package data.remote.client
 
-import ru.student.distribution.data.remote.api.ProjectFairApi
+import data.remote.api.AdminProjectFairApi
+import data.remote.api.OrdinaryProjectFairApi
 
 object ProjectFairClient {
 
     @Synchronized
-    fun getClient(): ProjectFairApi = BaseClient.getRetrofitClient().create(ProjectFairApi::class.java)
+    fun getOrdinaryClient(): OrdinaryProjectFairApi = OrdinaryClient.getRetrofitClient().create(OrdinaryProjectFairApi::class.java)
+
+    @Synchronized
+    fun getAdminClient(): AdminProjectFairApi = AdminClient.getRetrofitClient().create(AdminProjectFairApi::class.java)
 }

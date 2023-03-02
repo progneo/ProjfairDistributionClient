@@ -63,6 +63,7 @@ class UploadDataViewModel @Inject constructor(
 
             is DataState.Success -> {
                 if (it.data) {
+                    println("setstate")
                     setState {
                         UploadDataContract.ScreenState.Data(
                             UploadDataContract.UploadDataState.Success
