@@ -18,12 +18,6 @@ fun PreviewScreen(
     navController: NavController,
     previewViewModel: PreviewViewModel,
 ) {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(WhiteDark)
-//    ) {
-//
     var tabPage by remember { mutableStateOf(Students) }
 
     Scaffold(
@@ -57,18 +51,4 @@ fun PreviewScreen(
             }
         }
     }
-
-//        val students = previewViewModel.students.collectAsState()
-//
-//        TabLayout(
-//            listOf(
-//                TabItem.Students(students.value),
-//                TabItem.Projects(listOf()),
-//            )
-//        )
-//
-//        StudentTable(
-//            modifier = Modifier.padding(24.dp),
-//            students = students.value
-//        )
 }

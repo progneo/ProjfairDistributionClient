@@ -10,8 +10,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import common.theme.BlueMainLight
 import di.AppComponent
 import di.DaggerAppComponent
@@ -27,9 +28,11 @@ private val appComponent: AppComponent by lazy {
 }
 
 fun main(args: Array<String>) = application {
+    val state = rememberWindowState(placement = WindowPlacement.Maximized)
+
     Window(
         onCloseRequest = ::exitApplication,
-        state = WindowState(width = 800.dp, height = 600.dp),
+        state = state,
         title = "StudentDistributionClient"
     ) {
         App()
