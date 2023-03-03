@@ -27,6 +27,7 @@ class PreviewViewModel @Inject constructor(
     }
 
     val students = MutableStateFlow<List<Student>>(emptyList())
+    val emptystudents = MutableStateFlow<List<Student>>(emptyList())
     val projects = MutableStateFlow<List<Project>>(emptyList())
 
     init {

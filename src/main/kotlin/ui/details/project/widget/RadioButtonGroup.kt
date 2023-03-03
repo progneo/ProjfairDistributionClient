@@ -1,11 +1,10 @@
 package ui.details.project.widget
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.onClick
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.RadioButton
@@ -21,37 +20,102 @@ import androidx.compose.ui.unit.sp
 import common.theme.BlueMainDark
 
 @Composable
-fun RadioButtonGroup(
+fun BorderedRadioButtonGroupColumn(
     modifier: Modifier = Modifier,
-    titles: List<String>,
+    titles: List<Title>,
     selected: Int,
     title: String,
+    onSelected: (Title) -> Unit = {}
 ) {
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(titles[selected]) }
-
     BorderedTitledComposable(
         modifier = modifier,
         title = title
     ) {
-        Column(
-            modifier
-                .selectableGroup()
-                .border(
-                    BorderStroke(2.dp, BlueMainDark),
-                    RoundedCornerShape(10.dp)
-                )
+        RadioButtonGroupColumn(modifier, titles, selected, onSelected)
+    }
+}
+
+@Composable
+fun BorderedRadioButtonGroupRow(
+    modifier: Modifier = Modifier,
+    titles: List<Title>,
+    selected: Int,
+    title: String,
+    onSelected: (Title) -> Unit = {}
+) {
+    BorderedTitledComposable(
+        modifier = modifier,
+        title = title
+    ) {
+        RadioButtonGroupRow(modifier, titles, selected, onSelected)
+    }
+}
+
+@Composable
+fun RadioButtonGroupColumn(
+    modifier: Modifier = Modifier,
+    titles: List<Title>,
+    selected: Int,
+    onSelected: (Title) -> Unit = {}
+) {
+    Column(
+        modifier
+            .selectableGroup()
+    ) {
+        RadioButtonGroup(titles, selected, onSelected)
+    }
+}
+
+@Composable
+fun RadioButtonGroupRow(
+    modifier: Modifier = Modifier,
+    titles: List<Title>,
+    selected: Int,
+    onSelected: (Title) -> Unit = {}
+) {
+    Row(
+        modifier
+            .selectableGroup()
+    ) {
+        RadioButtonGroup(titles, selected, onSelected)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun RadioButtonGroup(
+    titles: List<Title>,
+    selected: Int,
+    onSelected: (Title) -> Unit = {}
+) {
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(titles[selected]) }
+
+    titles.forEach { text ->
+        Row(
+            modifier = Modifier
+                .wrapContentWidth()
+                .height(56.dp)
+                .onClick {
+                    onOptionSelected(text)
+                    onSelected(text)
+                },
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            titles.forEach { text ->
-                Row(Modifier.fillMaxWidth().height(56.dp), verticalAlignment = Alignment.CenterVertically)
-                {
-                    RadioButton(
-                        selected = (text == selectedOption),
-                        onClick = { onOptionSelected(text) },
-                        colors = RadioButtonDefaults.colors(selectedColor = BlueMainDark, unselectedColor = BlueMainDark)
-                    )
-                    Text(text = text, fontSize = 20.sp, color = BlueMainDark)
-                }
-            }
+            RadioButton(
+                selected = (text == selectedOption),
+                onClick = {
+                    onOptionSelected(text)
+                    onSelected(text)
+                },
+                colors = RadioButtonDefaults.colors(selectedColor = BlueMainDark, unselectedColor = BlueMainDark)
+            )
+            Text(text = text.titleToDisplay, fontSize = 20.sp, color = BlueMainDark)
+            Spacer(Modifier.size(16.dp))
         }
     }
 }
+
+data class Title(
+    val titleToDisplay: String,
+    val name: String? = null
+)

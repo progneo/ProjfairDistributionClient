@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +60,6 @@ fun TabItem(
     ) {
         Spacer(Modifier.size(4.dp))
         Icon(
-            //painter = painterResource("ic_student.svg"),
             imageVector = icon,
             contentDescription = null,
             tint = if (selected) colorSelected else colorUnselected,
@@ -86,12 +86,9 @@ fun TabHome(
     onSelectedTab: (TabPage) -> Unit,
     values: List<TabPage>
 ) {
-    Column(
-        Modifier.fillMaxWidth()
-    ) {
-        TabRow(
-            modifier = modifier
-                .align(Alignment.CenterHorizontally),
+        ScrollableTabRow(
+            edgePadding = 0.dp,
+            modifier = modifier.padding(16.dp),
             selectedTabIndex = selectedTabIndex,
             backgroundColor = Color.Transparent,
             divider = {},
@@ -111,7 +108,6 @@ fun TabHome(
                 )
             }
         }
-    }
 }
 
 interface TabPage {
@@ -132,5 +128,16 @@ enum class StudentsTabPage(
     override val icon: ImageVector,
 ): TabPage {
     Enrolled("С заявками", FontAwesomeIcons.Regular.User),
-    Uncounted("Без заявок", FontAwesomeIcons.Regular.User),
+    Uncounted("Без заявок", FontAwesomeIcons.Regular.User);
+
+    companion object {
+        fun fromString(name: String): StudentsTabPage {
+            println(name)
+            return when (name) {
+                Enrolled.name -> Enrolled
+                Uncounted.name -> Uncounted
+                else -> Enrolled
+            }
+        }
+    }
 }

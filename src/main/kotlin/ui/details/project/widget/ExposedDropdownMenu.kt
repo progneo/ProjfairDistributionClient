@@ -90,7 +90,7 @@ fun ChipsVerticalGrid(
                                 imageVector = FontAwesomeIcons.Solid.TimesCircle,
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(16.dp)
+                                    .size(20.dp)
                                     .onClick {
                                         itemsState.removeIf { str -> str == item }
                                     }

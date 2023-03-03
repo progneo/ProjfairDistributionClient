@@ -26,7 +26,8 @@ fun ProjectDetailsScreen(
         val supervisors = remember {
             mutableStateListOf("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
         }
-        val dropdownItems = mutableListOf<String>("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
+        val dropdownItems =
+            mutableListOf<String>("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
 
         Row(modifier = Modifier.padding(16.dp)) {
             BackButton(navController = navController)
@@ -35,7 +36,15 @@ fun ProjectDetailsScreen(
         }
         ExposedDropdownMenuWithChips(stateHolder, supervisors, dropdownItems)
         EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "")
-        RadioButtonGroup(titles = listOf("Легко", "Сложно", "Трудно"), selected = project.difficulty-1, title = "Сложность")
+        BorderedRadioButtonGroupColumn(
+            titles = listOf(
+                Title("Легко"),
+                Title("Сложно"),
+                Title("Трудно")
+            ),
+            selected = project.difficulty - 1,
+            title = "Сложность"
+        )
         EditableDescriptionField(title = "Заказчик", content = project.customer ?: "")
         EditableDescriptionField(title = "Описание", content = project.description ?: "")
         EditableDescriptionField(title = "Ожидаемый продуктовый результат", content = project.productResult)
