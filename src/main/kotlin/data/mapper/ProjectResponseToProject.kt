@@ -3,7 +3,7 @@ package data.mapper
 import data.dto.ProjectResponse
 import domain.model.Project
 
-fun projectResponseToResponse(project: ProjectResponse): Project {
+fun projectResponseToProject(project: ProjectResponse): Project {
     return Project(
         id = project.id,
         title = project.title,

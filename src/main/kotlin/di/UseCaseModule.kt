@@ -2,10 +2,11 @@ package di
 
 import dagger.Module
 import dagger.Provides
-import domain.repository.ProjectRepository
-import domain.repository.StudentRepository
-import domain.repository.UploadDataRepository
+import domain.repository.*
+import domain.usecase.institute.GetInstitutesUseCase
+import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.student.InsertStudentUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
@@ -41,9 +42,33 @@ interface UseCaseModule {
 
         @AppScope
         @Provides
+        fun provideGetStudentsUseCase(studentRepository: StudentRepository): GetStudentsUseCase {
+            return GetStudentsUseCase(
+                studentRepository = studentRepository
+            )
+        }
+
+        @AppScope
+        @Provides
         fun provideGetProjectsUseCase(projectRepository: ProjectRepository): GetProjectsUseCase {
             return GetProjectsUseCase(
                 projectRepository = projectRepository
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideGetParticipationsUseCase(participationRepository: ParticipationRepository): GetParticipationsUseCase {
+            return GetParticipationsUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideGetInstitutesUseCase(instituteRepository: InstituteRepository): GetInstitutesUseCase {
+            return GetInstitutesUseCase(
+                instituteRepository = instituteRepository
             )
         }
     }

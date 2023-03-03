@@ -54,6 +54,7 @@ class UploadDataViewModel @Inject constructor(
             }
 
             is DataState.Loading -> {
+                println("LOADING")
                 setState {
                     UploadDataContract.ScreenState.Data(
                         UploadDataContract.UploadDataState.Loading
@@ -62,6 +63,7 @@ class UploadDataViewModel @Inject constructor(
             }
 
             is DataState.Success -> {
+                println("SUCCESS")
                 if (it.data) {
                     println("setstate")
                     setState {

@@ -1,6 +1,8 @@
 package data.repository
 
 import data.local.dao.StudentDao
+import data.mapper.studentResponseToStudent
+import data.remote.api.OrdinaryProjectFairApi
 import domain.model.Student
 import domain.repository.StudentRepository
 import io.realm.kotlin.notifications.ResultsChange
@@ -11,7 +13,8 @@ import javax.inject.Inject
 
 class StudentRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    private val studentDao: StudentDao
+    private val studentDao: StudentDao,
+    private val projectFairApi: OrdinaryProjectFairApi
 ): StudentRepository {
 
     override fun getStudents(): Flow<ResultsChange<Student>> {
@@ -40,5 +43,15 @@ class StudentRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllStudents() {
         studentDao.deleteAll<Student>()
+    }
+
+    override suspend fun uploadStudents() {
+        withContext(ioDispatcher) {
+            val students = projectFairApi.getCandidates()
+
+            students.forEach {
+                insertStudent(studentResponseToStudent(it))
+            }
+        }
     }
 }

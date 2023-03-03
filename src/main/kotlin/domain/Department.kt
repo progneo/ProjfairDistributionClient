@@ -1,14 +1,14 @@
-package domain.model
+package domain
 
-import domain.Department
+import domain.model.Institute
 import domain.model.base.Entity
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 
-open class Specialty(
+class Department(
     @PrimaryKey override var id: Int,
     var name: String,
-    var department: Department? = null
+    var institute: Institute? = null
 ): Entity(), RealmObject {
 
     constructor() : this(0, "", null)

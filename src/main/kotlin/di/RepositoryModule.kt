@@ -2,15 +2,14 @@ package di
 
 import dagger.Module
 import dagger.Provides
+import data.local.dao.InstituteDao
+import data.local.dao.ParticipationDao
 import data.local.dao.ProjectDao
 import data.local.dao.StudentDao
 import data.remote.api.AdminProjectFairApi
-import data.repository.ProjectRepositoryImpl
-import data.repository.StudentRepositoryImpl
-import data.repository.UploadDataRepositoryImpl
-import domain.repository.ProjectRepository
-import domain.repository.StudentRepository
-import domain.repository.UploadDataRepository
+import data.remote.api.OrdinaryProjectFairApi
+import data.repository.*
+import domain.repository.*
 import kotlinx.coroutines.CoroutineDispatcher
 
 @Module
@@ -23,12 +22,16 @@ interface RepositoryModule {
         fun provideUploadDataRepository(
             ioDispatcher: CoroutineDispatcher,
             studentRepository: StudentRepository,
-            projectRepository: ProjectRepository
+            projectRepository: ProjectRepository,
+            participationRepository: ParticipationRepository,
+            instituteRepository: InstituteRepository,
         ): UploadDataRepository {
             return UploadDataRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 studentRepository = studentRepository,
-                projectRepository = projectRepository
+                projectRepository = projectRepository,
+                participationRepository = participationRepository,
+                instituteRepository = instituteRepository
             )
         }
 
@@ -36,11 +39,13 @@ interface RepositoryModule {
         @Provides
         fun provideStudentRepository(
             ioDispatcher: CoroutineDispatcher,
-            studentDao: StudentDao
+            studentDao: StudentDao,
+            projectFairApi: OrdinaryProjectFairApi,
         ): StudentRepository {
             return StudentRepositoryImpl(
                 ioDispatcher = ioDispatcher,
-                studentDao = studentDao
+                studentDao = studentDao,
+                projectFairApi = projectFairApi
             )
         }
 
@@ -49,12 +54,40 @@ interface RepositoryModule {
         fun provideProjectRepository(
             ioDispatcher: CoroutineDispatcher,
             projectDao: ProjectDao,
-            adminProjectFairApi: AdminProjectFairApi
+            projectFairApi: OrdinaryProjectFairApi,
         ): ProjectRepository {
             return ProjectRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 projectDao = projectDao,
+                projectFairApi = projectFairApi
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideParticipationRepository(
+            ioDispatcher: CoroutineDispatcher,
+            participationDao: ParticipationDao,
+            adminProjectFairApi: AdminProjectFairApi,
+        ): ParticipationRepository {
+            return ParticipationRepositoryImpl(
+                ioDispatcher = ioDispatcher,
+                participationDao = participationDao,
                 adminProjectFairApi = adminProjectFairApi
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideInstituteRepository(
+            ioDispatcher: CoroutineDispatcher,
+            instituteDao: InstituteDao,
+            projectFairApi: OrdinaryProjectFairApi
+        ): InstituteRepository {
+            return InstituteRepositoryImpl(
+                ioDispatcher = ioDispatcher,
+                instituteDao = instituteDao,
+                projectFairApi = projectFairApi
             )
         }
     }

@@ -1,0 +1,10 @@
+package data.local.dao
+
+import data.local.dao.base.Dao
+import domain.model.Institute
+import io.realm.kotlin.Realm
+import javax.inject.Inject
+
+class InstituteDao @Inject constructor(
+    realm: Realm
+): Dao<Institute>(realm)

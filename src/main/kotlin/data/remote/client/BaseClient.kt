@@ -1,6 +1,7 @@
 package data.remote.client
 
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -10,7 +11,7 @@ abstract class BaseClient {
 
     private fun getOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            //.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
     }
 
@@ -24,7 +25,8 @@ abstract class BaseClient {
 }
 
 object OrdinaryClient: BaseClient() {
-    override val BASE_URL = "https://projfair.istu.edu/api/"
+//    override val BASE_URL = "https://projfair.istu.edu/api/"
+    override val BASE_URL = "http://62.109.5.123/api/"
 }
 
 object AdminClient: BaseClient() {

@@ -3,6 +3,7 @@ package di
 import dagger.Module
 import dagger.Provides
 import data.local.dao.StudentDao
+import domain.Department
 import domain.model.*
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
@@ -23,7 +24,9 @@ interface DatabaseModule {
                     Specialty::class,
                     Participation::class,
                     ProjectSpecialty::class,
-                    ProjectSupervisor::class
+                    ProjectSupervisor::class,
+                    Institute::class,
+                    Department::class
                 )
             )
             return Realm.open(configuration)

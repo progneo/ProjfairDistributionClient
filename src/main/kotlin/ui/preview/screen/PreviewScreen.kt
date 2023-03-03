@@ -1,14 +1,16 @@
 package ui.preview.screen
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import domain.model.Student
 import navigation.NavController
 import ui.details.project.widget.RadioButtonGroupRow
 import ui.details.project.widget.Title
@@ -16,7 +18,8 @@ import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
 import ui.preview.widget.PreviewTabPage.Projects
 import ui.preview.widget.PreviewTabPage.Students
-import ui.preview.widget.StudentsTabPage.*
+import ui.preview.widget.StudentsTabPage.Enrolled
+import ui.preview.widget.StudentsTabPage.Uncounted
 
 @Composable
 fun PreviewScreen(
@@ -42,6 +45,8 @@ fun PreviewScreen(
                         previewTabPage = it as PreviewTabPage
                     }
                 )
+
+                Text(text = "${students.value.size}")
 
                 if (previewTabPage == Students) {
                     RadioButtonGroupRow(
