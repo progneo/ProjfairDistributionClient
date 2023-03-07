@@ -7,7 +7,8 @@ fun studentResponseToStudent(student: StudentResponse): Student {
     val id = student.numz.toIntOrNull() ?: 0
     return Student(
         //id = student.numz.toInt(),
-        id = id,
+        id = student.id,
+        numz = id,
         name = student.fio,
         group = student.trainingGroup,
         shouldDistribute = true,

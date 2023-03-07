@@ -29,6 +29,15 @@ fun PreviewScreen(
     var previewTabPage by remember { mutableStateOf(Students) }
     var studentsTabPage by remember { mutableStateOf(Enrolled) }
 
+    fun studentTabPageToIndex(): Int {
+        return when (studentsTabPage) {
+            Enrolled -> 0
+            Uncounted -> 1
+        }
+    }
+
+    val studentsWithParticipations = previewViewModel.studentsWithParticipations.collectAsState()
+    val studentsWithoutParticipations = previewViewModel.studentsWithoutParticipations.collectAsState()
     val students = previewViewModel.students.collectAsState()
     val projects = previewViewModel.projects.collectAsState()
 
@@ -55,17 +64,16 @@ fun PreviewScreen(
                             Title("С заявками", Enrolled.name),
                             Title("Без заявок", Uncounted.name)
                         ),
-                        selected = 0
+                        selected = studentTabPageToIndex()
                     ) {
                         studentsTabPage = StudentsTabPage.fromString(it.name!!)
 
                         studentsToDisplay = when (studentsTabPage) {
                             Enrolled -> {
-                                students
+                                studentsWithParticipations
                             }
                             Uncounted -> {
-                                //TODO: give students without participations here
-                                students
+                                studentsWithoutParticipations
                             }
                         }
                     }

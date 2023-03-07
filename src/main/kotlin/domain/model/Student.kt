@@ -6,11 +6,12 @@ import io.realm.kotlin.types.annotations.PrimaryKey
 
 open class Student(
     @PrimaryKey override var id: Int,
+    var numz: Int,
     var name: String,
     var group: String,
     var shouldDistribute: Boolean,
     var specialtyId: Int
 ): Entity(), RealmObject {
 
-    constructor(): this(0, "", "", true, 0)
+    constructor(): this(0, 0, "", "", true, 0)
 }

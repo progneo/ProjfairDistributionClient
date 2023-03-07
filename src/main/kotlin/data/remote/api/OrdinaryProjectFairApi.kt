@@ -20,6 +20,6 @@ interface OrdinaryProjectFairApi {
 
     @GET("projects/filter")
     suspend fun getProjects(
-        @Query ("pageSize") pageSize: String = "max"
+        //@Query ("pageSize") pageSize: String = "max"
     ): ProjectsResponse
 }

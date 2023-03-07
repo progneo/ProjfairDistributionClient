@@ -25,8 +25,8 @@ abstract class BaseClient {
 }
 
 object OrdinaryClient: BaseClient() {
-//    override val BASE_URL = "https://projfair.istu.edu/api/"
-    override val BASE_URL = "http://62.109.5.123/api/"
+    override val BASE_URL = "https://projfair.istu.edu/api/"
+//    override val BASE_URL = "http://62.109.5.123/api/"
 }
 
 object AdminClient: BaseClient() {
