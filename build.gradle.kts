@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.7.20"
-    id("org.jetbrains.compose") version "1.2.1"
-    id("org.jetbrains.kotlin.kapt") version "1.7.20"
-    id("io.realm.kotlin") version "1.5.0"
+    id("org.jetbrains.compose") version "1.3.0"
+    id("org.jetbrains.kotlin.kapt") version "1.8.0"
+    id("io.realm.kotlin") version "1.6.1"
     application
 }
 
@@ -37,7 +37,7 @@ dependencies {
     api("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.20")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
 
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
@@ -49,9 +49,9 @@ dependencies {
 
     implementation("com.github.mal1s:algorithm-student-distribution:1.1.3")
 
-    implementation("io.realm.kotlin:library-sync:1.5.0")
+    implementation("io.realm.kotlin:library-sync:1.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
-    implementation("io.realm.kotlin:library-base:1.5.0")
+    implementation("io.realm.kotlin:library-base:1.6.1")
 
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:1.0.0")
     implementation("br.com.devsrsouza.compose.icons.jetbrains:simple-icons:1.0.0")
