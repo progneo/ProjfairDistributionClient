@@ -86,4 +86,15 @@ class PreviewViewModel @Inject constructor(
             }
         }
     }
+
+    fun getParticipationByStudent(studentId: Int): List<Participation> {
+        return participations.value.filter { part -> part.studentId == studentId }
+    }
+
+    fun getProjectById(projectId: Int): Project? {
+        projects.value.forEach {
+            println(it.id)
+        }
+        return projects.value.find { proj -> proj.id == projectId }
+    }
 }

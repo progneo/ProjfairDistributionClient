@@ -61,8 +61,8 @@ fun PreviewScreen(
                     RadioButtonGroupRow(
                         modifier = Modifier.align(Alignment.CenterVertically),
                         titles = listOf(
-                            Title("С заявками", Enrolled.name),
-                            Title("Без заявок", Uncounted.name)
+                            Title(Enrolled.title, Enrolled.name),
+                            Title(Uncounted.title, Uncounted.name)
                         ),
                         selected = studentTabPageToIndex()
                     ) {

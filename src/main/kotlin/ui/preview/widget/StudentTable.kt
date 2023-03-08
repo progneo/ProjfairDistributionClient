@@ -1,9 +1,6 @@
 package ui.preview.widget
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -13,9 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
@@ -23,9 +20,12 @@ import androidx.compose.ui.unit.dp
 import common.compose.rememberForeverLazyListState
 import common.theme.BlueMainLight
 import common.theme.GrayLight
+import domain.model.Participation
 import domain.model.Student
 import kotlinx.coroutines.launch
+import navigation.Bundle
 import navigation.NavController
+import navigation.ScreenRoute
 import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PREVIEW_STUDENTS"
@@ -97,6 +97,7 @@ fun StudentTableHead(
     Divider(thickness = 2.dp)
 }
 
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun StudentTable(
     modifier: Modifier = Modifier,
@@ -119,6 +120,9 @@ fun StudentTable(
         val scrollState = rememberForeverLazyListState(KEY)
         val coroutineScope = rememberCoroutineScope()
 
+        var studentParticipations by remember { mutableStateOf<List<Participation>>(emptyList()) }
+        var showPopUp by remember { mutableStateOf(false) }
+
         LazyColumn(
             state = scrollState,
             modifier = Modifier
@@ -138,12 +142,33 @@ fun StudentTable(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-
+                            studentParticipations = previewViewModel.getParticipationByStudent(student.id)
+                            showPopUp = true
                         },
                     student = student
                 )
                 Divider()
             }
         }
+
+        StudentParticipationsDialog(
+            visible = showPopUp,
+            items = studentParticipations,
+            previewViewModel = previewViewModel,
+            onDismissRequest = {
+                showPopUp = false
+            },
+            onProjectLinkClicked = { projectId ->
+                //TODO: change opened project id to real
+                val project = previewViewModel.getProjectById(532)
+
+                if (project != null) {
+                    val bundle = Bundle().apply {
+                        put("project", project)
+                    }
+                    navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
+                }
+            }
+        )
     }
 }
