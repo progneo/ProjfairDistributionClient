@@ -1,34 +1,35 @@
 package ui.preview.widget
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import common.theme.BlueMainDark
 import common.theme.BlueMainLight
 import common.theme.GrayLight
 import compose.icons.Octicons
 import compose.icons.octicons.LinkExternal24
 import domain.model.Participation
-import ui.preview.viewmodel.PreviewViewModel
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun StudentParticipationsDialog(
     visible: Boolean,
+    title: String,
+    subtitle: String,
     items: List<Participation>,
-    previewViewModel: PreviewViewModel,
     onDismissRequest: () -> Unit,
     onProjectLinkClicked: (Int) -> Unit
 ) {
@@ -39,67 +40,33 @@ fun StudentParticipationsDialog(
         onDismissRequest = {
             onDismissRequest()
         }, text = {
-            Column(
-                modifier = Modifier.clip(RoundedCornerShape(10.dp))
-            ) {
-                Row(
+            Column {
+                Text(
+                    text = title,
+                    fontSize = 20.sp,
+                    color = BlueMainDark,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.size(8.dp))
+                Text(
+                    text = subtitle,
+                    fontSize = 14.sp,
+                    color = BlueMainLight
+                )
+                Spacer(Modifier.size(8.dp))
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(GrayLight)
-                        .padding(4.dp)
+                        .border(2.dp, BlueMainDark, RoundedCornerShape(10.dp))
                 ) {
-                    Text(
-                        text = "ID проекта",
+                    StudentParticipationDialogHeader()
+                    LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth(0.4f)
-                            .wrapContentWidth()
-                    )
-                    Text(
-                        text = "Приоритет",
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .wrapContentWidth()
-                    )
-                    Text(
-                        text = "Ссылка",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentWidth()
-                    )
-                }
-                Divider(thickness = 2.dp)
-
-                LazyColumn(
-                    modifier = Modifier.size(300.dp, 150.dp)
-                ) {
-                    items(items) { studPart ->
-                        Row(
-                            modifier = Modifier.padding(4.dp),
-                            horizontalArrangement = Arrangement.aligned(Alignment.CenterHorizontally)
-                        ) {
-                            Text(
-                                text = studPart.projectId.toString(),
-                                modifier = Modifier
-                                    .fillMaxWidth(0.4f)
-                                    .wrapContentWidth()
-                            )
-                            Text(
-                                text = studPart.priority.toString(),
-                                modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                                    .wrapContentWidth()
-                            )
-                            Icon(
-                                imageVector = Octicons.LinkExternal24,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .size(20.dp)
-                                    .wrapContentWidth()
-                                    .clickable {
-                                        onProjectLinkClicked(studPart.projectId)
-                                    }
-                            )
+                            .size(300.dp, 150.dp)
+                            .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)),
+                    ) {
+                        items(items) { studPart ->
+                            StudentParticipationDialogItem(studPart, onProjectLinkClicked)
+                            Divider(thickness = 2.dp)
                         }
                     }
                 }
@@ -122,61 +89,68 @@ fun StudentParticipationsDialog(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun AppDialog(
-    modifier: Modifier = Modifier,
-    dialogState: Boolean = false,
-    onDialogPositiveButtonClicked: (() -> Unit)? = null,
-    onDialogStateChange: ((Boolean) -> Unit)? = null,
-    onDismissRequest: (() -> Unit)? = null,
+private fun StudentParticipationDialogHeader() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(GrayLight)
+            .padding(horizontal = 4.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = "ID проекта",
+            modifier = Modifier
+                .fillMaxWidth(0.4f)
+                .wrapContentWidth()
+        )
+        Text(
+            text = "Приоритет",
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .wrapContentWidth()
+        )
+        Text(
+            text = "Ссылка",
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth()
+        )
+    }
+    Divider(thickness = 2.dp)
+}
+
+@Composable
+private fun StudentParticipationDialogItem(
+    studPart: Participation,
+    onProjectLinkClicked: (Int) -> Unit
 ) {
-    val textPaddingAll = 24.dp
-    val buttonPaddingAll = 8.dp
-    val dialogShape = RoundedCornerShape(16.dp)
-
-    if (dialogState) {
-        AlertDialog(
-            onDismissRequest = {
-                onDialogStateChange?.invoke(false)
-                onDismissRequest?.invoke()
-            },
-            title = null,
-            text = null,
-            buttons = {
-
-                Column{
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "",
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Row(Modifier.padding(all = textPaddingAll)){
-                        Text(
-                            text = "stringResource(R.string.gdprText)"
-                        )
-                    }
-                    Divider(color = MaterialTheme.colors.onSurface, thickness = 1.dp)
-
-                    Row(
-                        modifier = Modifier.padding(all = buttonPaddingAll),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        TextButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                onDialogStateChange?.invoke(false)
-                                onDialogPositiveButtonClicked?.invoke()
-                            }
-                        ) {
-                            Text(text = "stringResource(R.string.dialog_ok)", color = MaterialTheme.colors.onSurface)
-                        }
-                    }
-                }
-
-            },
-            modifier = modifier,
-            shape = dialogShape
+    Row(
+        modifier = Modifier
+            .clickable {
+                onProjectLinkClicked(studPart.projectId)
+            }
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.aligned(Alignment.CenterHorizontally)
+    ) {
+        Text(
+            text = studPart.projectId.toString(),
+            modifier = Modifier
+                .fillMaxWidth(0.4f)
+                .wrapContentWidth()
+        )
+        Text(
+            text = studPart.priority.toString(),
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .wrapContentWidth()
+        )
+        Icon(
+            imageVector = Octicons.LinkExternal24,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(20.dp)
+                .wrapContentWidth()
         )
     }
 }

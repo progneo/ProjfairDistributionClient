@@ -120,7 +120,10 @@ fun StudentTable(
         val scrollState = rememberForeverLazyListState(KEY)
         val coroutineScope = rememberCoroutineScope()
 
-        var studentParticipations by remember { mutableStateOf<List<Participation>>(emptyList()) }
+        var studentParticipations by remember {
+            mutableStateOf<List<Participation>>(emptyList())
+        }
+        var studentState by remember { mutableStateOf<Student?>(null) }
         var showPopUp by remember { mutableStateOf(false) }
 
         LazyColumn(
@@ -143,6 +146,7 @@ fun StudentTable(
                         .fillMaxWidth()
                         .clickable {
                             studentParticipations = previewViewModel.getParticipationByStudent(student.id)
+                            studentState = student
                             showPopUp = true
                         },
                     student = student
@@ -153,8 +157,9 @@ fun StudentTable(
 
         StudentParticipationsDialog(
             visible = showPopUp,
+            title = studentState?.name.toString(),
+            subtitle = studentState?.numz.toString(),
             items = studentParticipations,
-            previewViewModel = previewViewModel,
             onDismissRequest = {
                 showPopUp = false
             },
