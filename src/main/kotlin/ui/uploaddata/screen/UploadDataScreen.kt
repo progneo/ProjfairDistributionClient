@@ -4,17 +4,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.dp
 import common.file.openFileDialog
 import common.theme.WhiteDark
+import kotlinx.coroutines.launch
 import navigation.NavController
 import ui.uploaddata.contract.UploadDataContract
+import ui.uploaddata.viewmodel.DownloadType
 import ui.uploaddata.viewmodel.UploadDataViewModel
+import ui.uploaddata.widget.DownloadProgressDialog
 import ui.uploaddata.widget.UpdateDataButton
 import ui.uploaddata.widget.UploadFileCard
 
@@ -84,6 +86,45 @@ fun UploadDataScreenView(
     Box(
         modifier = Modifier.fillMaxSize().background(WhiteDark)
     ) {
+        var showDownloadProgress by remember { mutableStateOf(false) }
+
+        var studentsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.studentsDownloadFlow.value) }
+        var projectsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.projectsDownloadFlow.value) }
+        var participationsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.participationsDownloadFlow.value) }
+        var institutesDownloadProgress by remember { mutableStateOf(uploadDataViewModel.institutesDownloadFlow.value) }
+
+        var downloadProgressMap =
+            mutableMapOf<DownloadType, Float>(
+                DownloadType.STUDENTS to studentsDownloadProgress,
+                DownloadType.PROJECTS to projectsDownloadProgress,
+                DownloadType.PARTICIPATIONS to participationsDownloadProgress,
+                DownloadType.INSTITUTES to institutesDownloadProgress,
+            )
+
+        rememberCoroutineScope().launch {
+            uploadDataViewModel.studentsDownloadFlow.collect { downloadProgress ->
+                studentsDownloadProgress = downloadProgress
+            }
+        }
+
+        rememberCoroutineScope().launch {
+            uploadDataViewModel.projectsDownloadFlow.collect { downloadProgress ->
+                projectsDownloadProgress = downloadProgress
+            }
+        }
+
+        rememberCoroutineScope().launch {
+            uploadDataViewModel.participationsDownloadFlow.collect { downloadProgress ->
+                participationsDownloadProgress = downloadProgress
+            }
+        }
+
+        rememberCoroutineScope().launch {
+            uploadDataViewModel.institutesDownloadFlow.collect { downloadProgress ->
+                institutesDownloadProgress = downloadProgress
+            }
+        }
+
         UploadFileCard(
             "Студенты-исключения",
             modifier = Modifier
@@ -108,6 +149,16 @@ fun UploadDataScreenView(
             uploadDataViewModel.setIntent(
                 intent = UploadDataContract.Intent.SyncData
             )
+            showDownloadProgress = true
         }
+
+        DownloadProgressDialog(
+            showDownloadProgress,
+            prgs = studentsDownloadProgress,
+            progressBars = downloadProgressMap,
+            onDismissRequest = {
+                showDownloadProgress = false
+            }
+        )
     }
 }

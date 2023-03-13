@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import common.compose.VisibleDialog
 import common.theme.BlueMainDark
 import common.theme.BlueMainLight
 import common.theme.GrayLight
@@ -23,7 +24,6 @@ import compose.icons.Octicons
 import compose.icons.octicons.LinkExternal24
 import domain.model.Participation
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun StudentParticipationsDialog(
     visible: Boolean,
@@ -33,13 +33,12 @@ fun StudentParticipationsDialog(
     onDismissRequest: () -> Unit,
     onProjectLinkClicked: (Int) -> Unit
 ) {
-    if (!visible) return
-
-    AlertDialog(
+    VisibleDialog(
+        visible = visible,
         shape = RoundedCornerShape(40.dp),
         onDismissRequest = {
             onDismissRequest()
-        }, text = {
+        }, textPart = {
             Column {
                 Text(
                     text = title,
@@ -72,7 +71,7 @@ fun StudentParticipationsDialog(
                 }
             }
         },
-        buttons = {
+        buttonsPart = {
             Button(
                 modifier = Modifier
                     .padding(16.dp)

@@ -8,6 +8,7 @@ import domain.repository.InstituteRepository
 import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,6 +17,8 @@ class InstituteRepositoryImpl @Inject constructor(
     private val instituteDao: InstituteDao,
     private val projectFairApi: OrdinaryProjectFairApi,
 ) : InstituteRepository {
+
+    override val downloadFlow = MutableStateFlow<Float>(0f)
 
     override fun getInstitutes(): Flow<ResultsChange<Institute>> {
         return instituteDao.getAll()
@@ -48,9 +51,12 @@ class InstituteRepositoryImpl @Inject constructor(
     override suspend fun uploadInstitutes() {
         withContext(ioDispatcher) {
             val institutes = projectFairApi.getInstitutes()
+            var current = 0f
+            val overall = institutes.size
 
             institutes.forEach {
                 insertInstitute(instituteResponseToInstitute(it))
+                downloadFlow.value = ++current / overall
             }
         }
     }

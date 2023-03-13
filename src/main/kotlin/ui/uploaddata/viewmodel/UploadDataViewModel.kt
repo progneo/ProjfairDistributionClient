@@ -2,6 +2,7 @@ package ui.uploaddata.viewmodel
 
 import base.mvi.BaseViewModel
 import base.mvi.DataState
+import domain.interactor.DownloadProgressInteractor
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import kotlinx.coroutines.launch
@@ -11,8 +12,14 @@ import javax.inject.Inject
 
 class UploadDataViewModel @Inject constructor(
     private val syncDataUseCase: SyncDataUseCase,
-    private val uploadExceptionalStudentsUseCase: UploadExceptionalStudentsUseCase
+    private val uploadExceptionalStudentsUseCase: UploadExceptionalStudentsUseCase,
+    downloadProgressInteractor: DownloadProgressInteractor,
 ) : BaseViewModel<UploadDataContract.Intent, UploadDataContract.ScreenState>() {
+
+    val studentsDownloadFlow = downloadProgressInteractor.studentsDownloadFlow
+    val projectsDownloadFlow = downloadProgressInteractor.projectsDownloadFlow
+    val participationsDownloadFlow = downloadProgressInteractor.participationsDownloadFlow
+    val institutesDownloadFlow = downloadProgressInteractor.institutesDownloadFlow
 
     override fun createInitialState(): UploadDataContract.ScreenState {
         return UploadDataContract.ScreenState.Idle
@@ -83,4 +90,11 @@ class UploadDataViewModel @Inject constructor(
             }
         }
     }
+}
+
+enum class DownloadType {
+    STUDENTS,
+    PROJECTS,
+    PARTICIPATIONS,
+    INSTITUTES
 }

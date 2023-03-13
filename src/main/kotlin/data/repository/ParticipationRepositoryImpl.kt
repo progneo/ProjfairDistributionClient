@@ -8,6 +8,7 @@ import domain.repository.ParticipationRepository
 import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,6 +17,8 @@ class ParticipationRepositoryImpl @Inject constructor(
     private val participationDao: ParticipationDao,
     private val adminProjectFairApi: AdminProjectFairApi,
 ) : ParticipationRepository {
+
+    override val downloadFlow = MutableStateFlow<Float>(0f)
 
     override fun getParticipations(): Flow<ResultsChange<Participation>> {
         return participationDao.getAll()
@@ -48,9 +51,12 @@ class ParticipationRepositoryImpl @Inject constructor(
     override suspend fun uploadParticipations() {
         withContext(ioDispatcher) {
             val participations = adminProjectFairApi.getParticipations()
+            var current = 0f
+            val overall = participations.size
 
             participations.forEach {
                 insertParticipation(participationResponseToParticipation(it))
+                downloadFlow.value = ++current / overall
             }
         }
     }

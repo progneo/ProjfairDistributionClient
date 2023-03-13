@@ -15,6 +15,11 @@ class UploadDataRepositoryImpl @Inject constructor(
     private val instituteRepository: InstituteRepository,
 ): UploadDataRepository {
 
+    override val studentsDownloadFlow = studentRepository.downloadFlow
+    override val projectsDownloadFlow = projectRepository.downloadFlow
+    override val participationsDownloadFlow = participationRepository.downloadFlow
+    override val institutesDownloadFlow = instituteRepository.downloadFlow
+
     override suspend fun syncData(): Boolean {
         return withContext(ioDispatcher) {
             try {

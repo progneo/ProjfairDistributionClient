@@ -9,6 +9,7 @@ import domain.repository.ProjectRepository
 import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,14 +19,19 @@ class ProjectRepositoryImpl @Inject constructor(
     private val projectFairApi: OrdinaryProjectFairApi
 ): ProjectRepository {
 
+    override val downloadFlow = MutableStateFlow<Float>(0f)
+
     override suspend fun uploadProjects() {
         withContext(ioDispatcher) {
             val projects = projectFairApi.getProjects().data
+            var current = 0f
+            val overall = projects.size
 
             projects.forEach {
                 insertProject(
                     projectResponseToProject(it)
                 )
+                downloadFlow.value = ++current / overall
             }
         }
     }
