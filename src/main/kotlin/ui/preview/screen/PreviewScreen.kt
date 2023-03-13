@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import navigation.NavController
-import ui.details.project.widget.RadioButtonGroupRow
-import ui.details.project.widget.Title
+import common.compose.RadioButtonGroupRow
+import common.compose.Title
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
 import ui.preview.widget.PreviewTabPage.Projects

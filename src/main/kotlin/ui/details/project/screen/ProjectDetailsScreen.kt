@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import common.compose.*
 import domain.model.Project
 import navigation.NavController
 import ui.details.project.widget.*

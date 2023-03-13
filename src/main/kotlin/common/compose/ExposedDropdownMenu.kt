@@ -1,4 +1,4 @@
-package ui.details.project.widget
+package common.compose
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
