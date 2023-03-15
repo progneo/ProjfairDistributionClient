@@ -8,9 +8,8 @@ import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import kotlinx.coroutines.launch
 import ui.uploaddata.contract.UploadDataContract
 import java.io.File
-import javax.inject.Inject
 
-class UploadDataViewModel @Inject constructor(
+class UploadDataViewModel constructor(
     private val syncDataUseCase: SyncDataUseCase,
     private val uploadExceptionalStudentsUseCase: UploadExceptionalStudentsUseCase,
     downloadProgressInteractor: DownloadProgressInteractor,

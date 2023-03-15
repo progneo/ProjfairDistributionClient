@@ -10,7 +10,6 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -84,30 +83,32 @@ fun TabHome(
     modifier: Modifier = Modifier,
     selectedTabIndex: Int,
     onSelectedTab: (TabPage) -> Unit,
-    values: List<TabPage>
+    values: List<TabPage>,
 ) {
-        ScrollableTabRow(
-            edgePadding = 0.dp,
-            modifier = modifier.padding(16.dp),
-            selectedTabIndex = selectedTabIndex,
-            backgroundColor = Color.Transparent,
-            divider = {},
-            indicator = {}
-        ) {
-            values.forEachIndexed { index, tabPage ->
-                TabItem(
-                    modifier = Modifier.wrapContentWidth(),
-                    selected = index == selectedTabIndex,
-                    icon = tabPage.icon,
-                    title = tabPage.title,
-                    colorSelected = Color.White,
-                    colorUnselected = BlueMainLight,
-                    onClicked = {
-                        onSelectedTab(tabPage)
-                    }
-                )
-            }
+    Spacer(Modifier.size(16.dp))
+    ScrollableTabRow(
+        edgePadding = 0.dp,
+        modifier = modifier,
+        //.padding(16.dp),
+        selectedTabIndex = selectedTabIndex,
+        backgroundColor = Color.Transparent,
+        divider = {},
+        indicator = {}
+    ) {
+        values.forEachIndexed { index, tabPage ->
+            TabItem(
+                modifier = Modifier.wrapContentWidth(),
+                selected = index == selectedTabIndex,
+                icon = tabPage.icon,
+                title = tabPage.title,
+                colorSelected = Color.White,
+                colorUnselected = BlueMainLight,
+                onClicked = {
+                    onSelectedTab(tabPage)
+                }
+            )
         }
+    }
 }
 
 interface TabPage {
@@ -118,7 +119,7 @@ interface TabPage {
 enum class PreviewTabPage(
     override val title: String,
     override val icon: ImageVector,
-): TabPage {
+) : TabPage {
     Students("Студенты", FontAwesomeIcons.Regular.User),
     Projects("Проекты", YarmarkaIconPack.IcProject),
 }
@@ -126,7 +127,7 @@ enum class PreviewTabPage(
 enum class StudentsTabPage(
     override val title: String,
     override val icon: ImageVector,
-): TabPage {
+) : TabPage {
     Enrolled("С заявками", FontAwesomeIcons.Regular.User),
     Uncounted("Без заявок", FontAwesomeIcons.Regular.User);
 

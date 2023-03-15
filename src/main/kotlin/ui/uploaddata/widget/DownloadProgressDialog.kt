@@ -42,7 +42,7 @@ fun DownloadProgressDialog(
                         )
                         Spacer(Modifier.size(width = 8.dp, height = 1.dp))
                         Text(
-                            text = "${String.format("%.2f", progressItem.value*100)}%",
+                            text = "${String.format("%.2f", progressItem.value * 100)}%",
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -64,5 +64,10 @@ private fun DownloadProgressBar(
     modifier: Modifier = Modifier,
     progress: Float,
 ) {
-    LinearProgressIndicator(modifier = modifier, progress = progress, color = BlueMainLight, backgroundColor = BlueMainLight25)
+    LinearProgressIndicator(
+        modifier = modifier,
+        progress = progress,
+        color = BlueMainLight,
+        backgroundColor = BlueMainLight25
+    )
 }

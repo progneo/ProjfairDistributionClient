@@ -16,7 +16,8 @@ annotation class AppScope
         CoroutineDispatcherModule::class,
         DatabaseModule::class,
         NetworkModule::class,
-        InteractorModule::class
+        InteractorModule::class,
+        ViewModelModule::class
     ]
 )]
 interface AppComponent {

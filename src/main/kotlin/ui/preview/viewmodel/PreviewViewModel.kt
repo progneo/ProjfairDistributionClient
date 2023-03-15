@@ -1,5 +1,6 @@
 package ui.preview.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import base.mvi.BaseViewModel
 import domain.model.Participation
 import domain.model.Project
@@ -10,9 +11,9 @@ import domain.usecase.student.GetStudentsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ui.preview.contract.PreviewContract
-import javax.inject.Inject
+import ui.preview.widget.PreviewTabPage
 
-class PreviewViewModel @Inject constructor(
+class PreviewViewModel constructor(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val getParticipationsUseCase: GetParticipationsUseCase,
@@ -38,7 +39,10 @@ class PreviewViewModel @Inject constructor(
 
     private val studentsIds = mutableSetOf<Int>()
 
+    var previewTabPage = mutableStateOf(PreviewTabPage.Students)
+
     init {
+        println("init")
         getStudents()
         getProjects()
         getParticipations()

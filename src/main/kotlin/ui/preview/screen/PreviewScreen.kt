@@ -5,15 +5,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import navigation.NavController
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
+import navigation.NavController
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
 import ui.preview.widget.PreviewTabPage.Projects
@@ -26,7 +25,7 @@ fun PreviewScreen(
     navController: NavController,
     previewViewModel: PreviewViewModel,
 ) {
-    var previewTabPage by remember { mutableStateOf(Students) }
+    var previewTabPage by remember { mutableStateOf(previewViewModel.previewTabPage.value) }
     var studentsTabPage by remember { mutableStateOf(Enrolled) }
 
     fun studentTabPageToIndex(): Int {
@@ -51,11 +50,10 @@ fun PreviewScreen(
                     selectedTabIndex = previewTabPage.ordinal,
                     values = PreviewTabPage.values().toList(),
                     onSelectedTab = {
-                        previewTabPage = it as PreviewTabPage
+                        previewViewModel.previewTabPage.value = it as PreviewTabPage
+                        previewTabPage = it
                     }
                 )
-
-                Text(text = "${students.value.size}")
 
                 if (previewTabPage == Students) {
                     RadioButtonGroupRow(
