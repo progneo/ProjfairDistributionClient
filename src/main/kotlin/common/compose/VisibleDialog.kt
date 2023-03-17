@@ -10,11 +10,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun VisibleDialog(
     visible: Boolean,
-    shape: RoundedCornerShape = RoundedCornerShape(40.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(0.dp),
     textPart: @Composable () -> Unit,
     buttonsPart: @Composable () -> Unit,
     onDismissRequest: () -> Unit,
-
 ) {
     if (!visible) return
 

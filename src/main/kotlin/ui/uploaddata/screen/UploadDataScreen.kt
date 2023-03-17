@@ -93,7 +93,7 @@ fun UploadDataScreenView(
         var participationsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.participationsDownloadFlow.value) }
         var institutesDownloadProgress by remember { mutableStateOf(uploadDataViewModel.institutesDownloadFlow.value) }
 
-        var downloadProgressMap =
+        val downloadProgressMap =
             mutableMapOf<DownloadType, Float>(
                 DownloadType.STUDENTS to studentsDownloadProgress,
                 DownloadType.PROJECTS to projectsDownloadProgress,
@@ -154,7 +154,6 @@ fun UploadDataScreenView(
 
         DownloadProgressDialog(
             showDownloadProgress,
-            prgs = studentsDownloadProgress,
             progressBars = downloadProgressMap,
             onDismissRequest = {
                 showDownloadProgress = false

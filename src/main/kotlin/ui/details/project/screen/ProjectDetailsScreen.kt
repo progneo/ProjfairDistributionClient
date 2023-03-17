@@ -9,9 +9,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import common.compose.*
+import common.mapper.toShortName
 import domain.model.Project
 import navigation.NavController
-import ui.details.project.widget.*
+import ui.details.project.widget.EditableDescriptionField
+import ui.details.project.widget.TitleField
 
 @Composable
 fun ProjectDetailsScreen(
@@ -35,7 +37,15 @@ fun ProjectDetailsScreen(
             Spacer(modifier = Modifier.size(16.dp))
             TitleField(title = project.title)
         }
-        ExposedDropdownMenuWithChips(stateHolder, supervisors, dropdownItems)
+        ExposedDropdownMenuWithChips(
+            modifier = Modifier.width(300.dp),
+            title = "Преподаватель",
+            isTitleChangeable = false,
+            stateHolder = stateHolder,
+            itemsState = supervisors,
+            dropdownItems = dropdownItems,
+            toShortName = String::toShortName
+        )
         EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "")
         BorderedRadioButtonGroupColumn(
             titles = listOf(

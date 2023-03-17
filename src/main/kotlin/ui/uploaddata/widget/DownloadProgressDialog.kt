@@ -16,7 +16,6 @@ import ui.uploaddata.viewmodel.DownloadType
 @Composable
 fun DownloadProgressDialog(
     visible: Boolean,
-    prgs: Float,
     progressBars: Map<DownloadType, Float>,
     onDismissRequest: () -> Unit,
 ) {

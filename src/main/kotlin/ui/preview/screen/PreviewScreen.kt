@@ -1,9 +1,6 @@
 package ui.preview.screen
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,7 +9,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
+import domain.Department
+import domain.model.Institute
 import navigation.NavController
+import ui.filter.FilterButton
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
 import ui.preview.widget.PreviewTabPage.Projects
@@ -27,6 +27,8 @@ fun PreviewScreen(
 ) {
     var previewTabPage by remember { mutableStateOf(previewViewModel.previewTabPage.value) }
     var studentsTabPage by remember { mutableStateOf(Enrolled) }
+
+    var showFilter by remember { mutableStateOf(false) }
 
     fun studentTabPageToIndex(): Int {
         return when (studentsTabPage) {
@@ -44,37 +46,51 @@ fun PreviewScreen(
 
     Scaffold(
         topBar = {
-            Row {
-                TabHome(
-                    modifier = Modifier.size(width = 400.dp, height = Dp.Unspecified),
-                    selectedTabIndex = previewTabPage.ordinal,
-                    values = PreviewTabPage.values().toList(),
-                    onSelectedTab = {
-                        previewViewModel.previewTabPage.value = it as PreviewTabPage
-                        previewTabPage = it
-                    }
-                )
+            Box {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                ) {
+                    TabHome(
+                        modifier = Modifier.size(width = 400.dp, height = Dp.Unspecified),
+                        selectedTabIndex = previewTabPage.ordinal,
+                        values = PreviewTabPage.values().toList(),
+                        onSelectedTab = {
+                            previewViewModel.previewTabPage.value = it as PreviewTabPage
+                            previewTabPage = it
+                        }
+                    )
 
-                if (previewTabPage == Students) {
-                    RadioButtonGroupRow(
-                        modifier = Modifier.align(Alignment.CenterVertically),
-                        titles = listOf(
-                            Title(Enrolled.title, Enrolled.name),
-                            Title(Uncounted.title, Uncounted.name)
-                        ),
-                        selected = studentTabPageToIndex()
-                    ) {
-                        studentsTabPage = StudentsTabPage.fromString(it.name!!)
+                    if (previewTabPage == Students) {
+                        RadioButtonGroupRow(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            titles = listOf(
+                                Title(Enrolled.title, Enrolled.name),
+                                Title(Uncounted.title, Uncounted.name)
+                            ),
+                            selected = studentTabPageToIndex()
+                        ) {
+                            studentsTabPage = StudentsTabPage.fromString(it.name!!)
 
-                        studentsToDisplay = when (studentsTabPage) {
-                            Enrolled -> {
-                                studentsWithParticipations
-                            }
-                            Uncounted -> {
-                                studentsWithoutParticipations
+                            studentsToDisplay = when (studentsTabPage) {
+                                Enrolled -> {
+                                    studentsWithParticipations
+                                }
+
+                                Uncounted -> {
+                                    studentsWithoutParticipations
+                                }
                             }
                         }
                     }
+                }
+
+                FilterButton(
+                    modifier = Modifier
+                        .padding(end = 24.dp)
+                        .size(60.dp)
+                        .align(Alignment.CenterEnd)
+                ) {
+                    showFilter = true
                 }
             }
         },
@@ -89,6 +105,7 @@ fun PreviewScreen(
                     navController
                 )
             }
+
             Projects -> {
                 ProjectTable(
                     modifier = Modifier.padding(24.dp),
@@ -98,5 +115,19 @@ fun PreviewScreen(
                 )
             }
         }
+
+        ProjectFilterDialog(
+            visible = showFilter,
+            projectFilterConfiguration = ProjectFilterConfiguration(
+                institutes = listOf(Institute(id = 0, name = "Институт информационных технологий и анализа данных"), Institute(id = 1, name = "Институт информационных технологий и анализа данныхИнститут информационных технологий и анализа данных"), Institute(id = 2, name = "third"), Institute(id = 3, name = "fourth")),
+                departments = listOf(Department(id = 0, name = "first"), Department(id = 1, name = "second"), Department(id = 2, name = "third"))
+            ),
+            onApplyClicked = { projectFilterConfiguration ->
+                println(projectFilterConfiguration.filters)
+            },
+            onDismissRequest = {
+                showFilter = false
+            }
+        )
     }
 }

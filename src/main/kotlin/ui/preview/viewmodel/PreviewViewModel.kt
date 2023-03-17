@@ -2,6 +2,8 @@ package ui.preview.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import base.mvi.BaseViewModel
+import domain.Department
+import domain.model.Institute
 import domain.model.Participation
 import domain.model.Project
 import domain.model.Student
@@ -33,6 +35,8 @@ class PreviewViewModel constructor(
     val students = MutableStateFlow<List<Student>>(emptyList())
     val projects = MutableStateFlow<List<Project>>(emptyList())
     val participations = MutableStateFlow<List<Participation>>(emptyList())
+    val institutes = MutableStateFlow<List<Institute>>(emptyList())
+    val departments = MutableStateFlow<List<Department>>(emptyList())
 
     val studentsWithParticipations = MutableStateFlow<List<Student>>(emptyList())
     val studentsWithoutParticipations = MutableStateFlow<List<Student>>(emptyList())
@@ -42,7 +46,6 @@ class PreviewViewModel constructor(
     var previewTabPage = mutableStateOf(PreviewTabPage.Students)
 
     init {
-        println("init")
         getStudents()
         getProjects()
         getParticipations()
