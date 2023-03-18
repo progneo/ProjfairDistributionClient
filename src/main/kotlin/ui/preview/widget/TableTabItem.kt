@@ -89,7 +89,6 @@ fun TabHome(
     ScrollableTabRow(
         edgePadding = 0.dp,
         modifier = modifier,
-        //.padding(16.dp),
         selectedTabIndex = selectedTabIndex,
         backgroundColor = Color.Transparent,
         divider = {},

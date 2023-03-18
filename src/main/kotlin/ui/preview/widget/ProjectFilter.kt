@@ -74,17 +74,33 @@ fun ProjectFilterDialog(
 }
 
 class ProjectFilterConfiguration(
-    institutes: List<Institute>,
-    departments: List<Department>,
+    private val institutes: List<Institute>,
+    private val departments: List<Department>,
 ) : FilterConfiguration {
-    override val filters: MutableMap<FilterType, FilterValue> = mutableMapOf(
-        FilterType.INSTITUTE to FilterValue(
-            values = listOf(FILTER_ALL) + institutes.map { it.name },
-            selectedValue = FilterSelectedType.All
-        ),
-        FilterType.DEPARTMENT to FilterValue(
-            values = listOf(FILTER_ALL) + departments.map { it.name },
-            selectedValue = FilterSelectedType.All
-        ),
-    )
+    override var filters: MutableMap<FilterType, FilterValue> = mutableMapOf()
+        private set
+
+    init {
+        if (filters.isEmpty()) {
+            filters = mutableMapOf(
+                FilterType.INSTITUTE to FilterValue(
+                    values = listOf(FILTER_ALL) + institutes.map { it.name },
+                    selectedValue = FilterSelectedType.All
+                ),
+                FilterType.DEPARTMENT to FilterValue(
+                    values = listOf(FILTER_ALL) + departments.map { it.name },
+                    selectedValue = FilterSelectedType.All
+                ),
+            )
+        }
+    }
+
+    override fun copy(): ProjectFilterConfiguration {
+        return ProjectFilterConfiguration(
+            this.institutes,
+            this.departments
+        ).apply {
+            filters = this@ProjectFilterConfiguration.filters
+        }
+    }
 }

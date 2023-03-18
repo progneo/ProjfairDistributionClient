@@ -17,7 +17,7 @@ fun String.toShortInstitute(): String {
 
     var shortName = ""
     (0..name.lastIndex).forEach {
-        shortName += "${name[it][0].uppercase()}."
+        shortName += name[it][0].uppercase()
     }
 
     return shortName

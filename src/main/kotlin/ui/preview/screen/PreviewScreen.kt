@@ -12,7 +12,7 @@ import common.compose.Title
 import domain.Department
 import domain.model.Institute
 import navigation.NavController
-import ui.filter.FilterButton
+import ui.filter.FilterConfigurationBlock
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
 import ui.preview.widget.PreviewTabPage.Projects
@@ -44,53 +44,74 @@ fun PreviewScreen(
 
     var studentsToDisplay by remember { mutableStateOf(students) }
 
+    var projectFilterConfiguration = remember {
+        mutableStateOf(
+            ProjectFilterConfiguration(
+                institutes = listOf(
+                    Institute(id = 0, name = "Институт информационных технологий и анализа данных"),
+                    Institute(
+                        id = 1,
+                        name = "Институт информационных технологий и анализа данныхИнститут информационных технологий и анализа данных"
+                    ),
+                    Institute(id = 2, name = "third"),
+                    Institute(id = 3, name = "fourth")
+                ),
+                departments = listOf(
+                    Department(id = 0, name = "first"),
+                    Department(id = 1, name = "second"),
+                    Department(id = 2, name = "third")
+                )
+            )
+        )
+    }
+
     Scaffold(
         topBar = {
-            Box {
+            Box(Modifier.padding(top = 16.dp, end = 24.dp)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    TabHome(
-                        modifier = Modifier.size(width = 400.dp, height = Dp.Unspecified),
-                        selectedTabIndex = previewTabPage.ordinal,
-                        values = PreviewTabPage.values().toList(),
-                        onSelectedTab = {
-                            previewViewModel.previewTabPage.value = it as PreviewTabPage
-                            previewTabPage = it
-                        }
-                    )
+                    Row {
+                        TabHome(
+                            modifier = Modifier.size(width = 400.dp, height = Dp.Unspecified),
+                            selectedTabIndex = previewTabPage.ordinal,
+                            values = PreviewTabPage.values().toList(),
+                            onSelectedTab = {
+                                previewViewModel.previewTabPage.value = it as PreviewTabPage
+                                previewTabPage = it
+                            }
+                        )
 
-                    if (previewTabPage == Students) {
-                        RadioButtonGroupRow(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            titles = listOf(
-                                Title(Enrolled.title, Enrolled.name),
-                                Title(Uncounted.title, Uncounted.name)
-                            ),
-                            selected = studentTabPageToIndex()
-                        ) {
-                            studentsTabPage = StudentsTabPage.fromString(it.name!!)
+                        if (previewTabPage == Students) {
+                            RadioButtonGroupRow(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                titles = listOf(
+                                    Title(Enrolled.title, Enrolled.name),
+                                    Title(Uncounted.title, Uncounted.name)
+                                ),
+                                selected = studentTabPageToIndex()
+                            ) {
+                                studentsTabPage = StudentsTabPage.fromString(it.name!!)
 
-                            studentsToDisplay = when (studentsTabPage) {
-                                Enrolled -> {
-                                    studentsWithParticipations
-                                }
+                                studentsToDisplay = when (studentsTabPage) {
+                                    Enrolled -> {
+                                        studentsWithParticipations
+                                    }
 
-                                Uncounted -> {
-                                    studentsWithoutParticipations
+                                    Uncounted -> {
+                                        studentsWithoutParticipations
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                FilterButton(
-                    modifier = Modifier
-                        .padding(end = 24.dp)
-                        .size(60.dp)
-                        .align(Alignment.CenterEnd)
-                ) {
-                    showFilter = true
+                    FilterConfigurationBlock(projectFilterConfiguration.value) {
+                        showFilter = true
+                    }
                 }
             }
         },
@@ -118,12 +139,9 @@ fun PreviewScreen(
 
         ProjectFilterDialog(
             visible = showFilter,
-            projectFilterConfiguration = ProjectFilterConfiguration(
-                institutes = listOf(Institute(id = 0, name = "Институт информационных технологий и анализа данных"), Institute(id = 1, name = "Институт информационных технологий и анализа данныхИнститут информационных технологий и анализа данных"), Institute(id = 2, name = "third"), Institute(id = 3, name = "fourth")),
-                departments = listOf(Department(id = 0, name = "first"), Department(id = 1, name = "second"), Department(id = 2, name = "third"))
-            ),
-            onApplyClicked = { projectFilterConfiguration ->
-                println(projectFilterConfiguration.filters)
+            projectFilterConfiguration = projectFilterConfiguration.value,
+            onApplyClicked = { projFilterConfig ->
+                projectFilterConfiguration.value = projFilterConfig.copy()
             },
             onDismissRequest = {
                 showFilter = false
