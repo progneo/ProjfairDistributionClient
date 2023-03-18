@@ -46,7 +46,7 @@ fun PreviewScreen(
 
     var projectFilterConfiguration by remember {
         mutableStateOf(
-            ProjectFilterConfiguration(
+            InstituteFilterConfiguration(
                 institutes = listOf(
                     Institute(id = 0, name = "Институт информационных технологий и анализа данных"),
                     Institute(
@@ -64,7 +64,30 @@ fun PreviewScreen(
             )
         )
     }
-    println(projectFilterConfiguration)
+
+    var studentFilterConfiguration by remember {
+        mutableStateOf(
+            InstituteFilterConfiguration(
+                institutes = listOf(
+                    Institute(id = 0, name = "Институт информационных технологий и анализа данных"),
+                    Institute(
+                        id = 1,
+                        name = "Институт информационных технологий и анализа данныхИнститут информационных технологий и анализа данных"
+                    ),
+                    Institute(id = 2, name = "third"),
+                    Institute(id = 3, name = "fourth")
+                ),
+                departments = listOf(
+                    Department(id = 0, name = "first"),
+                    Department(id = 1, name = "second"),
+                    Department(id = 2, name = "third")
+                )
+            )
+        )
+    }
+
+    val filterConfiguration: InstituteFilterConfiguration =
+        if (previewTabPage == Students) studentFilterConfiguration else projectFilterConfiguration
 
     Scaffold(
         topBar = {
@@ -110,7 +133,9 @@ fun PreviewScreen(
                         }
                     }
 
-                    FilterConfigurationBlock(projectFilterConfiguration) {
+                    FilterConfigurationBlock(
+                        filterConfiguration
+                    ) {
                         showFilter = true
                     }
                 }
@@ -140,12 +165,20 @@ fun PreviewScreen(
 
         ProjectFilterDialog(
             visible = showFilter,
-            projectFilterConfiguration = projectFilterConfiguration,
-            onApplyClicked = { projFilterConfig ->
-                projectFilterConfiguration = projFilterConfig
+            instituteFilterConfiguration = filterConfiguration,
+            onApplyClicked = { filterConfig ->
+                when (previewTabPage) {
+                    Students -> {
+                        studentFilterConfiguration = filterConfig
+                    }
+
+                    Projects -> {
+                        projectFilterConfiguration = filterConfig
+                    }
+                }
             },
             onDismissRequest = {
-                println(projectFilterConfiguration.filters)
+                println(filterConfiguration.filters)
                 showFilter = false
             }
         )

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import common.compose.VisibleDialog
 import common.mapper.toShortInstitute
 import common.theme.BlueMainLight
-import ui.preview.widget.ProjectFilterConfiguration
+import ui.preview.widget.InstituteFilterConfiguration
 
 enum class FilterType(val title: String) {
     INSTITUTE("Институт"),
@@ -79,15 +79,15 @@ fun FilterDialog(
 
 @Composable
 fun FilterConfigurationBlock(
-    projectFilterConfiguration: ProjectFilterConfiguration,
+    instituteFilterConfiguration: InstituteFilterConfiguration,
     onClick: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("${FilterType.INSTITUTE.title} : ${projectFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.name.toShortInstitute()}")
+        Text("${FilterType.INSTITUTE.title} : ${instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.name.toShortInstitute()}")
         Spacer(Modifier.size(16.dp))
-        Text("${FilterType.DEPARTMENT.title} : ${projectFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.name}")
+        Text("${FilterType.DEPARTMENT.title} : ${instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.name}")
         Spacer(Modifier.size(16.dp))
         Button(
             onClick = { onClick() },

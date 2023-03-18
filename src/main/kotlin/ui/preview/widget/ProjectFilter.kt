@@ -24,11 +24,11 @@ import ui.filter.*
 @Composable
 fun ProjectFilterDialog(
     visible: Boolean,
-    projectFilterConfiguration: ProjectFilterConfiguration,
-    onApplyClicked: (ProjectFilterConfiguration) -> Unit,
+    instituteFilterConfiguration: InstituteFilterConfiguration,
+    onApplyClicked: (InstituteFilterConfiguration) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    val tempConfiguration = projectFilterConfiguration.copy()
+    val tempConfiguration = instituteFilterConfiguration.copy()
 
     println("${tempConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue} != ${FilterSelectedType.All} == ${tempConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue != FilterSelectedType.All}")
     var isInstituteSelected: Boolean by remember { mutableStateOf(false) }
@@ -115,7 +115,7 @@ private fun ProjectFilterDropdownItem(
     }
 }
 
-class ProjectFilterConfiguration(
+class InstituteFilterConfiguration(
     val institutes: List<Institute>,
     val departments: List<Department>,
 ) : FilterConfiguration {
@@ -137,14 +137,14 @@ class ProjectFilterConfiguration(
         }
     }
 
-    override fun copy(): ProjectFilterConfiguration {
+    override fun copy(): InstituteFilterConfiguration {
         val newFilters = mutableMapOf<FilterType, FilterValue>()
 
-        this@ProjectFilterConfiguration.filters.forEach { (key, value) ->
+        this@InstituteFilterConfiguration.filters.forEach { (key, value) ->
             newFilters[key] = value.copy()
         }
 
-        return ProjectFilterConfiguration(
+        return InstituteFilterConfiguration(
             this.institutes,
             this.departments
         ).apply {
