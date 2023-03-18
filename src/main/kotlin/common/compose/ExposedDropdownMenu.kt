@@ -35,7 +35,7 @@ fun ExposedDropdownMenuWithChips(
     stateHolder: ExposedDropdownMenuStateHolder,
     itemsState: SnapshotStateList<String>,
     dropdownItems: List<String>,
-    toShortName: String.() -> String
+    toShortName: String.() -> String,
 ) {
     BorderedTitledComposable(title = "Преподаватели") {
         Column(
@@ -65,7 +65,7 @@ fun ExposedDropdownMenuWithChips(
 @Composable
 fun ChipsVerticalGrid(
     itemsState: SnapshotStateList<String>,
-    toShortName: String.() -> String
+    toShortName: String.() -> String,
 ) {
     Column(
         modifier = Modifier
@@ -114,13 +114,19 @@ fun ExposedDropdownMenu(
     isTitleChangeable: Boolean,
     stateHolder: ExposedDropdownMenuStateHolder,
     items: List<String>,
+    isEnabled: Boolean = true,
     toShortName: String.() -> String,
     onItemClicked: (Int, String) -> Unit,
 ) {
     var changeableTitle by remember { mutableStateOf(title) }
 
+    if (!isEnabled) {
+        changeableTitle = items[0]
+    }
+
     Box(
         modifier = modifier
+            .clickable(false) {}
             .onGloballyPositioned {
                 stateHolder.onSize(it.size.toSize())
             }
@@ -133,46 +139,49 @@ fun ExposedDropdownMenu(
                     RoundedCornerShape(10.dp)
                 )
                 .border(
-                    BorderStroke(2.dp, BlueMainDark),
+                    BorderStroke(2.dp, if (isEnabled) BlueMainDark else Color.Gray),
                     RoundedCornerShape(10.dp)
                 )
-                .clickable {
+                .clickable(enabled = isEnabled) {
                     stateHolder.onEnabled(!stateHolder.enabled)
                 }
                 .padding(12.dp)
         ) {
             Text(
-                text = AnnotatedString(changeableTitle.toShortName()),
+                text = AnnotatedString(if (isEnabled) changeableTitle.toShortName() else ""),
                 modifier = Modifier.fillMaxWidth(0.9f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Icon(
-                imageVector = stateHolder.icon,
+                imageVector = if (isEnabled) stateHolder.icon else stateHolder.disabledIcon,
                 contentDescription = null,
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        DropdownMenu(
-            expanded = stateHolder.enabled,
-            onDismissRequest = {
-                stateHolder.onEnabled(false)
-            },
-            modifier = Modifier
-                .width(with(LocalDensity.current) {
-                    stateHolder.size.width.toDp()
-                }),
-        ) {
-            stateHolder.setItems(items)
-            stateHolder.items.forEachIndexed { index, item ->
-                DropdownMenuItem(
-                    onClick = {
-                        stateHolder.onEnabled(false)
-                        onItemClicked(index, item)
-                        if (isTitleChangeable) changeableTitle = item
+
+        if (isEnabled) {
+            DropdownMenu(
+                expanded = stateHolder.enabled,
+                onDismissRequest = {
+                    stateHolder.onEnabled(false)
+                },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) {
+                        stateHolder.size.width.toDp()
+                    }),
+            ) {
+                stateHolder.setItems(items)
+                stateHolder.items.forEachIndexed { index, item ->
+                    DropdownMenuItem(
+                        onClick = {
+                            stateHolder.onEnabled(false)
+                            onItemClicked(index, item)
+                            if (isTitleChangeable) changeableTitle = item
+                        }
+                    ) {
+                        Text(text = item.toShortName())
                     }
-                ) {
-                    Text(text = item.toShortName())
                 }
             }
         }
@@ -187,6 +196,8 @@ class ExposedDropdownMenuStateHolder {
     val icon: ImageVector
         @Composable get() = if (enabled) Icons.Default.KeyboardArrowUp
         else Icons.Default.KeyboardArrowDown
+    val disabledIcon: ImageVector
+        @Composable get() = Icons.Default.KeyboardArrowDown
     var items: List<String> = emptyList()
         private set
 

@@ -44,7 +44,7 @@ fun PreviewScreen(
 
     var studentsToDisplay by remember { mutableStateOf(students) }
 
-    var projectFilterConfiguration = remember {
+    var projectFilterConfiguration by remember {
         mutableStateOf(
             ProjectFilterConfiguration(
                 institutes = listOf(
@@ -64,6 +64,7 @@ fun PreviewScreen(
             )
         )
     }
+    println(projectFilterConfiguration)
 
     Scaffold(
         topBar = {
@@ -109,7 +110,7 @@ fun PreviewScreen(
                         }
                     }
 
-                    FilterConfigurationBlock(projectFilterConfiguration.value) {
+                    FilterConfigurationBlock(projectFilterConfiguration) {
                         showFilter = true
                     }
                 }
@@ -139,11 +140,12 @@ fun PreviewScreen(
 
         ProjectFilterDialog(
             visible = showFilter,
-            projectFilterConfiguration = projectFilterConfiguration.value,
+            projectFilterConfiguration = projectFilterConfiguration,
             onApplyClicked = { projFilterConfig ->
-                projectFilterConfiguration.value = projFilterConfig.copy()
+                projectFilterConfiguration = projFilterConfig
             },
             onDismissRequest = {
+                println(projectFilterConfiguration.filters)
                 showFilter = false
             }
         )
