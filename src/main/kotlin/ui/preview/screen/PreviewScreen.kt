@@ -178,7 +178,6 @@ fun PreviewScreen(
                 }
             },
             onDismissRequest = {
-                println(filterConfiguration.filters)
                 showFilter = false
             }
         )

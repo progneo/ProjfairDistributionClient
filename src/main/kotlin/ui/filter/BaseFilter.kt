@@ -8,7 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import common.compose.VisibleDialog
 import common.mapper.toShortInstitute
 import common.theme.BlueMainLight
@@ -85,9 +89,9 @@ fun FilterConfigurationBlock(
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("${FilterType.INSTITUTE.title} : ${instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.name.toShortInstitute()}")
+        FilterValueText(instituteFilterConfiguration, FilterType.INSTITUTE)
         Spacer(Modifier.size(16.dp))
-        Text("${FilterType.DEPARTMENT.title} : ${instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.name}")
+        FilterValueText(instituteFilterConfiguration, FilterType.DEPARTMENT)
         Spacer(Modifier.size(16.dp))
         Button(
             onClick = { onClick() },
@@ -96,4 +100,32 @@ fun FilterConfigurationBlock(
             Text("Изменить")
         }
     }
+}
+
+@Composable
+private fun FilterValueText(
+    instituteFilterConfiguration: InstituteFilterConfiguration,
+    filterType: FilterType,
+) {
+    Text(
+        text = buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    color = Color.Black,
+                    fontSize = 22.sp
+                )
+            ) {
+                append(filterType.title)
+            }
+            append(" : ")
+            withStyle(
+                style = SpanStyle(
+                    color = Color.Gray,
+                    fontSize = 18.sp
+                )
+            ) {
+                append(instituteFilterConfiguration.filters[filterType]!!.selectedValue.name.toShortInstitute())
+            }
+        }
+    )
 }
