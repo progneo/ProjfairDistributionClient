@@ -19,6 +19,7 @@ open class Project(
     @SerializedName("product_result") var productResult: String,
     @SerializedName("study_result") var studyResult: String,
     @SerializedName("supervisorsNames") var supervisors: String,
+    //val department: Department?,
 ) : Entity(), RealmObject {
 
     constructor() : this(
@@ -34,6 +35,7 @@ open class Project(
         null,
         "",
         "",
-        ""
+        "",
+        //null
     )
 }

@@ -14,13 +14,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.compose.ExposedDropdownMenu
+import common.compose.ExposedTypedDropdownMenu
 import common.compose.rememberExposedMenuStateHolder
 import common.mapper.toShortInstitute
 import common.theme.BlueMainLight
-import domain.Department
+import domain.model.Department
 import domain.model.Institute
 import ui.filter.*
 
+@Suppress("UNCHECKED_CAST")
 @Composable
 fun ProjectFilterDialog(
     visible: Boolean,
@@ -30,7 +32,6 @@ fun ProjectFilterDialog(
 ) {
     val tempConfiguration = instituteFilterConfiguration.copy()
 
-    println("${tempConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue} != ${FilterSelectedType.All} == ${tempConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue != FilterSelectedType.All}")
     var isInstituteSelected: Boolean by remember { mutableStateOf(false) }
     isInstituteSelected = tempConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue != FilterSelectedType.All
 
@@ -41,32 +42,37 @@ fun ProjectFilterDialog(
                 Text(text = "Фильтры", color = BlueMainLight, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.size(16.dp))
 
-                    ProjectFilterDropdownItem(
-                        filterType = FilterType.INSTITUTE,
-                        filterValue = tempConfiguration.filters[FilterType.INSTITUTE]!!,
-                        isEnabled = true
-                    ) { index, itemClicked ->
-                        tempConfiguration
-                            .filters[FilterType.INSTITUTE]!!
-                            .selectedValue =
-                            if (index == 0) FilterSelectedType.All
-                            else FilterSelectedType.Selected(itemClicked)
+                ProjectFilterDropdownItem<Institute>(
+                    filterType = FilterType.INSTITUTE,
+                    filterValue = tempConfiguration.filters[FilterType.INSTITUTE]!! as FilterValue<Institute>,
+                    isEnabled = true
+                ) { index, itemClicked ->
+                    println(itemClicked)
+                    tempConfiguration
+                        .filters[FilterType.INSTITUTE]!!
+                        .selectedValue =
+                        if (index == 0) FilterSelectedType.All
+                        else FilterSelectedType.Selected(
+                            tempConfiguration.filters[FilterType.INSTITUTE]!!.values.find { filterEntity -> filterEntity.name == itemClicked }!!
+                        )
 
-                        println("here")
-                        isInstituteSelected = index != 0
-                    }
-                    Spacer(Modifier.size(32.dp))
-                    ProjectFilterDropdownItem(
-                        filterType = FilterType.DEPARTMENT,
-                        filterValue = tempConfiguration.filters[FilterType.DEPARTMENT]!!,
-                        isEnabled = isInstituteSelected
-                    ) { index, itemClicked ->
-                        tempConfiguration
-                            .filters[FilterType.DEPARTMENT]!!
-                            .selectedValue =
-                            if (index == 0) FilterSelectedType.All
-                            else FilterSelectedType.Selected(itemClicked)
-                    }
+                    isInstituteSelected = index != 0
+                }
+                Spacer(Modifier.size(32.dp))
+                ProjectFilterDropdownItem<Department>(
+                    filterType = FilterType.DEPARTMENT,
+                    filterValue = tempConfiguration.filters[FilterType.DEPARTMENT]!! as FilterValue<Department>,
+                    isEnabled = isInstituteSelected
+                ) { index, itemClicked ->
+                    println("\"$itemClicked\" in ${tempConfiguration.filters[FilterType.INSTITUTE]!!.values.map { it.name }}")
+                    tempConfiguration
+                        .filters[FilterType.DEPARTMENT]!!
+                        .selectedValue =
+                        if (index == 0) FilterSelectedType.All
+                        else FilterSelectedType.Selected(
+                            tempConfiguration.filters[FilterType.DEPARTMENT]!!.values.find { filterEntity -> filterEntity.name == itemClicked }!!
+                        )
+                }
 
             }
         },
@@ -84,9 +90,9 @@ fun ProjectFilterDialog(
 }
 
 @Composable
-private fun ProjectFilterDropdownItem(
+private fun <T : FilterEntity> ProjectFilterDropdownItem(
     filterType: FilterType,
-    filterValue: FilterValue,
+    filterValue: FilterValue<T>,
     isEnabled: Boolean,
     onClick: (Int, String) -> Unit
 ) {
@@ -100,10 +106,10 @@ private fun ProjectFilterDropdownItem(
             color = Color.Black
         )
         Spacer(Modifier.size(16.dp))
-        ExposedDropdownMenu(
+        ExposedTypedDropdownMenu<T>(
             modifier = Modifier
                 .size(width = 400.dp, height = Dp.Unspecified),
-            title = filterValue.selectedValue.name,
+            title = filterValue.selectedValue.filterEntity.name,
             isTitleChangeable = true,
             stateHolder = stateHolder,
             items = filterValue.values,
@@ -119,18 +125,18 @@ class InstituteFilterConfiguration(
     val institutes: List<Institute>,
     val departments: List<Department>,
 ) : FilterConfiguration {
-    override var filters: MutableMap<FilterType, FilterValue> = mutableMapOf()
+    override var filters: MutableMap<FilterType, FilterValue<FilterEntity>> = mutableMapOf()
         private set
 
     init {
         if (filters.isEmpty()) {
             filters = mutableMapOf(
                 FilterType.INSTITUTE to FilterValue(
-                    values = listOf(FILTER_ALL) + institutes.map { it.name },
+                    values = listOf(BaseAllFilterEntity()) + institutes,
                     selectedValue = FilterSelectedType.All
                 ),
                 FilterType.DEPARTMENT to FilterValue(
-                    values = listOf(FILTER_ALL) + departments.map { it.name },
+                    values = listOf(BaseAllFilterEntity()) + departments,
                     selectedValue = FilterSelectedType.All
                 ),
             )
@@ -138,7 +144,7 @@ class InstituteFilterConfiguration(
     }
 
     override fun copy(): InstituteFilterConfiguration {
-        val newFilters = mutableMapOf<FilterType, FilterValue>()
+        val newFilters = mutableMapOf<FilterType, FilterValue<FilterEntity>>()
 
         this@InstituteFilterConfiguration.filters.forEach { (key, value) ->
             newFilters[key] = value.copy()

@@ -1,6 +1,5 @@
 package domain.model
 
-import domain.Department
 import domain.model.base.Entity
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey

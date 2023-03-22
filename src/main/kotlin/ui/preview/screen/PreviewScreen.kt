@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
-import domain.Department
+import domain.model.Department
 import domain.model.Institute
 import navigation.NavController
 import ui.filter.FilterConfigurationBlock
@@ -40,7 +40,7 @@ fun PreviewScreen(
     val studentsWithParticipations = previewViewModel.studentsWithParticipations.collectAsState()
     val studentsWithoutParticipations = previewViewModel.studentsWithoutParticipations.collectAsState()
     val students = previewViewModel.students.collectAsState()
-    val projects = previewViewModel.projects.collectAsState()
+    val projects = previewViewModel.filteredProjects.collectAsState()
 
     var studentsToDisplay by remember { mutableStateOf(students) }
 
@@ -88,6 +88,8 @@ fun PreviewScreen(
 
     val filterConfiguration: InstituteFilterConfiguration =
         if (previewTabPage == Students) studentFilterConfiguration else projectFilterConfiguration
+
+    previewViewModel.filterProjects(projectFilterConfiguration)
 
     Scaffold(
         topBar = {

@@ -18,25 +18,31 @@ import common.mapper.toShortInstitute
 import common.theme.BlueMainLight
 import ui.preview.widget.InstituteFilterConfiguration
 
+interface FilterEntity {
+    val name: String
+}
+
+data class BaseAllFilterEntity(
+    override val name: String = "Все",
+): FilterEntity
+
 enum class FilterType(val title: String) {
     INSTITUTE("Институт"),
     DEPARTMENT("Кафедра")
 }
 
-sealed class FilterSelectedType(val name: String) {
-    object All : FilterSelectedType("Все")
-    data class Selected(val value: String) : FilterSelectedType(value)
+sealed class FilterSelectedType(val filterEntity: FilterEntity) {
+    object All : FilterSelectedType(BaseAllFilterEntity())
+    data class Selected(val value: FilterEntity) : FilterSelectedType(value)
 }
 
-const val FILTER_ALL = "Все"
-
-data class FilterValue(
-    val values: List<String>,
+data class FilterValue<T: FilterEntity>(
+    val values: List<T>,
     var selectedValue: FilterSelectedType,
 )
 
-interface FilterConfiguration {
-    val filters: MutableMap<FilterType, FilterValue>
+interface FilterConfiguration{
+    val filters: MutableMap<FilterType, FilterValue<FilterEntity>>
     fun copy(): FilterConfiguration
 }
 
@@ -124,7 +130,7 @@ private fun FilterValueText(
                     fontSize = 18.sp
                 )
             ) {
-                append(instituteFilterConfiguration.filters[filterType]!!.selectedValue.name.toShortInstitute())
+                append(instituteFilterConfiguration.filters[filterType]!!.selectedValue.filterEntity.name.toShortInstitute())
             }
         }
     )

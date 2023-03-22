@@ -26,6 +26,7 @@ import common.theme.BlueMainLight
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.TimesCircle
+import ui.filter.FilterEntity
 
 @Composable
 fun ExposedDropdownMenuWithChips(
@@ -46,6 +47,40 @@ fun ExposedDropdownMenuWithChips(
             ChipsVerticalGrid(itemsState, toShortName)
             Spacer(Modifier.size(8.dp))
             ExposedDropdownMenu(
+                modifier = modifier,
+                title = title,
+                isTitleChangeable = isTitleChangeable,
+                stateHolder = stateHolder,
+                items = dropdownItems,
+                toShortName = toShortName
+            ) { _, clickedItem ->
+                if (!itemsState.contains(clickedItem)) {
+                    itemsState.add(clickedItem)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
+    modifier: Modifier = Modifier,
+    title: String,
+    isTitleChangeable: Boolean,
+    stateHolder: ExposedDropdownMenuStateHolder,
+    itemsState: SnapshotStateList<String>,
+    dropdownItems: List<T>,
+    toShortName: String.() -> String,
+) {
+    BorderedTitledComposable(title = "Преподаватели") {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            ChipsVerticalGrid(itemsState, toShortName)
+            Spacer(Modifier.size(8.dp))
+            ExposedTypedDropdownMenu<T>(
                 modifier = modifier,
                 title = title,
                 isTitleChangeable = isTitleChangeable,
@@ -172,6 +207,87 @@ fun ExposedDropdownMenu(
                     }),
             ) {
                 stateHolder.setItems(items)
+                stateHolder.items.forEachIndexed { index, item ->
+                    DropdownMenuItem(
+                        onClick = {
+                            stateHolder.onEnabled(false)
+                            onItemClicked(index, item)
+                            if (isTitleChangeable) changeableTitle = item
+                        }
+                    ) {
+                        Text(text = item.toShortName())
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun <T : FilterEntity> ExposedTypedDropdownMenu(
+    modifier: Modifier = Modifier,
+    title: String,
+    isTitleChangeable: Boolean,
+    stateHolder: ExposedDropdownMenuStateHolder,
+    items: List<T>,
+    isEnabled: Boolean = true,
+    toShortName: String.() -> String,
+    onItemClicked: (Int, String) -> Unit,
+) {
+    var changeableTitle by remember { mutableStateOf(title) }
+
+    if (!isEnabled) {
+        changeableTitle = items[0].name
+    }
+
+    Box(
+        modifier = modifier
+            .clickable(false) {}
+            .onGloballyPositioned {
+                stateHolder.onSize(it.size.toSize())
+            }
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .clip(
+                    RoundedCornerShape(10.dp)
+                )
+                .border(
+                    BorderStroke(2.dp, if (isEnabled) BlueMainDark else Color.Gray),
+                    RoundedCornerShape(10.dp)
+                )
+                .clickable(enabled = isEnabled) {
+                    stateHolder.onEnabled(!stateHolder.enabled)
+                }
+                .padding(12.dp)
+        ) {
+            Text(
+                text = AnnotatedString(if (isEnabled) changeableTitle.toShortName() else ""),
+                modifier = Modifier.fillMaxWidth(0.9f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Icon(
+                imageVector = if (isEnabled) stateHolder.icon else stateHolder.disabledIcon,
+                contentDescription = null,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        if (isEnabled) {
+            DropdownMenu(
+                expanded = stateHolder.enabled,
+                onDismissRequest = {
+                    stateHolder.onEnabled(false)
+                },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) {
+                        stateHolder.size.width.toDp()
+                    }),
+            ) {
+                stateHolder.setItems(items.map { it.name })
                 stateHolder.items.forEachIndexed { index, item ->
                     DropdownMenuItem(
                         onClick = {

@@ -17,6 +17,7 @@ fun projectResponseToProject(project: ProjectResponse): Project {
         customer = project.customer,
         productResult = project.productResult,
         studyResult = project.studyResult,
-        supervisors = project.supervisors
+        supervisors = project.supervisors,
+        //department = Department(0, "name", Institute(id = 0, name = "name"))
     )
 }
