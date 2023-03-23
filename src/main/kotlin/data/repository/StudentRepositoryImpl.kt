@@ -9,14 +9,15 @@ import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class StudentRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val studentDao: StudentDao,
-    private val projectFairApi: OrdinaryProjectFairApi
-): StudentRepository {
+    private val projectFairApi: OrdinaryProjectFairApi,
+) : StudentRepository {
 
     override val downloadFlow = MutableStateFlow(0f)
 
@@ -51,11 +52,20 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun uploadStudents() {
         withContext(ioDispatcher) {
             val students = projectFairApi.getCandidates()
+            val oldStudents = studentDao.getAll<Student>().first().list
+            val oldMap = mutableMapOf<Int, Student>()
+            oldStudents.forEach {
+                oldMap[it.numz] = it
+            }
             var current = 0f
             val overall = students.size
 
-            students.forEach {
-                insertStudent(studentResponseToStudent(it))
+            students.forEach { studentResponse ->
+                val newStudent = studentResponseToStudent(studentResponse)
+                val oldStudent = oldMap[newStudent.numz]
+                if (oldStudent == null || oldStudent != newStudent) {
+                    insertStudent(newStudent)
+                }
                 downloadFlow.value = ++current / overall
             }
         }

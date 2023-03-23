@@ -14,4 +14,20 @@ open class Student(
 ): Entity(), RealmObject {
 
     constructor(): this(0, 0, "", "", true, 0)
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+
+        return other is Student &&
+                other.id == this.id &&
+                other.numz == this.numz &&
+                other.name == this.name &&
+                other.group == this.group &&
+                other.shouldDistribute == this.shouldDistribute &&
+                other.specialtyId == this.specialtyId
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
 }
