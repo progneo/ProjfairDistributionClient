@@ -10,6 +10,7 @@ import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,21 +21,6 @@ class ProjectRepositoryImpl @Inject constructor(
 ): ProjectRepository {
 
     override val downloadFlow = MutableStateFlow<Float>(0f)
-
-    override suspend fun uploadProjects() {
-        withContext(ioDispatcher) {
-            val projects = projectFairApi.getProjects().data
-            var current = 0f
-            val overall = projects.size
-
-            projects.forEach {
-                insertProject(
-                    projectResponseToProject(it)
-                )
-                downloadFlow.value = ++current / overall
-            }
-        }
-    }
 
     override fun getProjects(): Flow<ResultsChange<Project>> {
         return projectDao.getAll()
@@ -62,5 +48,27 @@ class ProjectRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllProjects() {
         projectDao.deleteAll<Project>()
+    }
+
+    override suspend fun uploadProjects() {
+        withContext(ioDispatcher) {
+            val projects = projectFairApi.getProjects().data
+            val oldProjects = projectDao.getAll<Project>().first().list
+            val oldMap = mutableMapOf<Int, Project>()
+            oldProjects.forEach {
+                oldMap[it.id] = it
+            }
+            var current = 0f
+            val overall = projects.size
+
+            projects.forEach {
+                val newProject = projectResponseToProject(it)
+                val oldProject = oldMap[newProject.id]
+                if (oldProject == null || oldProject != newProject) {
+                    insertProject(newProject)
+                }
+                downloadFlow.value = ++current / overall
+            }
+        }
     }
 }

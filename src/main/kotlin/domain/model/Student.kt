@@ -15,22 +15,6 @@ open class Student(
 
     constructor() : this(0, 0, "", "", true, 0)
 
-    override fun equals(other: Any?): Boolean {
-        if (other === this) return true
-
-        return other is Student &&
-                other.id == this.id &&
-                other.numz == this.numz &&
-                other.name == this.name &&
-                other.group == this.group &&
-                other.shouldDistribute == this.shouldDistribute &&
-                other.specialtyId == this.specialtyId
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
-
     override fun members(): List<Any?> {
         return listOf(id, numz, name, group, shouldDistribute, specialtyId)
     }
