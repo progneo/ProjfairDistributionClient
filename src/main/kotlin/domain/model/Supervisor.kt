@@ -10,4 +10,8 @@ open class Supervisor(
 ): Entity(), RealmObject {
 
     constructor() : this(0, "")
+
+    override fun members(): List<Any?> {
+        return listOf(id, name)
+    }
 }

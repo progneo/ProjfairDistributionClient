@@ -1,6 +1,5 @@
 package domain.model
 
-import domain.model.Institute
 import domain.model.base.Entity
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
@@ -13,4 +12,8 @@ class Department(
 ): Entity(), RealmObject, FilterEntity {
 
     constructor() : this(0, "", null)
+
+    override fun members(): List<Any?> {
+        return listOf(id, name, institute)
+    }
 }

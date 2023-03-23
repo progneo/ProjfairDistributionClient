@@ -38,4 +38,22 @@ open class Project(
         "",
         //null
     )
+
+    override fun members(): List<Any?> {
+        return listOf(
+            id,
+            title,
+            places,
+            freePlaces,
+            goal,
+            difficulty,
+            description,
+            dateStart,
+            dateEnd,
+            customer,
+            productResult,
+            studyResult,
+            supervisors
+        )
+    }
 }

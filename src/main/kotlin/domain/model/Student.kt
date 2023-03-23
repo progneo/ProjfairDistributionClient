@@ -10,10 +10,10 @@ open class Student(
     var name: String,
     var group: String,
     var shouldDistribute: Boolean,
-    var specialtyId: Int
-): Entity(), RealmObject {
+    var specialtyId: Int,
+) : Entity(), RealmObject {
 
-    constructor(): this(0, 0, "", "", true, 0)
+    constructor() : this(0, 0, "", "", true, 0)
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -29,5 +29,9 @@ open class Student(
 
     override fun hashCode(): Int {
         return super.hashCode()
+    }
+
+    override fun members(): List<Any?> {
+        return listOf(id, numz, name, group, shouldDistribute, specialtyId)
     }
 }

@@ -11,4 +11,8 @@ class Institute(
 ): Entity(), RealmObject, FilterEntity {
 
     constructor() : this(0, "")
+
+    override fun members(): List<Any?> {
+        return listOf(id, name)
+    }
 }

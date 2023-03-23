@@ -11,4 +11,8 @@ open class Specialty(
 ): Entity(), RealmObject {
 
     constructor() : this(0, "", null)
+
+    override fun members(): List<Any?> {
+        return listOf(id, name, department)
+    }
 }
