@@ -37,9 +37,7 @@ fun PreviewScreen(
         }
     }
 
-    val studentsWithParticipations = previewViewModel.studentsWithParticipations.collectAsState()
-    val studentsWithoutParticipations = previewViewModel.studentsWithoutParticipations.collectAsState()
-    val students = previewViewModel.students.collectAsState()
+    val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
 
     var studentsToDisplay by remember { mutableStateOf(students) }
@@ -121,16 +119,6 @@ fun PreviewScreen(
                                 selected = studentTabPageToIndex()
                             ) {
                                 studentsTabPage = StudentsTabPage.fromString(it.name!!)
-
-                                studentsToDisplay = when (studentsTabPage) {
-                                    Enrolled -> {
-                                        studentsWithParticipations
-                                    }
-
-                                    Uncounted -> {
-                                        studentsWithoutParticipations
-                                    }
-                                }
                             }
                         }
                     }
