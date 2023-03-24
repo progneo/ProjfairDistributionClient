@@ -1,25 +1,25 @@
-package ui.preview.widget
+package ui.preview.widget.filter
 
 import domain.model.Department
 import domain.model.Institute
-import domain.model.Project
+import domain.model.Student
 
-object ProjectFilterApplier {
+object StudentFilterApplier {
 
     fun applyAndGet(
-        projects: List<Project>,
+        students: List<Student>,
         institute: Institute?,
         department: Department?
-    ): List<Project> {
-        if (institute == null) return projects
+    ): List<Student> {
+        if (institute == null) return students
         else if (department == null) {
-            return projects.filter { proj ->
+            return students.filter { stud ->
                 //TODO: add institute filter
                 1==1
                 //proj.department?.institute?.id == institute.id
             }
         }
-        return projects.filter { proj->
+        return students.filter { stud ->
             //TODO: add department filter
             1==1
             //proj.department?.id == department.id

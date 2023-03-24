@@ -18,35 +18,7 @@ import common.compose.VisibleDialog
 import common.mapper.toShortInstitute
 import common.theme.BlueMainDark
 import common.theme.BlueMainLight
-import ui.preview.widget.InstituteFilterConfiguration
-
-interface FilterEntity {
-    val name: String
-}
-
-data class BaseAllFilterEntity(
-    override val name: String = "Все",
-): FilterEntity
-
-enum class FilterType(val title: String) {
-    INSTITUTE("Институт"),
-    DEPARTMENT("Кафедра")
-}
-
-sealed class FilterSelectedType(val filterEntity: FilterEntity) {
-    object All : FilterSelectedType(BaseAllFilterEntity())
-    data class Selected(val value: FilterEntity) : FilterSelectedType(value)
-}
-
-data class FilterValue<T: FilterEntity>(
-    val values: List<T>,
-    var selectedValue: FilterSelectedType,
-)
-
-interface FilterConfiguration{
-    val filters: MutableMap<FilterType, FilterValue<FilterEntity>>
-    fun copy(copyFilters: MutableMap<FilterType, FilterValue<FilterEntity>>? = null): FilterConfiguration
-}
+import ui.preview.widget.filter.InstituteFilterConfiguration
 
 @Composable
 fun FilterDialog(

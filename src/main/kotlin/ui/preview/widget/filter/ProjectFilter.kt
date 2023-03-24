@@ -1,4 +1,4 @@
-package ui.preview.widget
+package ui.preview.widget.filter
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text

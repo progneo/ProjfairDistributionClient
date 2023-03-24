@@ -12,6 +12,9 @@ import kotlinx.coroutines.launch
 import ui.filter.FilterType
 import ui.preview.contract.PreviewContract
 import ui.preview.widget.*
+import ui.preview.widget.filter.InstituteFilterConfiguration
+import ui.preview.widget.filter.ProjectFilterApplier
+import ui.preview.widget.filter.StudentFilterApplier
 
 class PreviewViewModel constructor(
     private val getStudentsUseCase: GetStudentsUseCase,

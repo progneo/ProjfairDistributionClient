@@ -19,6 +19,8 @@ import ui.preview.widget.PreviewTabPage.Projects
 import ui.preview.widget.PreviewTabPage.Students
 import ui.preview.widget.StudentsTabPage.Enrolled
 import ui.preview.widget.StudentsTabPage.Uncounted
+import ui.preview.widget.filter.InstituteFilterConfiguration
+import ui.preview.widget.filter.ProjectFilterDialog
 
 @Composable
 fun PreviewScreen(
