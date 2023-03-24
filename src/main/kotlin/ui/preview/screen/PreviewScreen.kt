@@ -40,7 +40,7 @@ fun PreviewScreen(
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
 
-    var studentsToDisplay by remember { mutableStateOf(students) }
+    val studentsToDisplay by remember { mutableStateOf(students) }
 
     var projectFilterConfiguration by remember {
         mutableStateOf(

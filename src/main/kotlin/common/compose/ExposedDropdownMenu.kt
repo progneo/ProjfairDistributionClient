@@ -231,12 +231,13 @@ fun <T : FilterEntity> ExposedTypedDropdownMenu(
     stateHolder: ExposedDropdownMenuStateHolder,
     items: List<T>,
     isEnabled: Boolean = true,
+    isReset: Boolean = false,
     toShortName: String.() -> String,
     onItemClicked: (Int, String) -> Unit,
 ) {
     var changeableTitle by remember { mutableStateOf(title) }
 
-    if (!isEnabled) {
+    if (!isEnabled || isReset) {
         changeableTitle = items[0].name
     }
 

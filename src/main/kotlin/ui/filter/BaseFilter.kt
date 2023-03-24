@@ -10,11 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.compose.VisibleDialog
 import common.mapper.toShortInstitute
+import common.theme.BlueMainDark
 import common.theme.BlueMainLight
 import ui.preview.widget.InstituteFilterConfiguration
 
@@ -43,7 +45,7 @@ data class FilterValue<T: FilterEntity>(
 
 interface FilterConfiguration{
     val filters: MutableMap<FilterType, FilterValue<FilterEntity>>
-    fun copy(): FilterConfiguration
+    fun copy(copyFilters: MutableMap<FilterType, FilterValue<FilterEntity>>? = null): FilterConfiguration
 }
 
 @Composable
@@ -51,12 +53,31 @@ fun FilterDialog(
     visible: Boolean,
     filterContent: @Composable () -> Unit,
     onApplyClicked: () -> Unit,
+    onResetFilters: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     VisibleDialog(
         visible = visible,
         textPart = {
-            filterContent()
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Фильтры", color = BlueMainLight, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                    Button(
+                        onClick = {
+                            onResetFilters()
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainDark, contentColor = Color.White)
+                    ) {
+                        Text("Сбросить")
+                    }
+                }
+                Spacer(Modifier.size(16.dp))
+                filterContent()
+            }
         },
         buttonsPart = {
             Row(
