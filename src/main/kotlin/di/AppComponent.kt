@@ -1,6 +1,7 @@
 package di
 
 import dagger.Component
+import ui.details.participation.di.ParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
 import ui.preview.di.PreviewComponent
 import ui.uploaddata.di.UploadDataComponent
@@ -31,4 +32,5 @@ interface AppComponent {
     fun inject(uploadDataComponent: UploadDataComponent)
     fun inject(previewComponent: PreviewComponent)
     fun inject(projectDetailsComponent: ProjectDetailsComponent)
+    fun inject(participationDetailsComponent: ParticipationDetailsComponent)
 }

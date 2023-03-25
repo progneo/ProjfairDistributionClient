@@ -11,8 +11,12 @@ import androidx.compose.ui.unit.dp
 import common.compose.*
 import common.mapper.toShortName
 import domain.model.Project
+import navigation.Bundle
 import navigation.NavController
+import navigation.ScreenRoute
 import ui.details.project.widget.EditableDescriptionField
+import ui.details.project.widget.SaveButton
+import ui.details.project.widget.ShowParticipationButton
 import ui.details.project.widget.TitleField
 
 @Composable
@@ -50,8 +54,8 @@ fun ProjectDetailsScreen(
         BorderedRadioButtonGroupColumn(
             titles = listOf(
                 Title("Легко"),
-                Title("Сложно"),
-                Title("Трудно")
+                Title("Средне"),
+                Title("Сложно")
             ),
             selected = project.difficulty - 1,
             title = "Сложность"
@@ -60,6 +64,19 @@ fun ProjectDetailsScreen(
         EditableDescriptionField(title = "Описание", content = project.description ?: "")
         EditableDescriptionField(title = "Ожидаемый продуктовый результат", content = project.productResult)
         EditableDescriptionField(title = "Ожидаемый учебный результат", content = project.studyResult)
-        Spacer(modifier = Modifier.size(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            SaveButton {
+                //TODO: implement saving
+            }
+            ShowParticipationButton {
+                val bundle = Bundle()
+                bundle.put("project", project)
+                navController.navigate(ScreenRoute.PARTICIPATION_DETAILS, bundle)
+            }
+        }
+        Spacer(modifier = Modifier.size(12.dp))
     }
 }

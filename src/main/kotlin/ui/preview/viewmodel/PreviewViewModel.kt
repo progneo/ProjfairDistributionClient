@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ui.filter.FilterType
 import ui.preview.contract.PreviewContract
-import ui.preview.widget.*
+import ui.preview.widget.PreviewTabPage
+import ui.preview.widget.StudentsTabPage
 import ui.preview.widget.filter.InstituteFilterConfiguration
 import ui.preview.widget.filter.ProjectFilterApplier
 import ui.preview.widget.filter.StudentFilterApplier
@@ -107,6 +108,14 @@ class PreviewViewModel constructor(
 
     fun getParticipationByStudent(studentId: Int): List<Participation> {
         return _participations.value.filter { part -> part.studentId == studentId }
+    }
+
+    fun getParticipationByProject(projectId: Int): List<Participation> {
+        return _participations.value.filter { part -> part.projectId == projectId }
+    }
+
+    fun getStudentById(id: Int): Student? {
+        return _students.value.find { it.id == id }
     }
 
     fun getProjectById(projectId: Int): Project? {

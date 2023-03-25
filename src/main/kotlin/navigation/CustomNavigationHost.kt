@@ -3,6 +3,7 @@ package navigation
 import androidx.compose.runtime.Composable
 import di.AppComponent
 import di.BaseComponent
+import ui.details.participation.di.ParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.preview.di.PreviewComponent
@@ -50,6 +51,15 @@ fun CustomNavigationHost(
                 ProjectDetailsComponent(navController = navController, appComponent = appComponent)
             )
             components[SharedScreen.ProjectDetailsScreen.screenRoute] = component
+            component.render()
+        }
+
+        composable(SharedScreen.ParticipationDetailsScreen.screenRoute) {
+            val component = components.getOrDefault(
+                SharedScreen.ParticipationDetailsScreen.screenRoute,
+                ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
+            )
+            components[SharedScreen.ParticipationDetailsScreen.screenRoute] = component
             component.render()
         }
     }.build()

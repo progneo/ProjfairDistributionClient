@@ -96,7 +96,10 @@ fun FilterConfigurationBlock(
             onClick = { onClick() },
             colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White)
         ) {
-            Text("Изменить")
+            Text(
+                text = "Изменить",
+                fontSize = 18.sp
+            )
         }
     }
 }

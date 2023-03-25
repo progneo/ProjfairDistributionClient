@@ -16,7 +16,8 @@ enum class ScreenRoute {
     UPLOAD,
     ALGORITHM,
     PREVIEW,
-    PROJECT_DETAILS
+    PROJECT_DETAILS,
+    PARTICIPATION_DETAILS,
 }
 
 sealed class SharedScreen(
@@ -53,6 +54,13 @@ sealed class SharedScreen(
         icon = Icons.Filled.Settings
     )
 
+    object ParticipationDetailsScreen : SharedScreen(
+        screenRoute = ScreenRoute.PARTICIPATION_DETAILS,
+        parentScreenRoute = ScreenRoute.PROJECT_DETAILS,
+        title = "Заявки на проект",
+        icon = Icons.Filled.Settings
+    )
+
     companion object {
         fun findByRoute(route: ScreenRoute): SharedScreen {
             return when (route) {
@@ -60,6 +68,7 @@ sealed class SharedScreen(
                 ScreenRoute.ALGORITHM -> AlgorithmScreen
                 ScreenRoute.PREVIEW -> PreviewScreen
                 ScreenRoute.PROJECT_DETAILS -> ProjectDetailsScreen
+                ScreenRoute.PARTICIPATION_DETAILS -> ParticipationDetailsScreen
             }
         }
     }
