@@ -41,7 +41,6 @@ fun CustomNavigationHost(
                 PreviewComponent(navController = navController, appComponent = appComponent)
             )
             components[SharedScreen.PreviewScreen.screenRoute] = component
-            println(component)
             component.render()
         }
 
@@ -50,7 +49,6 @@ fun CustomNavigationHost(
                 SharedScreen.ProjectDetailsScreen.screenRoute,
                 ProjectDetailsComponent(navController = navController, appComponent = appComponent)
             )
-            components[SharedScreen.ProjectDetailsScreen.screenRoute] = component
             component.render()
         }
 
@@ -59,7 +57,6 @@ fun CustomNavigationHost(
                 SharedScreen.ParticipationDetailsScreen.screenRoute,
                 ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
             )
-            components[SharedScreen.ParticipationDetailsScreen.screenRoute] = component
             component.render()
         }
     }.build()

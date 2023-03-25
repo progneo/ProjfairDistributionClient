@@ -111,7 +111,7 @@ class PreviewViewModel constructor(
     }
 
     fun getParticipationByProject(projectId: Int): List<Participation> {
-        return _participations.value.filter { part -> part.projectId == projectId }
+        return _participations.value.filter { part -> part.projectId == projectId }.sortedBy { it.priority }
     }
 
     fun getStudentById(id: Int): Student? {
