@@ -15,7 +15,10 @@ import common.compose.BackButton
 import common.theme.BlueMainLight
 import domain.model.Project
 import navigation.NavController
+import ui.details.participation.widget.ChooseParticipationTable
 import ui.details.participation.widget.ParticipationTable
+import ui.filter.FilterNode
+import ui.filter.FilterType
 import ui.preview.viewmodel.PreviewViewModel
 
 @Composable
@@ -38,7 +41,7 @@ fun ParticipationDetailsScreen(
                     navController = navController
                 )
                 Text(
-                    text = project.title + project.title,
+                    text = project.name,
                     fontSize = 32.sp,
                     modifier = Modifier
                         .padding(16.dp),
@@ -59,10 +62,30 @@ fun ParticipationDetailsScreen(
                 )
             }
         }
-        ParticipationTable(
-            modifier = Modifier.padding(24.dp),
-            participations = previewViewModel.getParticipationByProject(project.id),
-            previewViewModel = previewViewModel
-        )
+        Row {
+            ParticipationTable(
+                modifier = Modifier.fillMaxWidth(0.475f).padding(24.dp),
+                participations = previewViewModel.getParticipationByProject(project.id),
+                previewViewModel = previewViewModel
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth(2f/24).fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Button({}) { Text("name") }
+                Button({}) { Text("name") }
+            }
+            ChooseParticipationTable(
+                modifier = Modifier.padding(24.dp),
+                filterNode = FilterNode(
+                    prev = null,
+                    type = FilterType.INSTITUTE,
+                    selectedValue = null,
+                    next = FilterType.DEPARTMENT
+                ),
+                previewViewModel = previewViewModel
+            )
+        }
     }
 }

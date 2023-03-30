@@ -1,4 +1,4 @@
-package ui.preview.widget
+package ui.details.participation.widget
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -14,8 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
@@ -23,44 +22,35 @@ import androidx.compose.ui.unit.dp
 import common.compose.rememberForeverLazyListState
 import common.theme.BlueMainLight
 import common.theme.GrayLight
+import domain.model.Department
+import domain.model.Institute
 import domain.model.Project
+import domain.model.Student
 import kotlinx.coroutines.launch
-import navigation.Bundle
-import navigation.NavController
-import navigation.ScreenRoute
+import ui.filter.FilterEntity
+import ui.filter.FilterNode
+import ui.filter.FilterType
 import ui.preview.viewmodel.PreviewViewModel
 
-private const val KEY = "PREVIEW_PROJECTS"
+private const val KEY = "PROJECT_PARTICIPATION"
 
 @Composable
-fun ProjectTableItem(
+fun ChooseParticipationTableItem(
     modifier: Modifier = Modifier,
-    project: Project,
+    item: FilterEntity,
+    onClicked: (FilterEntity) -> Unit
 ) {
     Row(
         modifier = modifier
+            .clickable {
+                onClicked(item)
+            }
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
-            text = project.name,
+            text = item.name,
             modifier = Modifier
                 .fillMaxWidth(0.6f),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            text = project.freePlaces.toString(),
-            modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .wrapContentWidth(),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            text = "institute",
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -68,7 +58,7 @@ fun ProjectTableItem(
 }
 
 @Composable
-fun ProjectTableHead(
+fun ChooseParticipationTableHead(
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -78,21 +68,9 @@ fun ProjectTableHead(
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
-            text = "Название",
+            text = "Текущий элемент",
             modifier = Modifier
                 .fillMaxWidth(0.6f)
-                .wrapContentWidth()
-        )
-        Text(
-            text = "Свободные места",
-            modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .wrapContentWidth()
-        )
-        Text(
-            text = "Институт",
-            modifier = Modifier
-                .fillMaxWidth()
                 .wrapContentWidth()
         )
     }
@@ -100,11 +78,10 @@ fun ProjectTableHead(
 }
 
 @Composable
-fun ProjectTable(
+fun ChooseParticipationTable(
     modifier: Modifier = Modifier,
-    projects: List<Project>,
+    filterNode: FilterNode,
     previewViewModel: PreviewViewModel,
-    navController: NavController,
 ) {
     Column(
         modifier = modifier
@@ -114,12 +91,25 @@ fun ProjectTable(
                 RoundedCornerShape(10.dp)
             )
     ) {
-        ProjectTableHead(
+        ChooseParticipationTableHead(
             modifier = Modifier.fillMaxWidth()
         )
 
         val scrollState = rememberForeverLazyListState(KEY)
         val coroutineScope = rememberCoroutineScope()
+
+        val filterTypeOrder = listOf<FilterType>(
+            FilterType.INSTITUTE,
+            FilterType.DEPARTMENT,
+            FilterType.PROJECT,
+            FilterType.STUDENT,
+        )
+
+        val filterStack = ArrayDeque<FilterNode>()
+        filterStack.addLast(filterNode)
+
+//        var currentFilterNode by remember { mutableStateOf(filterNode) }
+        var currentItems by remember { mutableStateOf(previewViewModel.getValuesByType(filterStack.last().type)) }
 
         LazyColumn(
             state = scrollState,
@@ -135,17 +125,36 @@ fun ProjectTable(
                 ),
 
             ) {
-            items(projects) { project ->
-                ProjectTableItem(
+            items(currentItems) { item ->
+                ChooseParticipationTableItem(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            val bundle = Bundle().apply {
-                                put("project", project)
-                            }
-                            navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
-                        },
-                    project = project
+                        .fillMaxWidth(),
+                    item = item,
+                    onClicked = { clickedFilter ->
+                        val currentFilterNode = filterStack.last()
+                        if (currentFilterNode.next != null) {
+                            val newFilterNode = FilterNode(
+                                prev = currentFilterNode.type,
+                                type = currentFilterNode.next,
+                                selectedValue = clickedFilter,
+                                next = if (filterStack.size+1 == filterTypeOrder.size) null
+                                else {
+                                    filterTypeOrder[filterStack.size+1]
+                                }
+                            )
+                            filterStack.addLast(newFilterNode)
+                            println(filterStack)
+                            println(filterStack.last().type)
+                            currentItems = previewViewModel.getValuesByType(
+                                filterType = filterStack.last().type,
+                                institute = clickedFilter as? Institute,
+                                department = clickedFilter as? Department,
+                                project = clickedFilter as? Project
+                            )
+                        } else {
+                            println((clickedFilter as Student).name)
+                        }
+                    }
                 )
                 Divider()
             }

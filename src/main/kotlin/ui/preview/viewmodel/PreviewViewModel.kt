@@ -9,6 +9,7 @@ import domain.usecase.student.GetStudentsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import ui.filter.FilterEntity
 import ui.filter.FilterType
 import ui.preview.contract.PreviewContract
 import ui.preview.widget.PreviewTabPage
@@ -167,5 +168,43 @@ class PreviewViewModel constructor(
             department = department
         )
         filteredProjects.value = newProjects
+    }
+
+    fun getValuesByType(
+        filterType: FilterType,
+        institute: Institute? = null,
+        department: Department? = null,
+        project: Project? = null
+    ): List<FilterEntity> {
+        return when(filterType) {
+            FilterType.INSTITUTE -> listOf(Institute(0, "i1"), Institute(1, "i2"))
+            FilterType.DEPARTMENT -> {
+                require(institute != null)
+                listOf(
+                    Department(0, "d1", institute = Institute(0, "i1")),
+                    Department(1, "d2", institute = Institute(0, "i1")),
+                    Department(2, "d3", institute = Institute(1, "i2")),
+                    Department(3, "d4", institute = Institute(1, "i2")),
+                ).filter { it.institute == institute }
+            }
+            FilterType.PROJECT -> {
+                require(department != null)
+                listOf(
+                    Project().apply { name = "p1" },
+                    Project().apply { name = "p2" },
+                    Project().apply { name = "p3" },
+                    Project().apply { name = "p4" },
+                )
+            }
+            FilterType.STUDENT -> {
+                require(project != null)
+                listOf(
+                    Student().apply { name = "s1" },
+                    Student().apply { name = "s2" },
+                    Student().apply { name = "s3" },
+                    Student().apply { name = "s4" },
+                )
+            }
+        }
     }
 }

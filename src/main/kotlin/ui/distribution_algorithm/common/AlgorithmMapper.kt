@@ -20,7 +20,7 @@ fun Student.toAlgorithmModel(): AlgorithmStudent {
 fun Project.toAlgorithmModel(groups: List<String>): AlgorithmProject {
     return AlgorithmProject(
         id = this.id,
-        title = this.title,
+        title = this.name,
         places = this.places,
         freePlaces = this.places,
         groups = groups,

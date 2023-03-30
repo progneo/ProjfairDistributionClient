@@ -39,7 +39,7 @@ fun ProjectDetailsScreen(
         Row(modifier = Modifier.padding(16.dp)) {
             BackButton(navController = navController)
             Spacer(modifier = Modifier.size(16.dp))
-            TitleField(title = project.title)
+            TitleField(title = project.name)
         }
         ExposedDropdownMenuWithChips(
             modifier = Modifier.width(300.dp),

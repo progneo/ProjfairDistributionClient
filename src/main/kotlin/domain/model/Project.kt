@@ -4,10 +4,11 @@ import com.google.gson.annotations.SerializedName
 import domain.model.base.Entity
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
+import ui.filter.FilterEntity
 
 open class Project(
     @PrimaryKey override var id: Int,
-    var title: String,
+    @SerializedName("title") override var name: String,
     var places: Int,
     var freePlaces: Int = places,
     var goal: String?,
@@ -20,7 +21,7 @@ open class Project(
     @SerializedName("study_result") var studyResult: String,
     @SerializedName("supervisorsNames") var supervisors: String,
     //val department: Department?,
-) : Entity(), RealmObject {
+) : Entity(), RealmObject, FilterEntity {
 
     constructor() : this(
         0,
@@ -42,7 +43,7 @@ open class Project(
     override fun members(): List<Any?> {
         return listOf(
             id,
-            title,
+            name,
             places,
             freePlaces,
             goal,

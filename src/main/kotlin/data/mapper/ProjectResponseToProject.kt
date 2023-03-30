@@ -6,7 +6,7 @@ import domain.model.Project
 fun projectResponseToProject(project: ProjectResponse): Project {
     return Project(
         id = project.id,
-        title = project.title,
+        name = project.title,
         places = project.places,
         freePlaces = project.places,
         goal = project.goal,
