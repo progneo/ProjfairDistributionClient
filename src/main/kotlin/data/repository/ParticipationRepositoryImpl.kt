@@ -2,7 +2,7 @@ package data.repository
 
 import data.local.dao.ParticipationDao
 import data.mapper.participationResponseToParticipation
-import data.remote.api.AdminProjectFairApi
+import data.remote.api.OrdinaryProjectFairApi
 import domain.model.Participation
 import domain.repository.ParticipationRepository
 import io.realm.kotlin.notifications.ResultsChange
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class ParticipationRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val participationDao: ParticipationDao,
-    private val adminProjectFairApi: AdminProjectFairApi,
+    private val ordinaryProjectFairApi: OrdinaryProjectFairApi,
 ) : ParticipationRepository {
 
     override val downloadFlow = MutableStateFlow<Float>(0f)
@@ -51,7 +51,7 @@ class ParticipationRepositoryImpl @Inject constructor(
 
     override suspend fun uploadParticipations() {
         withContext(ioDispatcher) {
-            val participations = adminProjectFairApi.getParticipations()
+            val participations = ordinaryProjectFairApi.getParticipations().data
             val oldParticipations = participationDao.getAll<Participation>().first().list
             val oldMap = mutableMapOf<Int, Participation>()
             oldParticipations.forEach {

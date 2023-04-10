@@ -6,7 +6,6 @@ import data.local.dao.InstituteDao
 import data.local.dao.ParticipationDao
 import data.local.dao.ProjectDao
 import data.local.dao.StudentDao
-import data.remote.api.AdminProjectFairApi
 import data.remote.api.OrdinaryProjectFairApi
 import data.repository.*
 import domain.repository.*
@@ -68,12 +67,12 @@ interface RepositoryModule {
         fun provideParticipationRepository(
             ioDispatcher: CoroutineDispatcher,
             participationDao: ParticipationDao,
-            adminProjectFairApi: AdminProjectFairApi,
+            ordinaryProjectFairApi: OrdinaryProjectFairApi,
         ): ParticipationRepository {
             return ParticipationRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 participationDao = participationDao,
-                adminProjectFairApi = adminProjectFairApi
+                ordinaryProjectFairApi = ordinaryProjectFairApi
             )
         }
 

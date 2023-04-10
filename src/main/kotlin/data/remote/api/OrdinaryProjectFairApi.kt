@@ -1,10 +1,7 @@
 package data.remote.api
 
-import data.dto.InstituteResponse
-import data.dto.ProjectsResponse
-import data.dto.StudentResponse
+import data.dto.*
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 interface OrdinaryProjectFairApi {
     @GET("institutes")
@@ -18,8 +15,11 @@ interface OrdinaryProjectFairApi {
 //        @Query ("pageSize") pageSize: String = "max"
 //    ): List<ProjectResponse>
 
-    @GET("projects/filter")
+    @GET("projects/filter?pageSize=max&state=[2]")
     suspend fun getProjects(
         //@Query ("pageSize") pageSize: String = "max"
     ): ProjectsResponse
+
+    @GET("participations/filter?state=[2]&pageSize=max")
+    suspend fun getParticipations(): ParticipationsResponse
 }
