@@ -12,14 +12,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import common.compose.rememberForeverLazyListState
+import common.theme.BlueMainDark
 import common.theme.BlueMainLight
 import common.theme.GrayLight
 import domain.model.Department
@@ -60,6 +64,8 @@ fun ChooseParticipationTableItem(
 @Composable
 fun ChooseParticipationTableHead(
     modifier: Modifier = Modifier,
+    currentText: String,
+    onBackClicked: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -67,11 +73,22 @@ fun ChooseParticipationTableHead(
             .background(GrayLight)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
+        Button(
+            onClick = { onBackClicked() },
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = null,
+                tint = BlueMainDark
+            )
+        }
+        Spacer(Modifier.size(16.dp))
         Text(
-            text = "Текущий элемент",
+            text = currentText,
             modifier = Modifier
-                .fillMaxWidth(0.6f)
                 .wrapContentWidth()
+                .align(Alignment.CenterVertically)
         )
     }
     Divider(thickness = 2.dp)
@@ -83,6 +100,23 @@ fun ChooseParticipationTable(
     filterNode: FilterNode,
     previewViewModel: PreviewViewModel,
 ) {
+    val filterStack by remember { mutableStateOf(ArrayDeque<FilterNode>().apply {
+        add(filterNode)
+    }) }
+
+    var currentItems by remember { mutableStateOf(previewViewModel.getValuesByType(filterStack.last().type)) }
+    var currentFilterTitle by remember { mutableStateOf(filterNode.type.title) }
+
+    val scrollState = rememberForeverLazyListState(KEY)
+    val coroutineScope = rememberCoroutineScope()
+
+    val filterTypeOrder = listOf<FilterType>(
+        FilterType.INSTITUTE,
+        FilterType.DEPARTMENT,
+        FilterType.PROJECT,
+        FilterType.STUDENT,
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -92,24 +126,23 @@ fun ChooseParticipationTable(
             )
     ) {
         ChooseParticipationTableHead(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            currentText = currentFilterTitle,
+            onBackClicked = {
+                println("back clicked")
+                if (filterStack.last().selectedValue != null) {
+                    filterStack.removeLast()
+                    val filterValue = filterStack.last().selectedValue
+                    currentItems = previewViewModel.getValuesByType(
+                        filterType = filterStack.last().type,
+                        institute = filterValue as? Institute,
+                        department = filterValue as? Department,
+                        project = filterValue as? Project
+                    )
+                    currentFilterTitle = filterStack.last().type.title
+                }
+            }
         )
-
-        val scrollState = rememberForeverLazyListState(KEY)
-        val coroutineScope = rememberCoroutineScope()
-
-        val filterTypeOrder = listOf<FilterType>(
-            FilterType.INSTITUTE,
-            FilterType.DEPARTMENT,
-            FilterType.PROJECT,
-            FilterType.STUDENT,
-        )
-
-        val filterStack = ArrayDeque<FilterNode>()
-        filterStack.addLast(filterNode)
-
-//        var currentFilterNode by remember { mutableStateOf(filterNode) }
-        var currentItems by remember { mutableStateOf(previewViewModel.getValuesByType(filterStack.last().type)) }
 
         LazyColumn(
             state = scrollState,
@@ -143,14 +176,13 @@ fun ChooseParticipationTable(
                                 }
                             )
                             filterStack.addLast(newFilterNode)
-                            println(filterStack)
-                            println(filterStack.last().type)
                             currentItems = previewViewModel.getValuesByType(
                                 filterType = filterStack.last().type,
                                 institute = clickedFilter as? Institute,
                                 department = clickedFilter as? Department,
                                 project = clickedFilter as? Project
                             )
+                            currentFilterTitle = filterStack.last().type.title
                         } else {
                             println((clickedFilter as Student).name)
                         }
