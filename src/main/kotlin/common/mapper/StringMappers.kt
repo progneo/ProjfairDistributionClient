@@ -11,12 +11,17 @@ fun String.toShortName(): String {
 }
 
 fun String.toShortInstitute(): String {
-    val name = this.split(" ")
+    val name = this
+        .replace("\"", "")
+        .split(" ")
 
     if (name.size == 1) return this
 
+    println("\"$this\"")
+
     var shortName = ""
     (0..name.lastIndex).forEach {
+        if (name[it].isEmpty()) return@forEach
         shortName += name[it][0].uppercase()
     }
 

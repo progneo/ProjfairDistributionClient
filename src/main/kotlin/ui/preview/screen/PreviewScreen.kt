@@ -9,8 +9,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
-import domain.model.Department
-import domain.model.Institute
 import navigation.NavController
 import ui.filter.FilterConfigurationBlock
 import ui.preview.viewmodel.PreviewViewModel
@@ -41,53 +39,25 @@ fun PreviewScreen(
 
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
+    val institutes = previewViewModel.institutes.collectAsState()
+    val departments = previewViewModel.departments.collectAsState()
 
-    val studentsToDisplay by remember { mutableStateOf(students) }
-
-    var projectFilterConfiguration by remember {
-        mutableStateOf(
-            InstituteFilterConfiguration(
-                institutes = listOf(
-                    Institute(id = 0, name = "Институт информационных технологий и анализа данных"),
-                    Institute(
-                        id = 1,
-                        name = "Институт информационных технологий и анализа данныхИнститут информационных технологий и анализа данных"
-                    ),
-                    Institute(id = 2, name = "third"),
-                    Institute(id = 3, name = "fourth")
-                ),
-                departments = listOf(
-                    Department(id = 0, name = "first"),
-                    Department(id = 1, name = "second"),
-                    Department(id = 2, name = "third")
-                )
-            )
+    var projectFilterConfiguration =
+        InstituteFilterConfiguration(
+            institutes = institutes.value,
+            departments = departments.value
         )
-    }
 
-    var studentFilterConfiguration by remember {
-        mutableStateOf(
-            InstituteFilterConfiguration(
-                institutes = listOf(
-                    Institute(id = 0, name = "Институт информационных технологий и анализа данных"),
-                    Institute(
-                        id = 1,
-                        name = "Институт информационных технологий и анализа данныхИнститут информационных технологий и анализа данных"
-                    ),
-                    Institute(id = 2, name = "third"),
-                    Institute(id = 3, name = "fourth")
-                ),
-                departments = listOf(
-                    Department(id = 0, name = "first"),
-                    Department(id = 1, name = "second"),
-                    Department(id = 2, name = "third")
-                )
-            )
+    var studentFilterConfiguration =
+        InstituteFilterConfiguration(
+            institutes = institutes.value,
+            departments = departments.value
         )
-    }
 
     val filterConfiguration: InstituteFilterConfiguration =
         if (previewTabPage == Students) studentFilterConfiguration else projectFilterConfiguration
+
+    var filterConfigurationState by remember { mutableStateOf(filterConfiguration) }
 
     previewViewModel.filterProjects(projectFilterConfiguration)
 
@@ -126,7 +96,7 @@ fun PreviewScreen(
                     }
 
                     FilterConfigurationBlock(
-                        filterConfiguration
+                        filterConfigurationState
                     ) {
                         showFilter = true
                     }
@@ -139,10 +109,11 @@ fun PreviewScreen(
                 Spacer(Modifier.size(16.dp))
                 StudentTable(
                     modifier = Modifier.padding(24.dp),
-                    students = studentsToDisplay.value,
+                    students = students.value,
                     previewViewModel,
                     navController
                 )
+                filterConfigurationState = studentFilterConfiguration
             }
 
             Projects -> {
@@ -152,6 +123,7 @@ fun PreviewScreen(
                     previewViewModel,
                     navController
                 )
+                filterConfigurationState = projectFilterConfiguration
             }
         }
 
@@ -162,10 +134,13 @@ fun PreviewScreen(
                 when (previewTabPage) {
                     Students -> {
                         studentFilterConfiguration = filterConfig
+                        filterConfigurationState = studentFilterConfiguration
                     }
 
                     Projects -> {
                         projectFilterConfiguration = filterConfig
+                        filterConfigurationState = projectFilterConfiguration
+                        previewViewModel.filterProjects(projectFilterConfiguration)
                     }
                 }
             },

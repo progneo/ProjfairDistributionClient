@@ -265,7 +265,7 @@ fun <T : FilterEntity> ExposedTypedDropdownMenu(
                 .padding(12.dp)
         ) {
             Text(
-                text = AnnotatedString(if (isEnabled) changeableTitle.toShortName() else ""),
+                text = AnnotatedString(if (isEnabled) changeableTitle else ""),
                 modifier = Modifier.fillMaxWidth(0.9f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -297,7 +297,7 @@ fun <T : FilterEntity> ExposedTypedDropdownMenu(
                             if (isTitleChangeable) changeableTitle = item
                         }
                     ) {
-                        Text(text = item.toShortName())
+                        Text(text = item)
                     }
                 }
             }

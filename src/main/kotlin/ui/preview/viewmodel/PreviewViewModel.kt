@@ -10,6 +10,7 @@ import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.student.GetStudentsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ui.filter.FilterEntity
 import ui.filter.FilterType
@@ -44,6 +45,8 @@ class PreviewViewModel constructor(
     private val _participations = MutableStateFlow<List<Participation>>(emptyList())
     private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
     private val _departments = MutableStateFlow<List<Department>>(emptyList())
+    val departments = _departments.asStateFlow()
+    val institutes = _institutes.asStateFlow()
 
     val filteredProjects = MutableStateFlow<List<Project>>(emptyList())
 

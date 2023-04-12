@@ -11,18 +11,15 @@ object ProjectFilterApplier {
         institute: Institute?,
         department: Department?
     ): List<Project> {
+        println(institute?.name)
         if (institute == null) return projects
         else if (department == null) {
             return projects.filter { proj ->
-                //TODO: add institute filter
-                1==1
-                //proj.department?.institute?.id == institute.id
+                proj.department?.institute?.id == institute.id
             }
         }
         return projects.filter { proj->
-            //TODO: add department filter
-            1==1
-            //proj.department?.id == department.id
+            proj.department?.id == department.id
         }
     }
 }

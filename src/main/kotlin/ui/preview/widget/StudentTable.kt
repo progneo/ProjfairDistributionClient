@@ -165,8 +165,7 @@ fun StudentTable(
                 showPopUp = false
             },
             onProjectLinkClicked = { projectId ->
-                //TODO: change opened project id to real
-                val project = previewViewModel.getProjectById(532)
+                val project = previewViewModel.getProjectById(projectId)
 
                 if (project != null) {
                     val bundle = Bundle().apply {
