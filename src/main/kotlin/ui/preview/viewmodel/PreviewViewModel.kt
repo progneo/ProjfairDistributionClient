@@ -211,16 +211,20 @@ class PreviewViewModel constructor(
             FilterType.PROJECT -> {
                 require(department != null)
                 _projects.value.filter { proj ->
-                    true
-                    //proj.department != null && proj.department.id == department.id
+                    proj.department != null && proj.department!!.id == department.id
                 }
             }
 
             FilterType.STUDENT -> {
                 require(project != null)
-                _studentsWithParticipations.value.filter { stud ->
-                    _participations.value.find { part -> part.studentId == stud.id } != null
+                val studentsParticipations = _participations.value.filter { part ->
+                    part.projectId == project.id
                 }
+                val resultStudents = mutableListOf<Student>()
+                studentsParticipations.forEach { studPart ->
+                    resultStudents.add(_students.value.find { stud -> stud.id == studPart.studentId }!!)
+                }
+                resultStudents
             }
         }
     }
