@@ -203,6 +203,7 @@ class PreviewViewModel constructor(
             FilterType.INSTITUTE -> {
                 _institutes.value
             }
+
             FilterType.DEPARTMENT -> {
                 require(institute != null)
                 _departments.value.filter { it.institute == institute }
@@ -219,11 +220,23 @@ class PreviewViewModel constructor(
                 require(project != null)
                 val studentsParticipations = _participations.value.filter { part ->
                     part.projectId == project.id
-                }
+                }.map { part ->
+                    part.studentId
+                }.sorted()
+
+                if (studentsParticipations.isEmpty()) return emptyList()
+
                 val resultStudents = mutableListOf<Student>()
-                studentsParticipations.forEach { studPart ->
-                    resultStudents.add(_students.value.find { stud -> stud.id == studPart.studentId }!!)
+                var idIndex = 0
+
+                for (stud in _students.value) {
+                    if (studentsParticipations[idIndex] == stud.id) {
+                        resultStudents.add(stud)
+                        idIndex++
+                        if (idIndex > studentsParticipations.lastIndex) break
+                    }
                 }
+
                 resultStudents
             }
         }
