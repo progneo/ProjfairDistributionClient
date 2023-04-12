@@ -3,6 +3,8 @@ package ui.preview.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import base.mvi.BaseViewModel
 import domain.model.*
+import domain.usecase.department.GetDepartmentsUseCase
+import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.student.GetStudentsUseCase
@@ -22,6 +24,8 @@ class PreviewViewModel constructor(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val getParticipationsUseCase: GetParticipationsUseCase,
+    private val getInstitutesUseCase: GetInstitutesUseCase,
+    private val getDepartmentsUseCase: GetDepartmentsUseCase,
 ) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     override fun createInitialState(): PreviewContract.ScreenState {
@@ -38,8 +42,8 @@ class PreviewViewModel constructor(
     private val _students = MutableStateFlow<List<Student>>(emptyList())
     private val _projects = MutableStateFlow<List<Project>>(emptyList())
     private val _participations = MutableStateFlow<List<Participation>>(emptyList())
-    val institutes = MutableStateFlow<List<Institute>>(emptyList())
-    val departments = MutableStateFlow<List<Department>>(emptyList())
+    private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
+    private val _departments = MutableStateFlow<List<Department>>(emptyList())
 
     val filteredProjects = MutableStateFlow<List<Project>>(emptyList())
 
@@ -54,6 +58,8 @@ class PreviewViewModel constructor(
         getStudents()
         getProjects()
         getParticipations()
+        getInstitutes()
+        getDepartments()
     }
 
     fun getFilteredStudents(studentsTabPage: StudentsTabPage): StateFlow<List<Student>> {
@@ -61,6 +67,7 @@ class PreviewViewModel constructor(
             StudentsTabPage.Enrolled -> {
                 _studentsWithParticipations
             }
+
             StudentsTabPage.Uncounted -> {
                 _studentsWithoutParticipations
             }
@@ -80,6 +87,22 @@ class PreviewViewModel constructor(
         coroutineScope.launch {
             getProjectsUseCase().collect {
                 _projects.value = it.list
+            }
+        }
+    }
+
+    private fun getDepartments() {
+        coroutineScope.launch {
+            getDepartmentsUseCase().collect {
+                _departments.value = it.list
+            }
+        }
+    }
+
+    private fun getInstitutes() {
+        coroutineScope.launch {
+            getInstitutesUseCase().collect {
+                _institutes.value = it.list
             }
         }
     }
@@ -174,36 +197,30 @@ class PreviewViewModel constructor(
         filterType: FilterType,
         institute: Institute? = null,
         department: Department? = null,
-        project: Project? = null
+        project: Project? = null,
     ): List<FilterEntity> {
-        return when(filterType) {
-            FilterType.INSTITUTE -> listOf(Institute(0, "i1"), Institute(1, "i2"))
+        return when (filterType) {
+            FilterType.INSTITUTE -> {
+                _institutes.value
+            }
             FilterType.DEPARTMENT -> {
                 require(institute != null)
-                listOf(
-                    Department(0, "d1", institute = Institute(0, "i1")),
-                    Department(1, "d2", institute = Institute(0, "i1")),
-                    Department(2, "d3", institute = Institute(1, "i2")),
-                    Department(3, "d4", institute = Institute(1, "i2")),
-                ).filter { it.institute == institute }
+                _departments.value.filter { it.institute == institute }
             }
+
             FilterType.PROJECT -> {
                 require(department != null)
-                listOf(
-                    Project().apply { name = "p1" },
-                    Project().apply { name = "p2" },
-                    Project().apply { name = "p3" },
-                    Project().apply { name = "p4" },
-                )
+                _projects.value.filter { proj ->
+                    true
+                    //proj.department != null && proj.department.id == department.id
+                }
             }
+
             FilterType.STUDENT -> {
                 require(project != null)
-                listOf(
-                    Student().apply { name = "s1" },
-                    Student().apply { name = "s2" },
-                    Student().apply { name = "s3" },
-                    Student().apply { name = "s4" },
-                )
+                _studentsWithParticipations.value.filter { stud ->
+                    _participations.value.find { part -> part.studentId == stud.id } != null
+                }
             }
         }
     }

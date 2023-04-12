@@ -7,12 +7,13 @@ import io.realm.kotlin.types.annotations.PrimaryKey
 open class Specialty(
     @PrimaryKey override var id: Int,
     var name: String,
+    var institute: Institute? = null,
     var department: Department? = null
 ): Entity(), RealmObject {
 
-    constructor() : this(0, "", null)
+    constructor() : this(0, "", null, null)
 
     override fun members(): List<Any?> {
-        return listOf(id, name, department)
+        return listOf(id, name, institute, department)
     }
 }

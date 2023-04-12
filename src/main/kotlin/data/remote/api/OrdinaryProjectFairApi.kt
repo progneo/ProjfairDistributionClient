@@ -10,15 +10,8 @@ interface OrdinaryProjectFairApi {
     @GET("candidates")
     suspend fun getCandidates(): List<StudentResponse>
 
-//    @GET("projects/filter")
-//    suspend fun getProjects(
-//        @Query ("pageSize") pageSize: String = "max"
-//    ): List<ProjectResponse>
-
-    @GET("projects/filter?pageSize=max&state=[2]")
-    suspend fun getProjects(
-        //@Query ("pageSize") pageSize: String = "max"
-    ): ProjectsResponse
+    @GET("projects/filter?state=[2]&pageSize=max")
+    suspend fun getProjects(): ProjectsResponse
 
     @GET("participations/filter?state=[2]&pageSize=max")
     suspend fun getParticipations(): ParticipationsResponse

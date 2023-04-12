@@ -11,16 +11,16 @@ open class Project(
     @SerializedName("title") override var name: String,
     var places: Int,
     var freePlaces: Int = places,
-    var goal: String?,
+    var goal: String,
     var difficulty: Int,
-    var description: String?,
+    var description: String,
     @SerializedName("date_start") var dateStart: String,
     @SerializedName("date_end") var dateEnd: String,
-    var customer: String?,
+    var customer: String,
     @SerializedName("product_result") var productResult: String,
     @SerializedName("study_result") var studyResult: String,
     @SerializedName("supervisorsNames") var supervisors: String,
-    //val department: Department?,
+    var department: Department? = null,
 ) : Entity(), RealmObject, FilterEntity {
 
     constructor() : this(
@@ -28,16 +28,16 @@ open class Project(
         "",
         0,
         0,
-        null,
+        "",
         0,
-        null,
-        "",
-        "",
-        null,
         "",
         "",
         "",
-        //null
+        "",
+        "",
+        "",
+        "",
+        null
     )
 
     override fun members(): List<Any?> {
@@ -54,7 +54,8 @@ open class Project(
             customer,
             productResult,
             studyResult,
-            supervisors
+            supervisors,
+            department
         )
     }
 }

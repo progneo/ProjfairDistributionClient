@@ -2,10 +2,8 @@ package di
 
 import dagger.Module
 import dagger.Provides
-import data.local.dao.InstituteDao
-import data.local.dao.ParticipationDao
-import data.local.dao.ProjectDao
-import data.local.dao.StudentDao
+import data.local.dao.*
+import data.remote.api.AdminProjectFairApi
 import data.remote.api.OrdinaryProjectFairApi
 import data.repository.*
 import domain.repository.*
@@ -86,6 +84,36 @@ interface RepositoryModule {
             return InstituteRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 instituteDao = instituteDao,
+                projectFairApi = projectFairApi
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideDepartmentRepository(
+            ioDispatcher: CoroutineDispatcher,
+            departmentDao: DepartmentDao,
+            projectFairApi: OrdinaryProjectFairApi,
+            adminProjectFairApi: AdminProjectFairApi
+        ): DepartmentRepository {
+            return DepartmentRepositoryImpl(
+                ioDispatcher = ioDispatcher,
+                departmentDao = departmentDao,
+                projectFairApi = projectFairApi,
+                adminProjectFairApi = adminProjectFairApi
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideSpecialtyRepository(
+            ioDispatcher: CoroutineDispatcher,
+            specialtyDao: SpecialtyDao,
+            projectFairApi: OrdinaryProjectFairApi
+        ): SpecialtyRepository {
+            return SpecialtyRepositoryImpl(
+                ioDispatcher = ioDispatcher,
+                specialtyDao = specialtyDao,
                 projectFairApi = projectFairApi
             )
         }

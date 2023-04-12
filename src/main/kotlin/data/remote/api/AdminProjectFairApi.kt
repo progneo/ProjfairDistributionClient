@@ -1,10 +1,10 @@
 package data.remote.api
 
-import data.dto.ParticipationResponse
+import domain.model.Department
 import retrofit2.http.GET
 
 interface AdminProjectFairApi {
 
-    @GET("participations")
-    suspend fun getParticipations(): List<ParticipationResponse>
+    @GET("/departments")
+    suspend fun getDepartments(): List<Department>
 }

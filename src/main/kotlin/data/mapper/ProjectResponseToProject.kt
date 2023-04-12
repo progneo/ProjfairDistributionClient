@@ -9,15 +9,21 @@ fun projectResponseToProject(project: ProjectResponse): Project {
         name = project.title,
         places = project.places,
         freePlaces = project.places,
-        goal = project.goal,
+        goal = project.goal ?: "",
         difficulty = project.difficulty,
-        description = project.description,
+        description = project.description ?: "",
         dateStart = project.dateStart,
         dateEnd = project.dateEnd,
-        customer = project.customer,
+        customer = project.customer ?: "",
         productResult = project.productResult,
         studyResult = project.studyResult,
         supervisors = project.supervisors,
-        //department = Department(0, "name", Institute(id = 0, name = "name"))
+        department = departmentResponseToDepartment(
+            try {
+                project.specialities[0].department
+            } catch (e: IndexOutOfBoundsException) {
+                null
+            }
+        )
     )
 }

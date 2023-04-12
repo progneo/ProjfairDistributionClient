@@ -15,7 +15,6 @@ data class ProjectResponse(
     @SerializedName("product_result") val productResult: String,
     @SerializedName("study_result") val studyResult: String,
     @SerializedName("supervisorsNames") val supervisors: String,
-    val stateResponse: StateResponse,
+    val state: StateResponse,
     val specialities: List<SpecialtyResponse>,
-    //val department: Department? = null
 )

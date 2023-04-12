@@ -3,6 +3,8 @@ package di
 import dagger.Module
 import dagger.Provides
 import domain.interactor.DownloadProgressInteractor
+import domain.usecase.department.GetDepartmentsUseCase
+import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.student.GetStudentsUseCase
@@ -35,12 +37,17 @@ interface ViewModelModule {
         fun providePreviewViewModel(
             getStudentsUseCase: GetStudentsUseCase,
             getProjectsUseCase: GetProjectsUseCase,
-            getParticipationsUseCase: GetParticipationsUseCase
+            getParticipationsUseCase: GetParticipationsUseCase,
+            getInstitutesUseCase: GetInstitutesUseCase,
+            getDepartmentsUseCase: GetDepartmentsUseCase
+
         ): PreviewViewModel {
             return PreviewViewModel(
                 getStudentsUseCase = getStudentsUseCase,
                 getProjectsUseCase = getProjectsUseCase,
-                getParticipationsUseCase = getParticipationsUseCase
+                getParticipationsUseCase = getParticipationsUseCase,
+                getInstitutesUseCase = getInstitutesUseCase,
+                getDepartmentsUseCase = getDepartmentsUseCase
             )
         }
     }
