@@ -22,13 +22,15 @@ interface RepositoryModule {
             projectRepository: ProjectRepository,
             participationRepository: ParticipationRepository,
             instituteRepository: InstituteRepository,
+            departmentRepository: DepartmentRepository,
         ): UploadDataRepository {
             return UploadDataRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 studentRepository = studentRepository,
                 projectRepository = projectRepository,
                 participationRepository = participationRepository,
-                instituteRepository = instituteRepository
+                instituteRepository = instituteRepository,
+                departmentRepository = departmentRepository,
             )
         }
 

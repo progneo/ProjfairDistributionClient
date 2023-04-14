@@ -11,4 +11,5 @@ class DownloadProgressInteractor @Inject constructor(
     val projectsDownloadFlow = uploadDataRepository.projectsDownloadFlow
     val participationsDownloadFlow = uploadDataRepository.participationsDownloadFlow
     val institutesDownloadFlow = uploadDataRepository.institutesDownloadFlow
+    val departmentsDownloadFlow = uploadDataRepository.departmentsDownloadFlow
 }

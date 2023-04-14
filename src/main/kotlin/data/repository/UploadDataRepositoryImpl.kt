@@ -13,12 +13,14 @@ class UploadDataRepositoryImpl @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val participationRepository: ParticipationRepository,
     private val instituteRepository: InstituteRepository,
+    private val departmentRepository: DepartmentRepository,
 ): UploadDataRepository {
 
     override val studentsDownloadFlow = studentRepository.downloadFlow
     override val projectsDownloadFlow = projectRepository.downloadFlow
     override val participationsDownloadFlow = participationRepository.downloadFlow
     override val institutesDownloadFlow = instituteRepository.downloadFlow
+    override val departmentsDownloadFlow = departmentRepository.downloadFlow
 
     override suspend fun syncData(): Boolean {
         return withContext(ioDispatcher) {
@@ -27,6 +29,7 @@ class UploadDataRepositoryImpl @Inject constructor(
                 projectRepository.uploadProjects()
                 participationRepository.uploadParticipations()
                 instituteRepository.uploadInstitutes()
+                departmentRepository.uploadDepartments()
 
                 true
             } catch (e: Exception) {

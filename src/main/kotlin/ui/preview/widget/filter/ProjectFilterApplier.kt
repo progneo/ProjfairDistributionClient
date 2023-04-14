@@ -11,7 +11,7 @@ object ProjectFilterApplier {
         institute: Institute?,
         department: Department?
     ): List<Project> {
-        println(institute?.name)
+        println(department)
         if (institute == null) return projects
         else if (department == null) {
             return projects.filter { proj ->
@@ -19,6 +19,7 @@ object ProjectFilterApplier {
             }
         }
         return projects.filter { proj->
+            if (proj.department?.id == department.id) println("${proj.department?.id} == ${department.id}")
             proj.department?.id == department.id
         }
     }

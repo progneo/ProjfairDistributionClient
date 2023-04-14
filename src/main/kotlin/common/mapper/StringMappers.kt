@@ -17,8 +17,6 @@ fun String.toShortInstitute(): String {
 
     if (name.size == 1) return this
 
-    println("\"$this\"")
-
     var shortName = ""
     (0..name.lastIndex).forEach {
         if (name[it].isEmpty()) return@forEach

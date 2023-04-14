@@ -11,6 +11,7 @@ import common.compose.RadioButtonGroupRow
 import common.compose.Title
 import navigation.NavController
 import ui.filter.FilterConfigurationBlock
+import ui.filter.FilterType
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
 import ui.preview.widget.PreviewTabPage.Projects
@@ -40,7 +41,7 @@ fun PreviewScreen(
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
     val institutes = previewViewModel.institutes.collectAsState()
-    val departments = previewViewModel.departments.collectAsState()
+    val departments = previewViewModel.filteredDepartments.collectAsState()
 
     var projectFilterConfiguration =
         InstituteFilterConfiguration(
@@ -130,6 +131,7 @@ fun PreviewScreen(
         ProjectFilterDialog(
             visible = showFilter,
             instituteFilterConfiguration = filterConfiguration,
+            previewViewModel = previewViewModel,
             onApplyClicked = { filterConfig ->
                 when (previewTabPage) {
                     Students -> {
@@ -140,7 +142,8 @@ fun PreviewScreen(
                     Projects -> {
                         projectFilterConfiguration = filterConfig
                         filterConfigurationState = projectFilterConfiguration
-                        previewViewModel.filterProjects(projectFilterConfiguration)
+                        println("BEFORE = ${filterConfig.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity}")
+                        previewViewModel.filterProjects(filterConfigurationState)
                     }
                 }
             },

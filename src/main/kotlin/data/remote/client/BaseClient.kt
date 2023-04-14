@@ -1,5 +1,6 @@
 package data.remote.client
 
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +20,7 @@ abstract class BaseClient {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(getOkHttpClient())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .build()
     }
 }

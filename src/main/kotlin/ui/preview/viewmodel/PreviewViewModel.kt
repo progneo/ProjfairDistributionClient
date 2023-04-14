@@ -45,7 +45,7 @@ class PreviewViewModel constructor(
     private val _participations = MutableStateFlow<List<Participation>>(emptyList())
     private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
     private val _departments = MutableStateFlow<List<Department>>(emptyList())
-    val departments = _departments.asStateFlow()
+    val filteredDepartments = MutableStateFlow<List<Department>>(emptyList())
     val institutes = _institutes.asStateFlow()
 
     val filteredProjects = MutableStateFlow<List<Project>>(emptyList())
@@ -99,6 +99,15 @@ class PreviewViewModel constructor(
             getDepartmentsUseCase().collect {
                 _departments.value = it.list
             }
+        }
+    }
+
+    fun filterDepartments(institute: Institute?): List<Department> {
+        if (institute == null) {
+            return _departments.value
+        }
+        return _departments.value.filter { dep ->
+            dep.institute?.id == institute.id
         }
     }
 
@@ -159,7 +168,7 @@ class PreviewViewModel constructor(
             null
         }
         val department = try {
-            instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.filterEntity as Department
+            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity as Department
         } catch (e: ClassCastException) {
             null
         }
@@ -178,13 +187,15 @@ class PreviewViewModel constructor(
     }
 
     fun filterProjects(instituteFilterConfiguration: InstituteFilterConfiguration) {
+        println("sorting")
         val institute = try {
             instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.filterEntity as Institute
         } catch (e: ClassCastException) {
             null
         }
         val department = try {
-            instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.filterEntity as Department
+            println("TRY = " + instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity)
+            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity as Department
         } catch (e: ClassCastException) {
             null
         }

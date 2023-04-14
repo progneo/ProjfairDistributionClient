@@ -1,6 +1,7 @@
 package data.repository
 
 import data.local.dao.DepartmentDao
+import data.mapper.departmentResponseToDepartment
 import data.remote.api.AdminProjectFairApi
 import data.remote.api.OrdinaryProjectFairApi
 import domain.model.Department
@@ -55,8 +56,10 @@ class DepartmentRepositoryImpl @Inject constructor(
             var current = 0f
             val overall = departments.size
 
+            println("repository size = ${departments.size}")
+
             departments.forEach {
-                insertDepartment(it)
+                insertDepartment(departmentResponseToDepartment(it)!!)
                 downloadFlow.value = ++current / overall
             }
         }

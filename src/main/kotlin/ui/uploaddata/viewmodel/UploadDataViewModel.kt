@@ -19,6 +19,7 @@ class UploadDataViewModel constructor(
     val projectsDownloadFlow = downloadProgressInteractor.projectsDownloadFlow
     val participationsDownloadFlow = downloadProgressInteractor.participationsDownloadFlow
     val institutesDownloadFlow = downloadProgressInteractor.institutesDownloadFlow
+    val departmentsDownloadFlow = downloadProgressInteractor.departmentsDownloadFlow
 
     override fun createInitialState(): UploadDataContract.ScreenState {
         return UploadDataContract.ScreenState.Idle
@@ -95,5 +96,6 @@ enum class DownloadType {
     STUDENTS,
     PROJECTS,
     PARTICIPATIONS,
-    INSTITUTES
+    INSTITUTES,
+    DEPARTMENTS
 }

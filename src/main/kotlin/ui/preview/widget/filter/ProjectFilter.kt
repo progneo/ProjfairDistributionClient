@@ -15,21 +15,21 @@ import common.mapper.toShortInstitute
 import domain.model.Department
 import domain.model.Institute
 import ui.filter.*
+import ui.preview.viewmodel.PreviewViewModel
 
 @Suppress("UNCHECKED_CAST")
 @Composable
 fun ProjectFilterDialog(
     visible: Boolean,
     instituteFilterConfiguration: InstituteFilterConfiguration,
+    previewViewModel: PreviewViewModel,
     onApplyClicked: (InstituteFilterConfiguration) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     var isInstituteSelected: Boolean by remember { mutableStateOf(false) }
     var isReset: Boolean by remember { mutableStateOf(false) }
-    isInstituteSelected = instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue != FilterSelectedType.All
-
-    val instituteFilterMap = mutableStateMapOf<FilterType, FilterValue<FilterEntity>>()
-    instituteFilterMap.putAll(instituteFilterConfiguration.filters)
+    isInstituteSelected =
+        instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue != FilterSelectedType.All
 
     FilterDialog(
         visible = visible,
@@ -37,16 +37,25 @@ fun ProjectFilterDialog(
             Column {
                 ProjectFilterDropdownItem<Institute>(
                     filterType = FilterType.INSTITUTE,
-                    filterValue = instituteFilterMap[FilterType.INSTITUTE]!! as FilterValue<Institute>,
+                    filterValue = instituteFilterConfiguration.filters[FilterType.INSTITUTE]!! as FilterValue<Institute>,
                     isEnabled = true,
                     isReset = isReset,
                 ) { index, itemClicked ->
-                    instituteFilterMap[FilterType.INSTITUTE]!!
+                    val clickedInstitute =
+                        instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!
+                            .values
+                            .find { filterEntity -> filterEntity.name == itemClicked }!! as Institute
+
+                    instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!
                         .selectedValue =
                         if (index == 0) FilterSelectedType.All
-                        else FilterSelectedType.Selected(
-                            instituteFilterMap[FilterType.INSTITUTE]!!.values.find { filterEntity -> filterEntity.name == itemClicked }!!
-                        )
+                        else FilterSelectedType.Selected(clickedInstitute)
+
+                    instituteFilterConfiguration.filters.remove(FilterType.DEPARTMENT)
+                    instituteFilterConfiguration.filters[FilterType.DEPARTMENT] = FilterValue(
+                        values = listOf(BaseAllFilterEntity()) + previewViewModel.filterDepartments(clickedInstitute),
+                        selectedValue = FilterSelectedType.All
+                    )
 
                     isInstituteSelected = index != 0
                     isReset = false
@@ -54,15 +63,17 @@ fun ProjectFilterDialog(
                 Spacer(Modifier.size(32.dp))
                 ProjectFilterDropdownItem<Department>(
                     filterType = FilterType.DEPARTMENT,
-                    filterValue = instituteFilterMap[FilterType.DEPARTMENT]!! as FilterValue<Department>,
+                    filterValue = instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!! as FilterValue<Department>,
                     isEnabled = isInstituteSelected,
                     isReset = isReset,
                 ) { index, itemClicked ->
-                    instituteFilterMap[FilterType.DEPARTMENT]!!
+                    instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!
                         .selectedValue =
                         if (index == 0) FilterSelectedType.All
                         else FilterSelectedType.Selected(
-                            instituteFilterMap[FilterType.DEPARTMENT]!!.values.find { filterEntity -> filterEntity.name == itemClicked }!!
+                            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.values.find { filterEntity ->
+                                filterEntity.name == itemClicked
+                            }!!
                         )
 
                     isReset = false
@@ -71,14 +82,15 @@ fun ProjectFilterDialog(
         },
         onApplyClicked = {
             if (!isInstituteSelected) {
-                instituteFilterMap[FilterType.DEPARTMENT]!!.selectedValue = FilterSelectedType.All
+                instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue = FilterSelectedType.All
             }
-            onApplyClicked(instituteFilterConfiguration.copy(instituteFilterMap))
+            val newConfig = instituteFilterConfiguration.copy(instituteFilterConfiguration.filters)
+            onApplyClicked(newConfig)
             onDismissRequest()
         },
         onResetFilters = {
-            instituteFilterMap[FilterType.INSTITUTE]!!.selectedValue = FilterSelectedType.All
-            instituteFilterMap[FilterType.DEPARTMENT]!!.selectedValue = FilterSelectedType.All
+            instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue = FilterSelectedType.All
+            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue = FilterSelectedType.All
             isInstituteSelected = false
             isReset = true
         },

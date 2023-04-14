@@ -92,6 +92,7 @@ fun UploadDataScreenView(
         var projectsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.projectsDownloadFlow.value) }
         var participationsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.participationsDownloadFlow.value) }
         var institutesDownloadProgress by remember { mutableStateOf(uploadDataViewModel.institutesDownloadFlow.value) }
+        var departmentsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.departmentsDownloadFlow.value) }
 
         val downloadProgressMap =
             mutableMapOf<DownloadType, Float>(
@@ -99,6 +100,7 @@ fun UploadDataScreenView(
                 DownloadType.PROJECTS to projectsDownloadProgress,
                 DownloadType.PARTICIPATIONS to participationsDownloadProgress,
                 DownloadType.INSTITUTES to institutesDownloadProgress,
+                DownloadType.DEPARTMENTS to departmentsDownloadProgress,
             )
 
         rememberCoroutineScope().launch {
@@ -122,6 +124,12 @@ fun UploadDataScreenView(
         rememberCoroutineScope().launch {
             uploadDataViewModel.institutesDownloadFlow.collect { downloadProgress ->
                 institutesDownloadProgress = downloadProgress
+            }
+        }
+
+        rememberCoroutineScope().launch {
+            uploadDataViewModel.departmentsDownloadFlow.collect { downloadProgress ->
+                departmentsDownloadProgress = downloadProgress
             }
         }
 

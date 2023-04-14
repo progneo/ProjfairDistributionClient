@@ -85,7 +85,6 @@ fun FilterConfigurationBlock(
     instituteFilterConfiguration: InstituteFilterConfiguration,
     onClick: () -> Unit,
 ) {
-    println("changed")
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
