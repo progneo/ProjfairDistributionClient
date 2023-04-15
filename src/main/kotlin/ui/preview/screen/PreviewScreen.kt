@@ -9,9 +9,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
+import domain.model.Department
+import domain.model.Institute
+import kotlinx.coroutines.launch
 import navigation.NavController
 import ui.filter.FilterConfigurationBlock
-import ui.filter.FilterType
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
 import ui.preview.widget.PreviewTabPage.Projects
@@ -26,6 +28,14 @@ fun PreviewScreen(
     navController: NavController,
     previewViewModel: PreviewViewModel,
 ) {
+    previewViewModel.filterDepartments(null)
+
+    rememberCoroutineScope().launch {
+        previewViewModel.filteredDepartments.collect {
+            println("NEW = $it")
+        }
+    }
+
     var previewTabPage by remember { mutableStateOf(previewViewModel.previewTabPage.value) }
     var studentsTabPage by remember { mutableStateOf(Enrolled) }
 
@@ -40,27 +50,23 @@ fun PreviewScreen(
 
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
-    val institutes = previewViewModel.institutes.collectAsState()
-    val departments = previewViewModel.filteredDepartments.collectAsState()
 
     var projectFilterConfiguration =
         InstituteFilterConfiguration(
-            institutes = institutes.value,
-            departments = departments.value
+            selectedInstitute = Institute.Base,
+            selectedDepartment = Department.Base
         )
 
     var studentFilterConfiguration =
         InstituteFilterConfiguration(
-            institutes = institutes.value,
-            departments = departments.value
+            selectedInstitute = Institute.Base,
+            selectedDepartment = Department.Base
         )
 
     val filterConfiguration: InstituteFilterConfiguration =
         if (previewTabPage == Students) studentFilterConfiguration else projectFilterConfiguration
 
     var filterConfigurationState by remember { mutableStateOf(filterConfiguration) }
-
-    previewViewModel.filterProjects(projectFilterConfiguration)
 
     Scaffold(
         topBar = {
@@ -142,7 +148,6 @@ fun PreviewScreen(
                     Projects -> {
                         projectFilterConfiguration = filterConfig
                         filterConfigurationState = projectFilterConfiguration
-                        println("BEFORE = ${filterConfig.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity}")
                         previewViewModel.filterProjects(filterConfigurationState)
                     }
                 }

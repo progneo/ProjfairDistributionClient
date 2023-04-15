@@ -56,8 +56,6 @@ class DepartmentRepositoryImpl @Inject constructor(
             var current = 0f
             val overall = departments.size
 
-            println("repository size = ${departments.size}")
-
             departments.forEach {
                 insertDepartment(departmentResponseToDepartment(it)!!)
                 downloadFlow.value = ++current / overall

@@ -10,7 +10,6 @@ import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.student.GetStudentsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ui.filter.FilterEntity
 import ui.filter.FilterType
@@ -46,7 +45,7 @@ class PreviewViewModel constructor(
     private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
     private val _departments = MutableStateFlow<List<Department>>(emptyList())
     val filteredDepartments = MutableStateFlow<List<Department>>(emptyList())
-    val institutes = _institutes.asStateFlow()
+    val institutes = MutableStateFlow<List<Institute>>(emptyList())
 
     val filteredProjects = MutableStateFlow<List<Project>>(emptyList())
 
@@ -90,6 +89,7 @@ class PreviewViewModel constructor(
         coroutineScope.launch {
             getProjectsUseCase().collect {
                 _projects.value = it.list
+                filteredProjects.value = it.list
             }
         }
     }
@@ -98,15 +98,17 @@ class PreviewViewModel constructor(
         coroutineScope.launch {
             getDepartmentsUseCase().collect {
                 _departments.value = it.list
+                filteredDepartments.value = it.list
             }
         }
     }
 
-    fun filterDepartments(institute: Institute?): List<Department> {
+    fun filterDepartments(institute: Institute?) {
         if (institute == null) {
-            return _departments.value
+            filteredDepartments.value = listOf(Department.Base) + _departments.value
+            return
         }
-        return _departments.value.filter { dep ->
+        filteredDepartments.value = listOf(Department.Base) + _departments.value.filter { dep ->
             dep.institute?.id == institute.id
         }
     }
@@ -115,6 +117,7 @@ class PreviewViewModel constructor(
         coroutineScope.launch {
             getInstitutesUseCase().collect {
                 _institutes.value = it.list
+                institutes.value = listOf(Institute.Base) + it.list
             }
         }
     }
@@ -162,16 +165,13 @@ class PreviewViewModel constructor(
     }
 
     fun filterStudents(instituteFilterConfiguration: InstituteFilterConfiguration) {
-        val institute = try {
-            instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.filterEntity as Institute
-        } catch (e: ClassCastException) {
-            null
-        }
-        val department = try {
-            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity as Department
-        } catch (e: ClassCastException) {
-            null
-        }
+        val institute =
+            if (instituteFilterConfiguration.selectedInstitute is Institute.Base) null
+            else instituteFilterConfiguration.selectedInstitute
+        val department =
+            if (instituteFilterConfiguration.selectedDepartment is Department.Base) null
+            else instituteFilterConfiguration.selectedDepartment
+
         val newStudentsWithParticipations = StudentFilterApplier.applyAndGet(
             students = _studentsWithParticipations.value,
             institute = institute,
@@ -187,18 +187,13 @@ class PreviewViewModel constructor(
     }
 
     fun filterProjects(instituteFilterConfiguration: InstituteFilterConfiguration) {
-        println("sorting")
-        val institute = try {
-            instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue.filterEntity as Institute
-        } catch (e: ClassCastException) {
-            null
-        }
-        val department = try {
-            println("TRY = " + instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity)
-            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue.filterEntity as Department
-        } catch (e: ClassCastException) {
-            null
-        }
+        val institute =
+            if (instituteFilterConfiguration.selectedInstitute is Institute.Base) null
+            else instituteFilterConfiguration.selectedInstitute
+        val department =
+            if (instituteFilterConfiguration.selectedDepartment is Department.Base) null
+            else instituteFilterConfiguration.selectedDepartment
+
         val newProjects = ProjectFilterApplier.applyAndGet(
             projects = _projects.value,
             institute = institute,

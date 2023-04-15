@@ -126,7 +126,17 @@ private fun FilterValueText(
                     fontSize = 18.sp
                 )
             ) {
-                append(instituteFilterConfiguration.filters[filterType]!!.selectedValue.filterEntity.name.toShortInstitute())
+                when (filterType) {
+                    FilterType.INSTITUTE -> {
+                        append(instituteFilterConfiguration.selectedInstitute.name.toShortInstitute())
+                    }
+                    FilterType.DEPARTMENT -> {
+                        append(instituteFilterConfiguration.selectedDepartment.name.toShortInstitute())
+                    }
+                    else -> {
+                        append(instituteFilterConfiguration.selectedInstitute.name.toShortInstitute())
+                    }
+                }
             }
         }
     )

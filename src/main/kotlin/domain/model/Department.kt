@@ -5,7 +5,7 @@ import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import ui.filter.FilterEntity
 
-class Department(
+open class Department(
     @PrimaryKey override var id: Int,
     override var name: String,
     var institute: Institute? = null
@@ -15,5 +15,9 @@ class Department(
 
     override fun members(): List<Any?> {
         return listOf(id, name, institute)
+    }
+
+    object Base: Department() {
+        override var name: String = "Все"
     }
 }

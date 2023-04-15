@@ -1,6 +1,9 @@
 package ui.preview.widget.filter
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,10 +17,11 @@ import common.compose.rememberExposedMenuStateHolder
 import common.mapper.toShortInstitute
 import domain.model.Department
 import domain.model.Institute
-import ui.filter.*
+import ui.filter.FilterDialog
+import ui.filter.FilterEntity
+import ui.filter.FilterType
 import ui.preview.viewmodel.PreviewViewModel
 
-@Suppress("UNCHECKED_CAST")
 @Composable
 fun ProjectFilterDialog(
     visible: Boolean,
@@ -27,9 +31,12 @@ fun ProjectFilterDialog(
     onDismissRequest: () -> Unit,
 ) {
     var isInstituteSelected: Boolean by remember { mutableStateOf(false) }
-    var isReset: Boolean by remember { mutableStateOf(false) }
+    var isInstituteReset: Boolean by remember { mutableStateOf(false) }
+    var isDepartmentReset: Boolean by remember { mutableStateOf(false) }
     isInstituteSelected =
-        instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue != FilterSelectedType.All
+        instituteFilterConfiguration.selectedInstitute != Institute.Base
+
+    val departments = previewViewModel.filteredDepartments.collectAsState()
 
     FilterDialog(
         visible = visible,
@@ -37,62 +44,46 @@ fun ProjectFilterDialog(
             Column {
                 ProjectFilterDropdownItem<Institute>(
                     filterType = FilterType.INSTITUTE,
-                    filterValue = instituteFilterConfiguration.filters[FilterType.INSTITUTE]!! as FilterValue<Institute>,
+                    selectedValue = instituteFilterConfiguration.selectedInstitute,
+                    items = previewViewModel.institutes.value,
                     isEnabled = true,
-                    isReset = isReset,
-                ) { index, itemClicked ->
-                    val clickedInstitute =
-                        instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!
-                            .values
-                            .find { filterEntity -> filterEntity.name == itemClicked }!! as Institute
+                    isReset = isInstituteReset,
+                ) { index, _ ->
+                    instituteFilterConfiguration.selectedInstitute = previewViewModel.institutes.value[index]
 
-                    instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!
-                        .selectedValue =
-                        if (index == 0) FilterSelectedType.All
-                        else FilterSelectedType.Selected(clickedInstitute)
-
-                    instituteFilterConfiguration.filters.remove(FilterType.DEPARTMENT)
-                    instituteFilterConfiguration.filters[FilterType.DEPARTMENT] = FilterValue(
-                        values = listOf(BaseAllFilterEntity()) + previewViewModel.filterDepartments(clickedInstitute),
-                        selectedValue = FilterSelectedType.All
-                    )
+                    previewViewModel.filterDepartments(if (index == 0) null else previewViewModel.institutes.value[index])
 
                     isInstituteSelected = index != 0
-                    isReset = false
+                    isDepartmentReset = true
+                    isInstituteReset = false
                 }
                 Spacer(Modifier.size(32.dp))
                 ProjectFilterDropdownItem<Department>(
                     filterType = FilterType.DEPARTMENT,
-                    filterValue = instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!! as FilterValue<Department>,
+                    selectedValue = instituteFilterConfiguration.selectedDepartment,
+                    items = departments.value,
                     isEnabled = isInstituteSelected,
-                    isReset = isReset,
-                ) { index, itemClicked ->
-                    instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!
-                        .selectedValue =
-                        if (index == 0) FilterSelectedType.All
-                        else FilterSelectedType.Selected(
-                            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.values.find { filterEntity ->
-                                filterEntity.name == itemClicked
-                            }!!
-                        )
+                    isReset = isDepartmentReset,
+                ) { index, _ ->
+                    instituteFilterConfiguration.selectedDepartment = previewViewModel.filteredDepartments.value[index]
 
-                    isReset = false
+                    isDepartmentReset = false
                 }
             }
         },
         onApplyClicked = {
             if (!isInstituteSelected) {
-                instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue = FilterSelectedType.All
+                instituteFilterConfiguration.selectedDepartment = Department.Base
             }
-            val newConfig = instituteFilterConfiguration.copy(instituteFilterConfiguration.filters)
-            onApplyClicked(newConfig)
+            onApplyClicked(instituteFilterConfiguration)
             onDismissRequest()
         },
         onResetFilters = {
-            instituteFilterConfiguration.filters[FilterType.INSTITUTE]!!.selectedValue = FilterSelectedType.All
-            instituteFilterConfiguration.filters[FilterType.DEPARTMENT]!!.selectedValue = FilterSelectedType.All
+            instituteFilterConfiguration.selectedInstitute = Institute.Base
+            instituteFilterConfiguration.selectedDepartment = Department.Base
             isInstituteSelected = false
-            isReset = true
+            isInstituteReset = true
+            isDepartmentReset = true
         },
         onDismissRequest = {
             onDismissRequest()
@@ -103,7 +94,8 @@ fun ProjectFilterDialog(
 @Composable
 private fun <T : FilterEntity> ProjectFilterDropdownItem(
     filterType: FilterType,
-    filterValue: FilterValue<T>,
+    selectedValue: T,
+    items: List<T>,
     isEnabled: Boolean,
     isReset: Boolean,
     onClick: (Int, String) -> Unit,
@@ -121,10 +113,10 @@ private fun <T : FilterEntity> ProjectFilterDropdownItem(
         ExposedTypedDropdownMenu<T>(
             modifier = Modifier
                 .size(width = 400.dp, height = Dp.Unspecified),
-            title = filterValue.selectedValue.filterEntity.name,
+            title = selectedValue.name,
             isTitleChangeable = true,
             stateHolder = stateHolder,
-            items = filterValue.values,
+            items = items,
             isEnabled = isEnabled,
             isReset = isReset,
             toShortName = String::toShortInstitute
@@ -134,40 +126,7 @@ private fun <T : FilterEntity> ProjectFilterDropdownItem(
     }
 }
 
-class InstituteFilterConfiguration(
-    val institutes: List<Institute>,
-    val departments: List<Department>,
-) : FilterConfiguration {
-    override var filters: MutableMap<FilterType, FilterValue<FilterEntity>> = mutableMapOf()
-        private set
-
-    init {
-        if (filters.isEmpty()) {
-            filters = mutableMapOf(
-                FilterType.INSTITUTE to FilterValue(
-                    values = listOf(BaseAllFilterEntity()) + institutes,
-                    selectedValue = FilterSelectedType.All
-                ),
-                FilterType.DEPARTMENT to FilterValue(
-                    values = listOf(BaseAllFilterEntity()) + departments,
-                    selectedValue = FilterSelectedType.All
-                ),
-            )
-        }
-    }
-
-    override fun copy(copyFilters: MutableMap<FilterType, FilterValue<FilterEntity>>?): InstituteFilterConfiguration {
-        val newFilters = copyFilters ?: mutableMapOf()
-
-        this@InstituteFilterConfiguration.filters.forEach { (key, value) ->
-            newFilters[key] = value.copy()
-        }
-
-        return InstituteFilterConfiguration(
-            this.institutes,
-            this.departments
-        ).apply {
-            filters = newFilters
-        }
-    }
-}
+data class InstituteFilterConfiguration(
+    var selectedInstitute: Institute,
+    var selectedDepartment: Department
+)
