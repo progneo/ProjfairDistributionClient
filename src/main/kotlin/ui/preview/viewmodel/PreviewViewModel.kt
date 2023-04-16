@@ -56,6 +56,12 @@ class PreviewViewModel constructor(
 
     var previewTabPage = mutableStateOf(PreviewTabPage.Students)
 
+    val studentFilterConfiguration =
+        MutableStateFlow<InstituteFilterConfiguration>(InstituteFilterConfiguration(Institute.Base, Department.Base))
+
+    val projectFilterConfiguration =
+        MutableStateFlow<InstituteFilterConfiguration>(InstituteFilterConfiguration(Institute.Base, Department.Base))
+
     init {
         getStudents()
         getProjects()

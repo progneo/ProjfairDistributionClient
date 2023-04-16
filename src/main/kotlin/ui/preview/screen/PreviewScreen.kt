@@ -9,9 +9,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
-import domain.model.Department
-import domain.model.Institute
-import kotlinx.coroutines.launch
 import navigation.NavController
 import ui.filter.FilterConfigurationBlock
 import ui.preview.viewmodel.PreviewViewModel
@@ -20,7 +17,6 @@ import ui.preview.widget.PreviewTabPage.Projects
 import ui.preview.widget.PreviewTabPage.Students
 import ui.preview.widget.StudentsTabPage.Enrolled
 import ui.preview.widget.StudentsTabPage.Uncounted
-import ui.preview.widget.filter.InstituteFilterConfiguration
 import ui.preview.widget.filter.ProjectFilterDialog
 
 @Composable
@@ -29,12 +25,6 @@ fun PreviewScreen(
     previewViewModel: PreviewViewModel,
 ) {
     previewViewModel.filterDepartments(null)
-
-    rememberCoroutineScope().launch {
-        previewViewModel.filteredDepartments.collect {
-            println("NEW = $it")
-        }
-    }
 
     var previewTabPage by remember { mutableStateOf(previewViewModel.previewTabPage.value) }
     var studentsTabPage by remember { mutableStateOf(Enrolled) }
@@ -51,22 +41,8 @@ fun PreviewScreen(
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
 
-    var projectFilterConfiguration =
-        InstituteFilterConfiguration(
-            selectedInstitute = Institute.Base,
-            selectedDepartment = Department.Base
-        )
-
-    var studentFilterConfiguration =
-        InstituteFilterConfiguration(
-            selectedInstitute = Institute.Base,
-            selectedDepartment = Department.Base
-        )
-
-    val filterConfiguration: InstituteFilterConfiguration =
-        if (previewTabPage == Students) studentFilterConfiguration else projectFilterConfiguration
-
-    var filterConfigurationState by remember { mutableStateOf(filterConfiguration) }
+    val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
+    val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
 
     Scaffold(
         topBar = {
@@ -102,10 +78,22 @@ fun PreviewScreen(
                         }
                     }
 
-                    FilterConfigurationBlock(
-                        filterConfigurationState
-                    ) {
-                        showFilter = true
+                    when (previewTabPage) {
+                        Students -> {
+                            FilterConfigurationBlock(
+                                studentFilterConfiguration.value
+                            ) {
+                                showFilter = true
+                            }
+                        }
+
+                        Projects -> {
+                            FilterConfigurationBlock(
+                                projectFilterConfiguration.value
+                            ) {
+                                showFilter = true
+                            }
+                        }
                     }
                 }
             }
@@ -120,7 +108,6 @@ fun PreviewScreen(
                     previewViewModel,
                     navController
                 )
-                filterConfigurationState = studentFilterConfiguration
             }
 
             Projects -> {
@@ -130,25 +117,25 @@ fun PreviewScreen(
                     previewViewModel,
                     navController
                 )
-                filterConfigurationState = projectFilterConfiguration
             }
         }
 
         ProjectFilterDialog(
             visible = showFilter,
-            instituteFilterConfiguration = filterConfiguration,
+            instituteFilterConfiguration = when (previewTabPage) {
+                Students -> studentFilterConfiguration.value.copy()
+                Projects -> projectFilterConfiguration.value.copy()
+            },
             previewViewModel = previewViewModel,
             onApplyClicked = { filterConfig ->
                 when (previewTabPage) {
                     Students -> {
-                        studentFilterConfiguration = filterConfig
-                        filterConfigurationState = studentFilterConfiguration
+                        previewViewModel.studentFilterConfiguration.value = filterConfig.copy()
                     }
 
                     Projects -> {
-                        projectFilterConfiguration = filterConfig
-                        filterConfigurationState = projectFilterConfiguration
-                        previewViewModel.filterProjects(filterConfigurationState)
+                        previewViewModel.projectFilterConfiguration.value = filterConfig.copy()
+                        previewViewModel.filterProjects(filterConfig)
                     }
                 }
             },

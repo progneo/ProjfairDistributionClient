@@ -11,7 +11,6 @@ object ProjectFilterApplier {
         institute: Institute?,
         department: Department?
     ): List<Project> {
-        println(department)
         if (institute == null) return projects
         else if (department == null) {
             return projects.filter { proj ->

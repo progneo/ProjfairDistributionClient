@@ -50,6 +50,7 @@ fun ProjectFilterDialog(
                     isReset = isInstituteReset,
                 ) { index, _ ->
                     instituteFilterConfiguration.selectedInstitute = previewViewModel.institutes.value[index]
+                    instituteFilterConfiguration.selectedDepartment = Department.Base
 
                     previewViewModel.filterDepartments(if (index == 0) null else previewViewModel.institutes.value[index])
 
@@ -75,7 +76,7 @@ fun ProjectFilterDialog(
             if (!isInstituteSelected) {
                 instituteFilterConfiguration.selectedDepartment = Department.Base
             }
-            onApplyClicked(instituteFilterConfiguration)
+            onApplyClicked(instituteFilterConfiguration.copy())
             onDismissRequest()
         },
         onResetFilters = {

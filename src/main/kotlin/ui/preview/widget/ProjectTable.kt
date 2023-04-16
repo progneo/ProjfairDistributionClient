@@ -57,7 +57,7 @@ fun ProjectTableItem(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = "institute",
+            text = project.department?.institute?.name ?: "",
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(),

@@ -88,9 +88,9 @@ fun FilterConfigurationBlock(
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        FilterValueText(instituteFilterConfiguration, FilterType.INSTITUTE)
+        FilterValueText(instituteFilterConfiguration.selectedInstitute.name, FilterType.INSTITUTE)
         Spacer(Modifier.size(16.dp))
-        FilterValueText(instituteFilterConfiguration, FilterType.DEPARTMENT)
+        FilterValueText(instituteFilterConfiguration.selectedDepartment.name, FilterType.DEPARTMENT)
         Spacer(Modifier.size(16.dp))
         Button(
             onClick = { onClick() },
@@ -106,7 +106,7 @@ fun FilterConfigurationBlock(
 
 @Composable
 private fun FilterValueText(
-    instituteFilterConfiguration: InstituteFilterConfiguration,
+    text: String,
     filterType: FilterType,
 ) {
     Text(
@@ -128,13 +128,13 @@ private fun FilterValueText(
             ) {
                 when (filterType) {
                     FilterType.INSTITUTE -> {
-                        append(instituteFilterConfiguration.selectedInstitute.name.toShortInstitute())
+                        append(text.toShortInstitute())
                     }
                     FilterType.DEPARTMENT -> {
-                        append(instituteFilterConfiguration.selectedDepartment.name.toShortInstitute())
+                        append(text.toShortInstitute())
                     }
                     else -> {
-                        append(instituteFilterConfiguration.selectedInstitute.name.toShortInstitute())
+                        append(text.toShortInstitute())
                     }
                 }
             }
