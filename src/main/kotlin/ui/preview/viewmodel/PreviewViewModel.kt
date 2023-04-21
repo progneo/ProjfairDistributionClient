@@ -7,6 +7,7 @@ import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +27,7 @@ class PreviewViewModel constructor(
     private val getParticipationsUseCase: GetParticipationsUseCase,
     private val getInstitutesUseCase: GetInstitutesUseCase,
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
+    private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
 ) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     override fun createInitialState(): PreviewContract.ScreenState {
@@ -44,6 +46,7 @@ class PreviewViewModel constructor(
     private val _participations = MutableStateFlow<List<Participation>>(emptyList())
     private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
     private val _departments = MutableStateFlow<List<Department>>(emptyList())
+    private val _specialties = MutableStateFlow<List<Specialty>>(emptyList())
     val filteredDepartments = MutableStateFlow<List<Department>>(emptyList())
     val institutes = MutableStateFlow<List<Institute>>(emptyList())
 
@@ -68,6 +71,7 @@ class PreviewViewModel constructor(
         getParticipations()
         getInstitutes()
         getDepartments()
+        getSpecialties()
     }
 
     fun getFilteredStudents(studentsTabPage: StudentsTabPage): StateFlow<List<Student>> {
@@ -124,6 +128,14 @@ class PreviewViewModel constructor(
             getInstitutesUseCase().collect {
                 _institutes.value = it.list
                 institutes.value = listOf(Institute.Base) + it.list
+            }
+        }
+    }
+
+    private fun getSpecialties() {
+        coroutineScope.launch {
+            getSpecialtiesUseCase().collect {
+                _specialties.value = it.list
             }
         }
     }

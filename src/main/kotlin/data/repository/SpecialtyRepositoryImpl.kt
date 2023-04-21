@@ -1,6 +1,7 @@
 package data.repository
 
 import data.local.dao.SpecialtyDao
+import data.mapper.specialtyResponseToSpecialty
 import data.remote.api.OrdinaryProjectFairApi
 import domain.model.Specialty
 import domain.repository.SpecialtyRepository
@@ -49,14 +50,14 @@ class SpecialtyRepositoryImpl @Inject constructor(
 
     override suspend fun uploadSpecialties() {
         withContext(ioDispatcher) {
-//            val specialties = projectFairApi.getSpecialties()
-//            var current = 0f
-//            val overall = specialties.size
-//
-//            specialties.forEach {
-//                insertSpecialty(it)
-//                downloadFlow.value = ++current / overall
-//            }
+            val specialties = projectFairApi.getSpecialties()
+            var current = 0f
+            val overall = specialties.size
+
+            specialties.forEach {
+                insertSpecialty(specialtyResponseToSpecialty(it)!!)
+                downloadFlow.value = ++current / overall
+            }
         }
     }
 }

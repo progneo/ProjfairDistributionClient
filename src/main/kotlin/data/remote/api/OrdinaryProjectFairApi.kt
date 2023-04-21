@@ -15,4 +15,7 @@ interface OrdinaryProjectFairApi {
 
     @GET("participations/filter?state=[2]&pageSize=max")
     suspend fun getParticipations(): ParticipationsResponse
+
+    @GET("specialities")
+    suspend fun getSpecialties(): List<SpecialtyResponse>
 }
