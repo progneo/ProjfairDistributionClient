@@ -6,6 +6,7 @@ import domain.repository.*
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.student.InsertStudentUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
@@ -69,6 +70,14 @@ interface UseCaseModule {
         fun provideGetInstitutesUseCase(instituteRepository: InstituteRepository): GetInstitutesUseCase {
             return GetInstitutesUseCase(
                 instituteRepository = instituteRepository
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideGetSpecialtiesUseCase(specialtyRepository: SpecialtyRepository): GetSpecialtiesUseCase {
+            return GetSpecialtiesUseCase(
+                specialtyRepository = specialtyRepository
             )
         }
     }
