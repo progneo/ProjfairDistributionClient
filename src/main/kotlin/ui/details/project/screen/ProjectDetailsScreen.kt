@@ -11,17 +11,17 @@ import androidx.compose.ui.unit.dp
 import common.compose.*
 import common.mapper.toShortName
 import domain.model.Project
+import domain.model.ProjectSpecialty
 import navigation.Bundle
 import navigation.NavController
 import navigation.ScreenRoute
-import ui.details.project.widget.EditableDescriptionField
-import ui.details.project.widget.SaveButton
-import ui.details.project.widget.ShowParticipationButton
-import ui.details.project.widget.TitleField
+import ui.details.project.widget.*
+import ui.preview.viewmodel.PreviewViewModel
 
 @Composable
 fun ProjectDetailsScreen(
     navController: NavController,
+    previewViewModel: PreviewViewModel,
     project: Project,
 ) {
     Column(
@@ -29,12 +29,31 @@ fun ProjectDetailsScreen(
         modifier = Modifier
             .verticalScroll(ScrollState(0))
     ) {
-        val stateHolder = rememberExposedMenuStateHolder()
+        val supervisorStateHolder = rememberExposedMenuStateHolder()
+        val distributeSpecialtyStateHolder = rememberExposedMenuStateHolder()
+        val participationSpecialtyStateHolder = rememberExposedMenuStateHolder()
+
         val supervisors = remember {
             mutableStateListOf("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
         }
-        val dropdownItems =
+        val supervisorDropDownItems =
             mutableListOf<String>("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
+
+        val distributeSpecialties = remember {
+            mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
+                ps.priority == null || ps.priority == 1
+            }.toTypedArray())
+        }
+
+        val distributeSpecialtyDropDownItems = previewViewModel.specialties.value
+
+        val participationSpecialties = remember {
+            mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
+                ps.priority == null || ps.priority == 2
+            }.toTypedArray())
+        }
+
+        val participationSpecialtyDropDownItems = previewViewModel.specialties.value
 
         Row(modifier = Modifier.padding(16.dp)) {
             BackButton(navController = navController)
@@ -45,9 +64,9 @@ fun ProjectDetailsScreen(
             modifier = Modifier.width(300.dp),
             title = "Преподаватель",
             isTitleChangeable = false,
-            stateHolder = stateHolder,
+            stateHolder = supervisorStateHolder,
             itemsState = supervisors,
-            dropdownItems = dropdownItems,
+            dropdownItems = supervisorDropDownItems,
             toShortName = String::toShortName
         )
         EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "")
@@ -64,6 +83,22 @@ fun ProjectDetailsScreen(
         EditableDescriptionField(title = "Описание", content = project.description ?: "")
         EditableDescriptionField(title = "Ожидаемый продуктовый результат", content = project.productResult)
         EditableDescriptionField(title = "Ожидаемый учебный результат", content = project.studyResult)
+        SpecialtyPicker(
+            modifier = Modifier.width(200.dp),
+            title = "Специальности для молчунов",
+            itemsState = distributeSpecialties,
+            stateHolder = distributeSpecialtyStateHolder,
+            dropdownItems = distributeSpecialtyDropDownItems,
+            priority = 1,
+        )
+        SpecialtyPicker(
+            modifier = Modifier.width(200.dp),
+            title = "Специальности для заявок",
+            itemsState = participationSpecialties,
+            stateHolder = participationSpecialtyStateHolder,
+            dropdownItems = participationSpecialtyDropDownItems,
+            priority = 2,
+        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,

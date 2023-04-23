@@ -2,6 +2,8 @@ package domain.model
 
 import com.google.gson.annotations.SerializedName
 import domain.model.base.Entity
+import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import ui.filter.FilterEntity
@@ -21,6 +23,7 @@ open class Project(
     @SerializedName("study_result") var studyResult: String,
     @SerializedName("supervisorsNames") var supervisors: String,
     var department: Department? = null,
+    @SerializedName("project_specialities") var projectSpecialties: RealmList<ProjectSpecialty> = realmListOf()
 ) : Entity(), RealmObject, FilterEntity {
 
     constructor() : this(
@@ -37,7 +40,7 @@ open class Project(
         "",
         "",
         "",
-        null
+        null,
     )
 
     override fun members(): List<Any?> {
@@ -55,7 +58,8 @@ open class Project(
             productResult,
             studyResult,
             supervisors,
-            department
+            department,
+            projectSpecialties
         )
     }
 }

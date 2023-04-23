@@ -80,13 +80,12 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
         ) {
             ChipsVerticalGrid(itemsState, toShortName)
             Spacer(Modifier.size(8.dp))
-            ExposedTypedDropdownMenu<T>(
+            ExposedFilterDropdownMenu<T>(
                 modifier = modifier,
                 title = title,
                 isTitleChangeable = isTitleChangeable,
                 stateHolder = stateHolder,
                 items = dropdownItems,
-                toShortName = toShortName
             ) { _, clickedItem ->
                 if (!itemsState.contains(clickedItem)) {
                     itemsState.add(clickedItem)
@@ -224,7 +223,7 @@ fun ExposedDropdownMenu(
 }
 
 @Composable
-fun <T : FilterEntity> ExposedTypedDropdownMenu(
+fun <T : FilterEntity> ExposedFilterDropdownMenu(
     modifier: Modifier = Modifier,
     title: String,
     isTitleChangeable: Boolean,
@@ -232,7 +231,6 @@ fun <T : FilterEntity> ExposedTypedDropdownMenu(
     items: List<T>,
     isEnabled: Boolean = true,
     isReset: Boolean = false,
-    toShortName: String.() -> String,
     onItemClicked: (Int, String) -> Unit,
 ) {
     var changeableTitle by remember { mutableStateOf(title) }

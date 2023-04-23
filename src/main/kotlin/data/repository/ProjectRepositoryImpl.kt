@@ -62,6 +62,7 @@ class ProjectRepositoryImpl @Inject constructor(
             val overall = projects.size
 
             projects.forEach {
+                println(it.projectSpecialities)
                 val newProject = projectResponseToProject(it)
                 val oldProject = oldMap[newProject.id]
                 if (oldProject == null || oldProject != newProject) {
@@ -69,6 +70,8 @@ class ProjectRepositoryImpl @Inject constructor(
                 }
                 downloadFlow.value = ++current / overall
             }
+
+            println(getProjects().first().list.map { it.projectSpecialties })
         }
     }
 }

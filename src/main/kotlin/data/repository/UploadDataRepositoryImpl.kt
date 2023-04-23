@@ -14,7 +14,7 @@ class UploadDataRepositoryImpl @Inject constructor(
     private val participationRepository: ParticipationRepository,
     private val instituteRepository: InstituteRepository,
     private val departmentRepository: DepartmentRepository,
-): UploadDataRepository {
+) : UploadDataRepository {
 
     override val studentsDownloadFlow = studentRepository.downloadFlow
     override val projectsDownloadFlow = projectRepository.downloadFlow

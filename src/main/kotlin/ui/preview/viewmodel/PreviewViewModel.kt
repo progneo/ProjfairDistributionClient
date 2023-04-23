@@ -46,7 +46,7 @@ class PreviewViewModel constructor(
     private val _participations = MutableStateFlow<List<Participation>>(emptyList())
     private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
     private val _departments = MutableStateFlow<List<Department>>(emptyList())
-    private val _specialties = MutableStateFlow<List<Specialty>>(emptyList())
+    val specialties = MutableStateFlow<List<Specialty>>(emptyList())
     val filteredDepartments = MutableStateFlow<List<Department>>(emptyList())
     val institutes = MutableStateFlow<List<Institute>>(emptyList())
 
@@ -100,6 +100,10 @@ class PreviewViewModel constructor(
             getProjectsUseCase().collect {
                 _projects.value = it.list
                 filteredProjects.value = it.list
+
+                it.list.forEach { p ->
+                    //println(p.projectSpecialties)
+                }
             }
         }
     }
@@ -135,7 +139,7 @@ class PreviewViewModel constructor(
     private fun getSpecialties() {
         coroutineScope.launch {
             getSpecialtiesUseCase().collect {
-                _specialties.value = it.list
+                specialties.value = it.list
             }
         }
     }

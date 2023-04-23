@@ -2,6 +2,7 @@ package data.mapper
 
 import data.dto.ProjectResponse
 import domain.model.Project
+import io.realm.kotlin.ext.realmListOf
 
 fun projectResponseToProject(project: ProjectResponse): Project {
     return Project(
@@ -24,6 +25,9 @@ fun projectResponseToProject(project: ProjectResponse): Project {
             } catch (e: IndexOutOfBoundsException) {
                 null
             }
-        )
+        ),
+        projectSpecialties = realmListOf(*project.projectSpecialities.map {
+            projectSpecialtyResponseToProjectSpecialty(it)
+        }.toTypedArray())
     )
 }

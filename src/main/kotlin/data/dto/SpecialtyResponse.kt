@@ -1,8 +1,10 @@
 package data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class SpecialtyResponse(
     val id: Int,
     val name: String,
-    val institute: InstituteResponse,
-    val department: DepartmentResponse
+    @SerializedName("institute") val institute: InstituteResponse,
+    @SerializedName("department") val department: DepartmentResponse
 )

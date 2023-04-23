@@ -6,13 +6,14 @@ import io.realm.kotlin.types.annotations.PrimaryKey
 
 open class ProjectSpecialty(
     @PrimaryKey override var id: Int,
-    var projectId: Int,
-    var specialityId: Int
+    var course: Int? = null,
+    var specialty: Specialty? = null,
+    var priority: Int? = null
 ): Entity(), RealmObject {
 
-    constructor() : this(0, 0, 0)
+    constructor() : this(0, null, null, null)
 
     override fun members(): List<Any?> {
-        return listOf(id, projectId, specialityId)
+        return listOf(id, course, specialty, priority)
     }
 }

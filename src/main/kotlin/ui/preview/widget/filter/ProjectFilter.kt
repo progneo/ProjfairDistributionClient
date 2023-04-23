@@ -12,9 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.compose.ExposedTypedDropdownMenu
+import common.compose.ExposedFilterDropdownMenu
 import common.compose.rememberExposedMenuStateHolder
-import common.mapper.toShortInstitute
 import domain.model.Department
 import domain.model.Institute
 import ui.filter.FilterDialog
@@ -111,7 +110,7 @@ private fun <T : FilterEntity> ProjectFilterDropdownItem(
             color = Color.Black
         )
         Spacer(Modifier.size(16.dp))
-        ExposedTypedDropdownMenu<T>(
+        ExposedFilterDropdownMenu<T>(
             modifier = Modifier
                 .size(width = 400.dp, height = Dp.Unspecified),
             title = selectedValue.name,
@@ -120,7 +119,6 @@ private fun <T : FilterEntity> ProjectFilterDropdownItem(
             items = items,
             isEnabled = isEnabled,
             isReset = isReset,
-            toShortName = String::toShortInstitute
         ) { index, itemClicked ->
             onClick(index, itemClicked)
         }

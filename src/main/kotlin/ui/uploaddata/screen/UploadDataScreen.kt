@@ -149,6 +149,7 @@ fun UploadDataScreenView(
                 intent = UploadDataContract.Intent.UploadExceptionalStudents(file)
             )
         }
+
         UpdateDataButton(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
