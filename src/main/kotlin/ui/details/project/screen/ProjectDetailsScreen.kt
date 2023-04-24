@@ -115,3 +115,7 @@ fun ProjectDetailsScreen(
         Spacer(modifier = Modifier.size(12.dp))
     }
 }
+
+data class SelectedIndexes(
+    val map: MutableMap<Int, List<Boolean>>
+)

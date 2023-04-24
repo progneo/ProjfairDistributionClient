@@ -35,6 +35,31 @@ fun SpecialtyPicker(
     dropdownItems: List<Specialty>,
     priority: Int,
 ) {
+    val selectedIndexes = remember(1) {
+        val copy = itemsState.toList()
+        val temp = mutableMapOf<Int, MutableList<Boolean>>()
+
+        copy.forEach { ps ->
+            val course = ps.course
+            val indexes = if (ps.specialty!!.name.endsWith("б")) {
+                MutableList<Boolean>(2) { true }
+            } else {
+                MutableList<Boolean>(3) { true }
+            }
+            if (course == null) {
+                temp[ps.id] = indexes
+            } else {
+                val current = temp.getOrDefault(ps.id, indexes.map { false }.toMutableList())
+                current[course-3] = true
+                temp[ps.id] = current
+            }
+        }
+
+        temp
+    }
+
+    println(selectedIndexes)
+
     BorderedTitledComposable(
         title = title
     ) {
@@ -43,7 +68,7 @@ fun SpecialtyPicker(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
-            SpecialtyCoursesGrid(itemsState)
+            SpecialtyCoursesGrid(itemsState, selectedIndexes)
             Spacer(Modifier.size(8.dp))
             ExposedProjectSpecialtyDropdownMenu(
                 modifier = modifier,
@@ -139,7 +164,8 @@ fun ExposedProjectSpecialtyDropdownMenu(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SpecialtyCoursesGrid(
-    itemsState: SnapshotStateList<ProjectSpecialty>,
+    itemsState: MutableList<ProjectSpecialty>,
+    selectedIndexes: MutableMap<Int, MutableList<Boolean>>
 ) {
     Column(
         modifier = Modifier
@@ -157,12 +183,26 @@ fun SpecialtyCoursesGrid(
                         shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(2.dp, BlueMainDark),
                     ) {
+                        val currentIndexes = remember {
+                            mutableStateListOf<Boolean>()
+                        }
+                        currentIndexes.clear()
+                        currentIndexes.addAll(selectedIndexes[item.id]!!)
+
                         SpecialtyCoursesItem(
                             title = item.specialty!!.name,
-                            onChangeCourse = {
+                            itemId = item.id,
+                            onChangeCourse = { specialtyCourses, itemId ->
+                                selectedIndexes[itemId] = specialtyCourses.map { it.selected }.toMutableList()
+                                if (specialtyCourses.none { sp -> sp.selected }) {
+                                    itemsState.removeIf { ps ->
+                                        ps.id == itemId
+                                    }
 
+                                    selectedIndexes.remove(itemId)
+                                }
                             },
-                            isSpecial = !item.specialty!!.name.endsWith("б")
+                            selectedIndexes = currentIndexes
                         )
                     }
                     Spacer(Modifier.size(16.dp, 16.dp))
@@ -176,18 +216,12 @@ fun SpecialtyCoursesGrid(
 @Composable
 fun SpecialtyCoursesItem(
     title: String,
-    onChangeCourse: (List<SpecialtyCourse>) -> Unit,
-    isSpecial: Boolean = false,
-    predefinedSpecialtyCourses: List<SpecialtyCourse> = emptyList(),
+    itemId: Int,
+    onChangeCourse: (List<SpecialtyCourse>, Int) -> Unit,
+    selectedIndexes: SnapshotStateList<Boolean>,
 ) {
+    val isSpecial = selectedIndexes.size == 3
     val specialtyCourses = if (isSpecial) listOf(3, 4, 5) else listOf(3, 4)
-
-    val newSelected = if (predefinedSpecialtyCourses.isEmpty()) listOf(true, true, true)
-    else predefinedSpecialtyCourses.map { it.selected }
-
-    val selectedIndexes = remember {
-        mutableStateListOf<Boolean>(*newSelected.toTypedArray())
-    }
 
     Row(
         modifier = Modifier
@@ -214,9 +248,10 @@ fun SpecialtyCoursesItem(
                 onClick = {
                     selectedIndexes[index] = !selectedIndexes[index]
                     onChangeCourse(
-                        List<SpecialtyCourse>(specialtyCourses.size) { index ->
-                            SpecialtyCourse(specialtyCourses[index], selectedIndexes[index])
-                        }
+                        List<SpecialtyCourse>(specialtyCourses.size) { innerIndex ->
+                            SpecialtyCourse(specialtyCourses[innerIndex], selectedIndexes[innerIndex])
+                        },
+                        itemId
                     )
                 }
             )
