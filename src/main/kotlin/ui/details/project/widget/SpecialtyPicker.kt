@@ -34,6 +34,7 @@ fun SpecialtyPicker(
     stateHolder: ExposedDropdownMenuStateHolder,
     dropdownItems: List<Specialty>,
     priority: Int,
+    //onDataChange: (List<ProjectSpecialty>) -> Unit
 ) {
     val selectedIndexes = remember(1) {
         val copy = itemsState.toList()
@@ -58,7 +59,7 @@ fun SpecialtyPicker(
         temp
     }
 
-    println(selectedIndexes)
+    var projectSpecialtyId = -1
 
     BorderedTitledComposable(
         title = title
@@ -68,7 +69,17 @@ fun SpecialtyPicker(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
-            SpecialtyCoursesGrid(itemsState, selectedIndexes)
+            SpecialtyCoursesGrid(
+                itemsState,
+                selectedIndexes,
+                onChangeCourse = {
+                    val projectSpecialties = mutableListOf<ProjectSpecialty>()
+
+                    selectedIndexes.forEach { (psId, indexes) ->
+
+                    }
+                }
+            )
             Spacer(Modifier.size(8.dp))
             ExposedProjectSpecialtyDropdownMenu(
                 modifier = modifier,
@@ -80,12 +91,22 @@ fun SpecialtyPicker(
                 if (!itemsState.map { ps -> ps.specialty }.contains(clickedSpecialty)) {
                     itemsState.add(
                         ProjectSpecialty(
-                            id = 0,
+                            id = projectSpecialtyId,
                             course = null,
                             specialty = clickedSpecialty,
                             priority = priority
                         )
                     )
+
+                    val indexes = if (clickedSpecialty.name.endsWith("б")) {
+                        MutableList<Boolean>(2) { true }
+                    } else {
+                        MutableList<Boolean>(3) { true }
+                    }
+
+                    selectedIndexes[projectSpecialtyId] = indexes
+
+                    projectSpecialtyId--
                 }
             }
         }
@@ -165,7 +186,8 @@ fun ExposedProjectSpecialtyDropdownMenu(
 @Composable
 fun SpecialtyCoursesGrid(
     itemsState: MutableList<ProjectSpecialty>,
-    selectedIndexes: MutableMap<Int, MutableList<Boolean>>
+    selectedIndexes: MutableMap<Int, MutableList<Boolean>>,
+    onChangeCourse: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -201,6 +223,7 @@ fun SpecialtyCoursesGrid(
 
                                     selectedIndexes.remove(itemId)
                                 }
+                                onChangeCourse()
                             },
                             selectedIndexes = currentIndexes
                         )
