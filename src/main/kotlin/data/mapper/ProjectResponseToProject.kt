@@ -18,7 +18,7 @@ fun projectResponseToProject(project: ProjectResponse): Project {
         customer = project.customer ?: "",
         productResult = project.productResult,
         studyResult = project.studyResult,
-        supervisors = project.supervisors,
+        supervisors = realmListOf(*project.supervisors.map { supervisorResponseToSupervisor(it) }.toTypedArray()),
         department = departmentResponseToDepartment(
             try {
                 project.specialities[0].department

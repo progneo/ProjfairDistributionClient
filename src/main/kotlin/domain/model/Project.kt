@@ -21,8 +21,8 @@ open class Project(
     var customer: String,
     @SerializedName("product_result") var productResult: String,
     @SerializedName("study_result") var studyResult: String,
-    @SerializedName("supervisorsNames") var supervisors: String,
     var department: Department? = null,
+    var supervisors: RealmList<Supervisor> = realmListOf(),
     @SerializedName("project_specialities") var projectSpecialties: RealmList<ProjectSpecialty> = realmListOf()
 ) : Entity(), RealmObject, FilterEntity {
 
@@ -33,7 +33,6 @@ open class Project(
         0,
         "",
         0,
-        "",
         "",
         "",
         "",

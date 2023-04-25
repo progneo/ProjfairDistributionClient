@@ -34,7 +34,7 @@ fun ProjectDetailsScreen(
         val participationSpecialtyStateHolder = rememberExposedMenuStateHolder()
 
         val supervisors = remember {
-            mutableStateListOf("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
+            mutableStateListOf(*project.supervisors.toTypedArray())
         }
         val supervisorDropDownItems =
             mutableListOf<String>("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
@@ -72,13 +72,13 @@ fun ProjectDetailsScreen(
                 title = it
             }
         }
-        ExposedDropdownMenuWithChips(
+        ExposedTypedDropdownMenuWithChips(
             modifier = Modifier.width(300.dp),
             title = "Преподаватель",
             isTitleChangeable = false,
             stateHolder = supervisorStateHolder,
             itemsState = supervisors,
-            dropdownItems = supervisorDropDownItems,
+            dropdownItems = supervisors.toList(),
             toShortName = String::toShortName
         )
         EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "") {

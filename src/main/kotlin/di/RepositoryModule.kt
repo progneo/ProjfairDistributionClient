@@ -23,6 +23,7 @@ interface RepositoryModule {
             participationRepository: ParticipationRepository,
             instituteRepository: InstituteRepository,
             departmentRepository: DepartmentRepository,
+            supervisorRepository: SupervisorRepository
         ): UploadDataRepository {
             return UploadDataRepositoryImpl(
                 ioDispatcher = ioDispatcher,
@@ -31,6 +32,7 @@ interface RepositoryModule {
                 participationRepository = participationRepository,
                 instituteRepository = instituteRepository,
                 departmentRepository = departmentRepository,
+                supervisorRepository = supervisorRepository
             )
         }
 
@@ -116,6 +118,20 @@ interface RepositoryModule {
             return SpecialtyRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 specialtyDao = specialtyDao,
+                projectFairApi = projectFairApi
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideSupervisorRepository(
+            ioDispatcher: CoroutineDispatcher,
+            supervisorDao: SupervisorDao,
+            projectFairApi: OrdinaryProjectFairApi
+        ): SupervisorRepository {
+            return SupervisorRepositoryImpl(
+                ioDispatcher = ioDispatcher,
+                supervisorDao = supervisorDao,
                 projectFairApi = projectFairApi
             )
         }

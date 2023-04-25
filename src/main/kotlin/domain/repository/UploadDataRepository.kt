@@ -9,6 +9,7 @@ interface UploadDataRepository {
     val participationsDownloadFlow: MutableStateFlow<Float>
     val institutesDownloadFlow: MutableStateFlow<Float>
     val departmentsDownloadFlow: MutableStateFlow<Float>
+    val supervisorsDownloadFlow: MutableStateFlow<Float>
     suspend fun syncData(): Boolean
     suspend fun uploadExceptionalStudents(file: File): Boolean
 }

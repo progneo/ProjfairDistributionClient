@@ -26,6 +26,7 @@ interface DatabaseModule {
                     ProjectSupervisor::class,
                     Institute::class,
                     Department::class,
+                    SupervisorRole::class
                 )
             )
             return Realm.open(configuration)

@@ -18,4 +18,7 @@ interface OrdinaryProjectFairApi {
 
     @GET("specialities")
     suspend fun getSpecialties(): List<SpecialtyResponse>
+
+    @GET("supervisors")
+    suspend fun getSupervisors(): List<SupervisorDetailsResponse>
 }

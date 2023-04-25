@@ -26,7 +26,8 @@ fun Project.toAlgorithmModel(groups: List<String>): AlgorithmProject {
         groups = groups,
         difficulty = this.difficulty,
         customer = this.customer ?: "",
-        supervisors = this.supervisors.split(" ")
+        //supervisors = this.supervisors TODO: update model
+        supervisors = listOf()
     )
 }
 

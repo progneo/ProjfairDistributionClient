@@ -38,7 +38,7 @@ fun ExposedDropdownMenuWithChips(
     dropdownItems: List<String>,
     toShortName: String.() -> String,
 ) {
-    BorderedTitledComposable(title = "Преподаватели") {
+    BorderedTitledComposable(title = title) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,7 +68,7 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
     title: String,
     isTitleChangeable: Boolean,
     stateHolder: ExposedDropdownMenuStateHolder,
-    itemsState: SnapshotStateList<String>,
+    itemsState: SnapshotStateList<T>,
     dropdownItems: List<T>,
     toShortName: String.() -> String,
 ) {
@@ -78,7 +78,7 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
-            ChipsVerticalGrid(itemsState, toShortName)
+            ChipsTypedVerticalGrid(itemsState, toShortName)
             Spacer(Modifier.size(8.dp))
             ExposedFilterDropdownMenu<T>(
                 modifier = modifier,
@@ -86,9 +86,10 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
                 isTitleChangeable = isTitleChangeable,
                 stateHolder = stateHolder,
                 items = dropdownItems,
-            ) { _, clickedItem ->
-                if (!itemsState.contains(clickedItem)) {
-                    itemsState.add(clickedItem)
+            ) { index, clickedItem ->
+                val clickedSupervisor = dropdownItems[index]
+                if (!itemsState.contains(clickedSupervisor)) {
+                    itemsState.add(clickedSupervisor)
                 }
             }
         }
@@ -99,6 +100,52 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
 @Composable
 fun ChipsVerticalGrid(
     itemsState: SnapshotStateList<String>,
+    toShortName: String.() -> String,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        itemsState.chunked(3).forEach { row ->
+            Row {
+                row.forEach { item ->
+                    Chip(
+                        onClick = {},
+                        enabled = false,
+                        colors = ChipDefaults.chipColors(
+                            backgroundColor = BlueMainLight,
+                            contentColor = Color.White,
+                            disabledBackgroundColor = BlueMainLight,
+                            disabledContentColor = Color.White
+                        ),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(item.toShortName())
+                            Spacer(Modifier.size(8.dp, 1.dp))
+                            Icon(
+                                imageVector = FontAwesomeIcons.Solid.TimesCircle,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .onClick {
+                                        itemsState.removeIf { str -> str == item }
+                                    }
+                            )
+                        }
+                    }
+                    Spacer(Modifier.size(16.dp, 1.dp))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@Composable
+fun <T: FilterEntity> ChipsTypedVerticalGrid(
+    itemsState: SnapshotStateList<T>,
     toShortName: String.() -> String,
 ) {
     Column(
@@ -121,7 +168,7 @@ fun ChipsVerticalGrid(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(item.toShortName())
+                            Text(item.name.toShortName())
                             Spacer(Modifier.size(8.dp, 1.dp))
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.TimesCircle,
