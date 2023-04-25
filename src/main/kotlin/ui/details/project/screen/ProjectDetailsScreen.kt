@@ -55,10 +55,22 @@ fun ProjectDetailsScreen(
 
         val participationSpecialtyDropDownItems = previewViewModel.specialties.value
 
+        //new project parameters
+        var title = project.name
+        var goal = project.goal
+        var customer = project.customer
+        var description = project.description
+        var productResult = project.productResult
+        var studyResult = project.studyResult
+        var updatedDistributeSpecialties = distributeSpecialties.toList()
+        var updatedParticipationSpecialties = participationSpecialties.toList()
+
         Row(modifier = Modifier.padding(16.dp)) {
             BackButton(navController = navController)
             Spacer(modifier = Modifier.size(16.dp))
-            TitleField(title = project.name)
+            TitleField(title = project.name) {
+                title = it
+            }
         }
         ExposedDropdownMenuWithChips(
             modifier = Modifier.width(300.dp),
@@ -69,7 +81,9 @@ fun ProjectDetailsScreen(
             dropdownItems = supervisorDropDownItems,
             toShortName = String::toShortName
         )
-        EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "")
+        EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "") {
+            goal = it
+        }
         BorderedRadioButtonGroupColumn(
             titles = listOf(
                 Title("Легко"),
@@ -79,10 +93,18 @@ fun ProjectDetailsScreen(
             selected = project.difficulty - 1,
             title = "Сложность"
         )
-        EditableDescriptionField(title = "Заказчик", content = project.customer ?: "")
-        EditableDescriptionField(title = "Описание", content = project.description ?: "")
-        EditableDescriptionField(title = "Ожидаемый продуктовый результат", content = project.productResult)
-        EditableDescriptionField(title = "Ожидаемый учебный результат", content = project.studyResult)
+        EditableDescriptionField(title = "Заказчик", content = project.customer ?: "") {
+            customer = it
+        }
+        EditableDescriptionField(title = "Описание", content = project.description ?: "") {
+            description = it
+        }
+        EditableDescriptionField(title = "Ожидаемый продуктовый результат", content = project.productResult) {
+            productResult = it
+        }
+        EditableDescriptionField(title = "Ожидаемый учебный результат", content = project.studyResult) {
+            studyResult = it
+        }
         SpecialtyPicker(
             modifier = Modifier.width(200.dp),
             title = "Специальности для молчунов",
@@ -90,6 +112,9 @@ fun ProjectDetailsScreen(
             stateHolder = distributeSpecialtyStateHolder,
             dropdownItems = distributeSpecialtyDropDownItems,
             priority = 1,
+            onDataChange = {
+                updatedDistributeSpecialties = it
+            }
         )
         SpecialtyPicker(
             modifier = Modifier.width(200.dp),
@@ -98,6 +123,9 @@ fun ProjectDetailsScreen(
             stateHolder = participationSpecialtyStateHolder,
             dropdownItems = participationSpecialtyDropDownItems,
             priority = 2,
+            onDataChange = {
+                updatedParticipationSpecialties = it
+            }
         )
         Row(
             modifier = Modifier.fillMaxWidth(),

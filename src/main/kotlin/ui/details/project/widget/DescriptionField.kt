@@ -22,6 +22,7 @@ fun EditableDescriptionField(
     modifier: Modifier = Modifier,
     title: String,
     content: String,
+    onDataChanged: (String) -> Unit
 ) {
     var contentText by rememberSaveable(TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(content))
@@ -35,6 +36,7 @@ fun EditableDescriptionField(
             value = contentText,
             onValueChange = {
                 contentText = it
+                onDataChanged(it.text)
             },
             textStyle = TextStyle(
                 fontSize = 18.sp,

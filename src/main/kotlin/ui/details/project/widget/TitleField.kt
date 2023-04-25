@@ -20,7 +20,8 @@ import common.theme.BlueMainLight
 @Composable
 fun TitleField(
     modifier: Modifier = Modifier,
-    title: String
+    title: String,
+    onDataChanged: (String) -> Unit
 ) {
     var titleText by rememberSaveable(TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(title))
@@ -33,6 +34,7 @@ fun TitleField(
             value = titleText,
             onValueChange = {
                 titleText = it
+                onDataChanged(it.text)
             },
             textStyle = TextStyle(
                 fontSize = 36.sp,

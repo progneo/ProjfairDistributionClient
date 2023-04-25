@@ -34,25 +34,26 @@ fun SpecialtyPicker(
     stateHolder: ExposedDropdownMenuStateHolder,
     dropdownItems: List<Specialty>,
     priority: Int,
-    //onDataChange: (List<ProjectSpecialty>) -> Unit
+    onDataChange: (List<ProjectSpecialty>) -> Unit
 ) {
     val selectedIndexes = remember(1) {
         val copy = itemsState.toList()
-        val temp = mutableMapOf<Int, MutableList<Boolean>>()
+        val temp = mutableMapOf<Pair<Int, Int>, MutableList<Boolean>>()
 
         copy.forEach { ps ->
             val course = ps.course
+            val id = Pair(ps.id, ps.specialty!!.id)
             val indexes = if (ps.specialty!!.name.endsWith("б")) {
                 MutableList<Boolean>(2) { true }
             } else {
                 MutableList<Boolean>(3) { true }
             }
             if (course == null) {
-                temp[ps.id] = indexes
+                temp[id] = indexes
             } else {
-                val current = temp.getOrDefault(ps.id, indexes.map { false }.toMutableList())
+                val current = temp.getOrDefault(id, indexes.map { false }.toMutableList())
                 current[course-3] = true
-                temp[ps.id] = current
+                temp[id] = current
             }
         }
 
@@ -75,9 +76,20 @@ fun SpecialtyPicker(
                 onChangeCourse = {
                     val projectSpecialties = mutableListOf<ProjectSpecialty>()
 
-                    selectedIndexes.forEach { (psId, indexes) ->
-
+                    selectedIndexes.forEach { (key, indexes) ->
+                        indexes.forEachIndexed { index,  ind ->
+                            val specialty = dropdownItems.find { spec -> spec.id == key.second }!!
+                            val projectSpecialty = ProjectSpecialty(
+                                id = 0,
+                                course = index + 3,
+                                specialty = specialty,
+                                priority = priority
+                            )
+                            projectSpecialties.add(projectSpecialty)
+                        }
                     }
+
+                    onDataChange(projectSpecialties)
                 }
             )
             Spacer(Modifier.size(8.dp))
@@ -104,7 +116,7 @@ fun SpecialtyPicker(
                         MutableList<Boolean>(3) { true }
                     }
 
-                    selectedIndexes[projectSpecialtyId] = indexes
+                    selectedIndexes[Pair(projectSpecialtyId, clickedSpecialty.id)] = indexes
 
                     projectSpecialtyId--
                 }
@@ -186,7 +198,7 @@ fun ExposedProjectSpecialtyDropdownMenu(
 @Composable
 fun SpecialtyCoursesGrid(
     itemsState: MutableList<ProjectSpecialty>,
-    selectedIndexes: MutableMap<Int, MutableList<Boolean>>,
+    selectedIndexes: MutableMap<Pair<Int, Int>, MutableList<Boolean>>,
     onChangeCourse: () -> Unit
 ) {
     Column(
@@ -205,23 +217,24 @@ fun SpecialtyCoursesGrid(
                         shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(2.dp, BlueMainDark),
                     ) {
+                        val id = Pair(item.id, item.specialty!!.id)
                         val currentIndexes = remember {
                             mutableStateListOf<Boolean>()
                         }
                         currentIndexes.clear()
-                        currentIndexes.addAll(selectedIndexes[item.id]!!)
+                        currentIndexes.addAll(selectedIndexes[id]!!)
 
                         SpecialtyCoursesItem(
                             title = item.specialty!!.name,
                             itemId = item.id,
                             onChangeCourse = { specialtyCourses, itemId ->
-                                selectedIndexes[itemId] = specialtyCourses.map { it.selected }.toMutableList()
+                                selectedIndexes[id] = specialtyCourses.map { it.selected }.toMutableList()
                                 if (specialtyCourses.none { sp -> sp.selected }) {
                                     itemsState.removeIf { ps ->
                                         ps.id == itemId
                                     }
 
-                                    selectedIndexes.remove(itemId)
+                                    selectedIndexes.remove(id)
                                 }
                                 onChangeCourse()
                             },
