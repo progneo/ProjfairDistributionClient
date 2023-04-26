@@ -9,6 +9,7 @@ import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
+import domain.usecase.supervisor.GetSupervisorsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -28,6 +29,7 @@ class PreviewViewModel constructor(
     private val getInstitutesUseCase: GetInstitutesUseCase,
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
+    private val getSupervisorsUseCase: GetSupervisorsUseCase
 ) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     override fun createInitialState(): PreviewContract.ScreenState {
@@ -46,11 +48,13 @@ class PreviewViewModel constructor(
     private val _participations = MutableStateFlow<List<Participation>>(emptyList())
     private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
     private val _departments = MutableStateFlow<List<Department>>(emptyList())
+    private val _supervisors = MutableStateFlow<List<Supervisor>>(emptyList())
     val specialties = MutableStateFlow<List<Specialty>>(emptyList())
     val filteredDepartments = MutableStateFlow<List<Department>>(emptyList())
     val institutes = MutableStateFlow<List<Institute>>(emptyList())
 
     val filteredProjects = MutableStateFlow<List<Project>>(emptyList())
+    val filteredSupervisors = MutableStateFlow<List<Supervisor>>(emptyList())
 
     private val _studentsWithParticipations = MutableStateFlow<List<Student>>(emptyList())
     private val _studentsWithoutParticipations = MutableStateFlow<List<Student>>(emptyList())
@@ -72,6 +76,7 @@ class PreviewViewModel constructor(
         getInstitutes()
         getDepartments()
         getSpecialties()
+        getSupervisors()
     }
 
     fun getFilteredStudents(studentsTabPage: StudentsTabPage): StateFlow<List<Student>> {
@@ -164,6 +169,20 @@ class PreviewViewModel constructor(
                 _studentsWithParticipations.value = with
                 _studentsWithoutParticipations.value = without
             }
+        }
+    }
+
+    private fun getSupervisors() {
+        coroutineScope.launch {
+            getSupervisorsUseCase().collect {
+                _supervisors.value = it.list
+            }
+        }
+    }
+
+    fun getFilteredSupervisors(department: Department): List<Supervisor> {
+        return _supervisors.value.filter { s ->
+            s.department != null && s.department!!.id == department.id
         }
     }
 

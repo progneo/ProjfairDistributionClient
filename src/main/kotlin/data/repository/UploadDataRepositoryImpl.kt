@@ -32,7 +32,7 @@ class UploadDataRepositoryImpl @Inject constructor(
                 participationRepository.uploadParticipations()
                 instituteRepository.uploadInstitutes()
                 departmentRepository.uploadDepartments()
-                supervisorRepository.getSupervisors()
+                supervisorRepository.uploadSupervisors()
 
                 true
             } catch (e: Exception) {

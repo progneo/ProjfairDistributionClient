@@ -36,8 +36,7 @@ fun ProjectDetailsScreen(
         val supervisors = remember {
             mutableStateListOf(*project.supervisors.toTypedArray())
         }
-        val supervisorDropDownItems =
-            mutableListOf<String>("Аршинский Вадим Леонидович", "Серышева Ирина Анатольевна", "Лукаш Олег")
+        val supervisorDropDownItems = previewViewModel.getFilteredSupervisors(project.department!!)
 
         val distributeSpecialties = remember {
             mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
@@ -62,8 +61,12 @@ fun ProjectDetailsScreen(
         var description = project.description
         var productResult = project.productResult
         var studyResult = project.studyResult
-        var updatedDistributeSpecialties = distributeSpecialties.toList()
-        var updatedParticipationSpecialties = participationSpecialties.toList()
+        var updatedDistributeSpecialties = project.projectSpecialties.filter { ps ->
+            ps.priority == null || ps.priority == 1
+        }
+        var updatedParticipationSpecialties = project.projectSpecialties.filter { ps ->
+            ps.priority == null || ps.priority == 2
+        }
 
         Row(modifier = Modifier.padding(16.dp)) {
             BackButton(navController = navController)
@@ -78,7 +81,7 @@ fun ProjectDetailsScreen(
             isTitleChangeable = false,
             stateHolder = supervisorStateHolder,
             itemsState = supervisors,
-            dropdownItems = supervisors.toList(),
+            dropdownItems = supervisorDropDownItems,
             toShortName = String::toShortName
         )
         EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "") {
@@ -145,5 +148,5 @@ fun ProjectDetailsScreen(
 }
 
 data class SelectedIndexes(
-    val map: MutableMap<Int, List<Boolean>>
+    val map: MutableMap<Int, List<Boolean>>,
 )

@@ -9,6 +9,7 @@ import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
+import domain.usecase.supervisor.GetSupervisorsUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import ui.preview.viewmodel.PreviewViewModel
@@ -41,7 +42,8 @@ interface ViewModelModule {
             getParticipationsUseCase: GetParticipationsUseCase,
             getInstitutesUseCase: GetInstitutesUseCase,
             getDepartmentsUseCase: GetDepartmentsUseCase,
-            getSpecialtiesUseCase: GetSpecialtiesUseCase
+            getSpecialtiesUseCase: GetSpecialtiesUseCase,
+            getSupervisorsUseCase: GetSupervisorsUseCase
 
         ): PreviewViewModel {
             return PreviewViewModel(
@@ -50,7 +52,8 @@ interface ViewModelModule {
                 getParticipationsUseCase = getParticipationsUseCase,
                 getInstitutesUseCase = getInstitutesUseCase,
                 getDepartmentsUseCase = getDepartmentsUseCase,
-                getSpecialtiesUseCase = getSpecialtiesUseCase
+                getSpecialtiesUseCase = getSpecialtiesUseCase,
+                getSupervisorsUseCase = getSupervisorsUseCase
             )
         }
     }
