@@ -29,7 +29,6 @@ import common.theme.GrayLight
 import domain.model.Department
 import domain.model.Institute
 import domain.model.Project
-import domain.model.Student
 import kotlinx.coroutines.launch
 import ui.filter.FilterEntity
 import ui.filter.FilterNode
@@ -129,7 +128,6 @@ fun ChooseParticipationTable(
             modifier = Modifier.fillMaxWidth(),
             currentText = currentFilterTitle,
             onBackClicked = {
-                println("back clicked")
                 if (filterStack.last().selectedValue != null) {
                     filterStack.removeLast()
                     val filterValue = filterStack.last().selectedValue
@@ -183,8 +181,6 @@ fun ChooseParticipationTable(
                                 project = clickedFilter as? Project
                             )
                             currentFilterTitle = filterStack.last().type.title
-                        } else {
-                            println((clickedFilter as Student).name)
                         }
                     }
                 )

@@ -18,7 +18,6 @@ object ProjectFilterApplier {
             }
         }
         return projects.filter { proj->
-            if (proj.department?.id == department.id) println("${proj.department?.id} == ${department.id}")
             proj.department?.id == department.id
         }
     }

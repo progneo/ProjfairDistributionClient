@@ -7,6 +7,7 @@ import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
@@ -25,11 +26,12 @@ import ui.preview.widget.filter.StudentFilterApplier
 class PreviewViewModel constructor(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
+    private val updateProjectUseCase: UpdateProjectUseCase,
     private val getParticipationsUseCase: GetParticipationsUseCase,
     private val getInstitutesUseCase: GetInstitutesUseCase,
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
-    private val getSupervisorsUseCase: GetSupervisorsUseCase
+    private val getSupervisorsUseCase: GetSupervisorsUseCase,
 ) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     override fun createInitialState(): PreviewContract.ScreenState {
@@ -105,11 +107,13 @@ class PreviewViewModel constructor(
             getProjectsUseCase().collect {
                 _projects.value = it.list
                 filteredProjects.value = it.list
-
-                it.list.forEach { p ->
-                    //println(p.projectSpecialties)
-                }
             }
+        }
+    }
+
+    fun updateProject(project: Project) {
+        coroutineScope.launch {
+            updateProjectUseCase(project)
         }
     }
 
@@ -199,9 +203,6 @@ class PreviewViewModel constructor(
     }
 
     fun getProjectById(projectId: Int): Project? {
-        _projects.value.forEach {
-            println(it.id)
-        }
         return _projects.value.find { proj -> proj.id == projectId }
     }
 

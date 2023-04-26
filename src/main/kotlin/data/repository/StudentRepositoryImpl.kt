@@ -26,7 +26,7 @@ class StudentRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateStudent(student: Student) {
-        studentDao.update(student)
+        //studentDao.update(student)
     }
 
     override suspend fun insertStudent(student: Student) {

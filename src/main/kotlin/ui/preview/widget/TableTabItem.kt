@@ -43,7 +43,7 @@ fun TabItem(
             .selectable(
                 selected = selected,
             ) {
-                println("clicked")
+
             }
             .background(
                 color = if (selected) colorUnselected else colorSelected
@@ -132,7 +132,6 @@ enum class StudentsTabPage(
 
     companion object {
         fun fromString(name: String): StudentsTabPage {
-            println(name)
             return when (name) {
                 Enrolled.name -> Enrolled
                 Uncounted.name -> Uncounted

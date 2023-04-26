@@ -7,4 +7,9 @@ import javax.inject.Inject
 
 class ProjectDao @Inject constructor(
     realm: Realm
-): Dao<Project>(realm)
+): Dao<Project>(realm) {
+
+    suspend fun update(item: Project) {
+        updateItem<Project>(item)
+    }
+}

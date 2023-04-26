@@ -16,4 +16,13 @@ open class ProjectSpecialty(
     override fun members(): List<Any?> {
         return listOf(id, course, specialty, priority)
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id, " +
+                "course=$course," +
+                "specialty=$specialty," +
+                "priority=$priority" +
+                "}"
+    }
 }

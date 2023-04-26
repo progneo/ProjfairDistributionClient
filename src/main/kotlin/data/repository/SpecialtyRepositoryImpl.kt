@@ -25,7 +25,7 @@ class SpecialtyRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateSpecialty(specialties: Specialty) {
-        specialtyDao.update(specialties)
+        //specialtyDao.update(specialties)
     }
 
     override suspend fun insertSpecialty(specialty: Specialty) {

@@ -71,6 +71,7 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
     itemsState: SnapshotStateList<T>,
     dropdownItems: List<T>,
     toShortName: String.() -> String,
+    onDataChanged: (List<T>) -> Unit
 ) {
     BorderedTitledComposable(title = "Преподаватели") {
         Column(
@@ -78,7 +79,13 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
-            ChipsTypedVerticalGrid(itemsState, toShortName)
+            ChipsTypedVerticalGrid(
+                itemsState,
+                onItemRemoved = { removedItem ->
+                    itemsState.removeIf { item -> item == removedItem }
+                    onDataChanged(itemsState)
+                },
+                toShortName)
             Spacer(Modifier.size(8.dp))
             ExposedFilterDropdownMenu<T>(
                 modifier = modifier,
@@ -91,6 +98,8 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
                 if (!itemsState.contains(clickedSupervisor)) {
                     itemsState.add(clickedSupervisor)
                 }
+
+                onDataChanged(itemsState)
             }
         }
     }
@@ -146,6 +155,7 @@ fun ChipsVerticalGrid(
 @Composable
 fun <T: FilterEntity> ChipsTypedVerticalGrid(
     itemsState: SnapshotStateList<T>,
+    onItemRemoved: (T) -> Unit,
     toShortName: String.() -> String,
 ) {
     Column(
@@ -176,7 +186,8 @@ fun <T: FilterEntity> ChipsTypedVerticalGrid(
                                 modifier = Modifier
                                     .size(20.dp)
                                     .onClick {
-                                        itemsState.removeIf { str -> str == item }
+//                                        itemsState.removeIf { str -> str == item }
+                                        onItemRemoved(item)
                                     }
                             )
                         }

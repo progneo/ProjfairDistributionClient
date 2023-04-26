@@ -27,7 +27,7 @@ class DepartmentRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateDepartment(departments: Department) {
-        departmentDao.update(departments)
+        //departmentDao.update(departments)
     }
 
     override suspend fun insertDepartment(department: Department) {

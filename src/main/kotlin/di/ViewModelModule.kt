@@ -7,6 +7,7 @@ import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
@@ -39,6 +40,7 @@ interface ViewModelModule {
         fun providePreviewViewModel(
             getStudentsUseCase: GetStudentsUseCase,
             getProjectsUseCase: GetProjectsUseCase,
+            updateProjectUseCase: UpdateProjectUseCase,
             getParticipationsUseCase: GetParticipationsUseCase,
             getInstitutesUseCase: GetInstitutesUseCase,
             getDepartmentsUseCase: GetDepartmentsUseCase,
@@ -49,6 +51,7 @@ interface ViewModelModule {
             return PreviewViewModel(
                 getStudentsUseCase = getStudentsUseCase,
                 getProjectsUseCase = getProjectsUseCase,
+                updateProjectUseCase = updateProjectUseCase,
                 getParticipationsUseCase = getParticipationsUseCase,
                 getInstitutesUseCase = getInstitutesUseCase,
                 getDepartmentsUseCase = getDepartmentsUseCase,

@@ -34,15 +34,15 @@ fun SpecialtyPicker(
     stateHolder: ExposedDropdownMenuStateHolder,
     dropdownItems: List<Specialty>,
     priority: Int,
-    onDataChange: (List<ProjectSpecialty>) -> Unit
+    onDataChange: (List<ProjectSpecialty>) -> Unit,
 ) {
-    val selectedIndexes = remember(1) {
+    val selectedIndexes = remember {
         val copy = itemsState.toList()
-        val temp = mutableMapOf<Pair<Int, Int>, MutableList<Boolean>>()
+        val temp = mutableStateMapOf<Int, MutableList<Boolean>>()
 
         copy.forEach { ps ->
             val course = ps.course
-            val id = Pair(ps.id, ps.specialty!!.id)
+            val id = ps.specialty!!.id
             val indexes = if (ps.specialty!!.name.endsWith("б")) {
                 MutableList<Boolean>(2) { true }
             } else {
@@ -52,7 +52,7 @@ fun SpecialtyPicker(
                 temp[id] = indexes
             } else {
                 val current = temp.getOrDefault(id, indexes.map { false }.toMutableList())
-                current[course-3] = true
+                current[course - 3] = true
                 temp[id] = current
             }
         }
@@ -61,6 +61,27 @@ fun SpecialtyPicker(
     }
 
     var projectSpecialtyId = -1
+
+    fun formProjectSpecialtyList(): List<ProjectSpecialty> {
+        val projectSpecialties = mutableListOf<ProjectSpecialty>()
+
+        selectedIndexes.forEach { (key, indexes) ->
+            indexes.forEachIndexed { index, ind ->
+                val specialty = dropdownItems.find { spec -> spec.id == key }!!
+                val projectSpecialty = ProjectSpecialty(
+                    id = 0,
+                    course = index + 3,
+                    specialty = specialty,
+                    priority = priority
+                )
+                projectSpecialties.add(projectSpecialty)
+            }
+        }
+
+        return projectSpecialties
+    }
+
+    onDataChange(formProjectSpecialtyList())
 
     BorderedTitledComposable(
         title = title
@@ -74,22 +95,7 @@ fun SpecialtyPicker(
                 itemsState,
                 selectedIndexes,
                 onChangeCourse = {
-                    val projectSpecialties = mutableListOf<ProjectSpecialty>()
-
-                    selectedIndexes.forEach { (key, indexes) ->
-                        indexes.forEachIndexed { index,  ind ->
-                            val specialty = dropdownItems.find { spec -> spec.id == key.second }!!
-                            val projectSpecialty = ProjectSpecialty(
-                                id = 0,
-                                course = index + 3,
-                                specialty = specialty,
-                                priority = priority
-                            )
-                            projectSpecialties.add(projectSpecialty)
-                        }
-                    }
-
-                    onDataChange(projectSpecialties)
+                    onDataChange(formProjectSpecialtyList())
                 }
             )
             Spacer(Modifier.size(8.dp))
@@ -116,7 +122,7 @@ fun SpecialtyPicker(
                         MutableList<Boolean>(3) { true }
                     }
 
-                    selectedIndexes[Pair(projectSpecialtyId, clickedSpecialty.id)] = indexes
+                    selectedIndexes[clickedSpecialty.id] = indexes
 
                     projectSpecialtyId--
                 }
@@ -198,16 +204,19 @@ fun ExposedProjectSpecialtyDropdownMenu(
 @Composable
 fun SpecialtyCoursesGrid(
     itemsState: MutableList<ProjectSpecialty>,
-    selectedIndexes: MutableMap<Pair<Int, Int>, MutableList<Boolean>>,
-    onChangeCourse: () -> Unit
+    selectedIndexes: MutableMap<Int, MutableList<Boolean>>,
+    onChangeCourse: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        itemsState.chunked(6).forEach { row ->
+        selectedIndexes.keys.chunked(6).forEach { row ->
             Row {
                 row.forEach { item ->
+                    val indexes = selectedIndexes[item]!!
+                    val projectSpecialty = itemsState.find { it.specialty!!.id == item }!!
+
                     Chip(
                         onClick = {},
                         enabled = false,
@@ -217,21 +226,21 @@ fun SpecialtyCoursesGrid(
                         shape = RoundedCornerShape(10.dp),
                         border = BorderStroke(2.dp, BlueMainDark),
                     ) {
-                        val id = Pair(item.id, item.specialty!!.id)
+                        val id = projectSpecialty.specialty!!.id
                         val currentIndexes = remember {
                             mutableStateListOf<Boolean>()
                         }
                         currentIndexes.clear()
-                        currentIndexes.addAll(selectedIndexes[id]!!)
+                        currentIndexes.addAll(indexes)
 
                         SpecialtyCoursesItem(
-                            title = item.specialty!!.name,
-                            itemId = item.id,
+                            title = projectSpecialty.specialty!!.name,
+                            itemId = projectSpecialty.specialty!!.id,
                             onChangeCourse = { specialtyCourses, itemId ->
                                 selectedIndexes[id] = specialtyCourses.map { it.selected }.toMutableList()
                                 if (specialtyCourses.none { sp -> sp.selected }) {
                                     itemsState.removeIf { ps ->
-                                        ps.id == itemId
+                                        ps.specialty!!.id == itemId
                                     }
 
                                     selectedIndexes.remove(id)
@@ -270,27 +279,37 @@ fun SpecialtyCoursesItem(
             color = BlueMainLight,
             fontWeight = FontWeight.Bold
         )
-        specialtyCourses.forEachIndexed { index, course ->
-            CourseItem(
-                modifier = Modifier
-                    .padding(
-                        top = 8.dp,
-                        bottom = 8.dp,
-                        start = 4.dp,
-                        end = if (index == specialtyCourses.lastIndex) 8.dp else 4.dp
-                    ),
-                title = course.toString(),
-                selected = selectedIndexes[index],
-                onClick = {
-                    selectedIndexes[index] = !selectedIndexes[index]
-                    onChangeCourse(
-                        List<SpecialtyCourse>(specialtyCourses.size) { innerIndex ->
-                            SpecialtyCourse(specialtyCourses[innerIndex], selectedIndexes[innerIndex])
-                        },
-                        itemId
+        Column {
+            Text(
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 4.dp),
+                text = "Курсы",
+                color = BlueMainLight,
+                //fontWeight = FontWeight.Bold
+            )
+            Row {
+                specialtyCourses.forEachIndexed { index, course ->
+                    CourseItem(
+                        modifier = Modifier
+                            .padding(
+                                top = 8.dp,
+                                bottom = 8.dp,
+                                start = 4.dp,
+                                end = if (index == specialtyCourses.lastIndex) 8.dp else 4.dp
+                            ),
+                        title = course.toString(),
+                        selected = selectedIndexes[index],
+                        onClick = {
+                            selectedIndexes[index] = !selectedIndexes[index]
+                            onChangeCourse(
+                                List<SpecialtyCourse>(specialtyCourses.size) { innerIndex ->
+                                    SpecialtyCourse(specialtyCourses[innerIndex], selectedIndexes[innerIndex])
+                                },
+                                itemId
+                            )
+                        }
                     )
                 }
-            )
+            }
         }
     }
 }
@@ -320,11 +339,17 @@ fun CourseItem(
             text = title,
             color = BlueMainLight
         )
-        RadioButton(
-            modifier = Modifier.padding(4.dp),
-            selected = selected,
-            onClick = null,
-            colors = RadioButtonDefaults.colors(selectedColor = BlueMainDark, unselectedColor = Color.Gray)
+//        RadioButton(
+//            modifier = Modifier.padding(4.dp),
+//            selected = selected,
+//            onClick = null,
+//            colors = RadioButtonDefaults.colors(selectedColor = BlueMainDark, unselectedColor = Color.Gray)
+//        )
+        Checkbox(
+            modifier = Modifier.padding(4.dp).clip(RoundedCornerShape(10.dp)),
+            checked = selected,
+            onCheckedChange = null,
+            colors = CheckboxDefaults.colors(checkedColor = BlueMainDark, uncheckedColor = Color.Gray)
         )
     }
 }

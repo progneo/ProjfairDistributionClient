@@ -25,7 +25,7 @@ class InstituteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateInstitute(institutes: Institute) {
-        instituteDao.update(institutes)
+        //instituteDao.update(institutes)
     }
 
     override suspend fun insertInstitute(institute: Institute) {

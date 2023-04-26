@@ -26,7 +26,7 @@ class SupervisorRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateSupervisor(supervisor: Supervisor) {
-        supervisorDao.update(supervisor)
+        //supervisorDao.update(supervisor)
     }
 
     override suspend fun insertSupervisor(supervisor: Supervisor) {

@@ -26,7 +26,7 @@ class ParticipationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateParticipation(participation: Participation) {
-        participationDao.update(participation)
+        //participationDao.update(participation)
     }
 
     override suspend fun insertParticipation(participation: Participation) {
