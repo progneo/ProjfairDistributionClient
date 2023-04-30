@@ -2,10 +2,10 @@ package common.file
 
 import com.grapecity.documents.excel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
-import ru.student.distribution.data.model.Institute
-import ru.student.distribution.data.model.Participation
-import ru.student.distribution.data.model.Project
-import ru.student.distribution.data.model.Student
+import ru.student.distribution.model.Institute
+import ru.student.distribution.model.Participation
+import ru.student.distribution.model.Project
+import ru.student.distribution.model.Student
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream

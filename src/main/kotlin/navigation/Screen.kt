@@ -1,10 +1,7 @@
 package navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class Screen(
@@ -18,6 +15,7 @@ enum class ScreenRoute {
     PREVIEW,
     PROJECT_DETAILS,
     PARTICIPATION_DETAILS,
+    REVIEW,
 }
 
 sealed class SharedScreen(
@@ -61,6 +59,13 @@ sealed class SharedScreen(
         icon = Icons.Filled.Settings
     )
 
+    object ReviewScreen : SharedScreen(
+        screenRoute = ScreenRoute.REVIEW,
+        parentScreenRoute = ScreenRoute.REVIEW,
+        title = "Заявки на проект",
+        icon = Icons.Filled.Done
+    )
+
     companion object {
         fun findByRoute(route: ScreenRoute): SharedScreen {
             return when (route) {
@@ -69,6 +74,7 @@ sealed class SharedScreen(
                 ScreenRoute.PREVIEW -> PreviewScreen
                 ScreenRoute.PROJECT_DETAILS -> ProjectDetailsScreen
                 ScreenRoute.PARTICIPATION_DETAILS -> ParticipationDetailsScreen
+                ScreenRoute.REVIEW -> ReviewScreen
             }
         }
     }

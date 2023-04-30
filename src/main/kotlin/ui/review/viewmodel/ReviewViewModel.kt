@@ -1,4 +1,4 @@
-package ui.preview.viewmodel
+package ui.review.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import domain.usecase.department.GetDepartmentsUseCase
@@ -11,8 +11,9 @@ import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import ui.common.BaseGodViewModel
 import ui.preview.widget.PreviewTabPage
+import javax.inject.Inject
 
-class PreviewViewModel constructor(
+class ReviewViewModel @Inject constructor(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val updateProjectUseCase: UpdateProjectUseCase,
@@ -32,5 +33,5 @@ class PreviewViewModel constructor(
     getSupervisorsUseCase = getSupervisorsUseCase
 ) {
 
-    var previewTabPage = mutableStateOf(PreviewTabPage.Students)
+    var reviewTabPage = mutableStateOf(PreviewTabPage.Students)
 }

@@ -5,6 +5,7 @@ import ui.details.participation.di.ParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.preview.di.PreviewComponent
+import ui.review.di.ReviewComponent
 import ui.uploaddata.di.UploadDataComponent
 import javax.inject.Scope
 
@@ -35,4 +36,5 @@ interface AppComponent {
     fun inject(projectDetailsComponent: ProjectDetailsComponent)
     fun inject(participationDetailsComponent: ParticipationDetailsComponent)
     fun inject(algorithmComponent: AlgorithmComponent)
+    fun inject(reviewComponent: ReviewComponent)
 }

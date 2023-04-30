@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 import navigation.Bundle
 import navigation.NavController
 import navigation.ScreenRoute
-import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PREVIEW_PROJECTS"
 
@@ -103,7 +102,6 @@ fun ProjectTableHead(
 fun ProjectTable(
     modifier: Modifier = Modifier,
     projects: List<Project>,
-    previewViewModel: PreviewViewModel,
     navController: NavController,
 ) {
     Column(

@@ -16,16 +16,16 @@ import common.compose.ExposedFilterDropdownMenu
 import common.compose.rememberExposedMenuStateHolder
 import domain.model.Department
 import domain.model.Institute
+import ui.common.BaseGodViewModel
 import ui.filter.FilterDialog
 import ui.filter.FilterEntity
 import ui.filter.FilterType
-import ui.preview.viewmodel.PreviewViewModel
 
 @Composable
 fun ProjectFilterDialog(
     visible: Boolean,
     instituteFilterConfiguration: InstituteFilterConfiguration,
-    previewViewModel: PreviewViewModel,
+    viewModel: BaseGodViewModel,
     onApplyClicked: (InstituteFilterConfiguration) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
@@ -35,7 +35,7 @@ fun ProjectFilterDialog(
     isInstituteSelected =
         instituteFilterConfiguration.selectedInstitute != Institute.Base
 
-    val departments = previewViewModel.filteredDepartments.collectAsState()
+    val departments = viewModel.filteredDepartments.collectAsState()
 
     FilterDialog(
         visible = visible,
@@ -44,14 +44,14 @@ fun ProjectFilterDialog(
                 ProjectFilterDropdownItem<Institute>(
                     filterType = FilterType.INSTITUTE,
                     selectedValue = instituteFilterConfiguration.selectedInstitute,
-                    items = previewViewModel.institutes.value,
+                    items = viewModel.institutes.value,
                     isEnabled = true,
                     isReset = isInstituteReset,
                 ) { index, _ ->
-                    instituteFilterConfiguration.selectedInstitute = previewViewModel.institutes.value[index]
+                    instituteFilterConfiguration.selectedInstitute = viewModel.institutes.value[index]
                     instituteFilterConfiguration.selectedDepartment = Department.Base
 
-                    previewViewModel.filterDepartments(if (index == 0) null else previewViewModel.institutes.value[index])
+                    viewModel.filterDepartments(if (index == 0) null else viewModel.institutes.value[index])
 
                     isInstituteSelected = index != 0
                     isDepartmentReset = true
@@ -65,7 +65,7 @@ fun ProjectFilterDialog(
                     isEnabled = isInstituteSelected,
                     isReset = isDepartmentReset,
                 ) { index, _ ->
-                    instituteFilterConfiguration.selectedDepartment = previewViewModel.filteredDepartments.value[index]
+                    instituteFilterConfiguration.selectedDepartment = viewModel.filteredDepartments.value[index]
 
                     isDepartmentReset = false
                 }

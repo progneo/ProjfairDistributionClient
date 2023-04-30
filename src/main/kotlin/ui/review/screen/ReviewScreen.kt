@@ -1,4 +1,4 @@
-package ui.preview.screen
+package ui.review.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -11,38 +11,34 @@ import common.compose.RadioButtonGroupRow
 import common.compose.Title
 import navigation.NavController
 import ui.filter.FilterConfigurationBlock
-import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
-import ui.preview.widget.PreviewTabPage.Projects
-import ui.preview.widget.PreviewTabPage.Students
-import ui.preview.widget.StudentsTabPage.Enrolled
-import ui.preview.widget.StudentsTabPage.Uncounted
 import ui.preview.widget.filter.ProjectFilterDialog
+import ui.review.viewmodel.ReviewViewModel
 
 @Composable
-fun PreviewScreen(
+fun ReviewScreen(
     navController: NavController,
-    previewViewModel: PreviewViewModel,
+    reviewViewModel: ReviewViewModel
 ) {
-    previewViewModel.filterDepartments(null)
+    reviewViewModel.filterDepartments(null)
 
-    var previewTabPage by remember { mutableStateOf(previewViewModel.previewTabPage.value) }
-    var studentsTabPage by remember { mutableStateOf(Enrolled) }
+    var previewTabPage by remember { mutableStateOf(reviewViewModel.reviewTabPage.value) }
+    var studentsTabPage by remember { mutableStateOf(StudentsTabPage.Enrolled) }
 
     var showFilter by remember { mutableStateOf(false) }
 
     fun studentTabPageToIndex(): Int {
         return when (studentsTabPage) {
-            Enrolled -> 0
-            Uncounted -> 1
+            StudentsTabPage.Enrolled -> 0
+            StudentsTabPage.Uncounted -> 1
         }
     }
 
-    val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
-    val projects = previewViewModel.filteredProjects.collectAsState()
+    val students = reviewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
+    val projects = reviewViewModel.filteredProjects.collectAsState()
 
-    val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
-    val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
+    val studentFilterConfiguration = reviewViewModel.studentFilterConfiguration.collectAsState()
+    val projectFilterConfiguration = reviewViewModel.projectFilterConfiguration.collectAsState()
 
     Scaffold(
         topBar = {
@@ -59,17 +55,17 @@ fun PreviewScreen(
                             selectedTabIndex = previewTabPage.ordinal,
                             values = PreviewTabPage.values().toList(),
                             onSelectedTab = {
-                                previewViewModel.previewTabPage.value = it as PreviewTabPage
+                                reviewViewModel.reviewTabPage.value = it as PreviewTabPage
                                 previewTabPage = it
                             }
                         )
 
-                        if (previewTabPage == Students) {
+                        if (previewTabPage == PreviewTabPage.Students) {
                             RadioButtonGroupRow(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 titles = listOf(
-                                    Title(Enrolled.title, Enrolled.name),
-                                    Title(Uncounted.title, Uncounted.name)
+                                    Title(StudentsTabPage.Enrolled.title, StudentsTabPage.Enrolled.name),
+                                    Title(StudentsTabPage.Uncounted.title, StudentsTabPage.Uncounted.name)
                                 ),
                                 selected = studentTabPageToIndex()
                             ) {
@@ -79,7 +75,7 @@ fun PreviewScreen(
                     }
 
                     when (previewTabPage) {
-                        Students -> {
+                        PreviewTabPage.Students -> {
                             FilterConfigurationBlock(
                                 studentFilterConfiguration.value
                             ) {
@@ -87,7 +83,7 @@ fun PreviewScreen(
                             }
                         }
 
-                        Projects -> {
+                        PreviewTabPage.Projects -> {
                             FilterConfigurationBlock(
                                 projectFilterConfiguration.value
                             ) {
@@ -100,22 +96,22 @@ fun PreviewScreen(
         },
     ) {
         when (previewTabPage) {
-            Students -> {
+            PreviewTabPage.Students -> {
                 Spacer(Modifier.size(16.dp))
                 StudentTable(
                     modifier = Modifier.padding(24.dp),
                     students = students.value,
                     navController,
                     onStudentClicked = { student ->
-                        previewViewModel.getParticipationByStudent(student.id)
+                        reviewViewModel.getParticipationByStudent(student.id)
                     },
                     onProjectLinkClicked = { projectId ->
-                        previewViewModel.getProjectById(projectId)
+                        reviewViewModel.getProjectById(projectId)
                     }
                 )
             }
 
-            Projects -> {
+            PreviewTabPage.Projects -> {
                 ProjectTable(
                     modifier = Modifier.padding(24.dp),
                     projects = projects.value,
@@ -127,19 +123,19 @@ fun PreviewScreen(
         ProjectFilterDialog(
             visible = showFilter,
             instituteFilterConfiguration = when (previewTabPage) {
-                Students -> studentFilterConfiguration.value.copy()
-                Projects -> projectFilterConfiguration.value.copy()
+                PreviewTabPage.Students -> studentFilterConfiguration.value.copy()
+                PreviewTabPage.Projects -> projectFilterConfiguration.value.copy()
             },
-            viewModel = previewViewModel,
+            viewModel = reviewViewModel,
             onApplyClicked = { filterConfig ->
                 when (previewTabPage) {
-                    Students -> {
-                        previewViewModel.studentFilterConfiguration.value = filterConfig.copy()
+                    PreviewTabPage.Students -> {
+                        reviewViewModel.studentFilterConfiguration.value = filterConfig.copy()
                     }
 
-                    Projects -> {
-                        previewViewModel.projectFilterConfiguration.value = filterConfig.copy()
-                        previewViewModel.filterProjects(filterConfig)
+                    PreviewTabPage.Projects -> {
+                        reviewViewModel.projectFilterConfiguration.value = filterConfig.copy()
+                        reviewViewModel.filterProjects(filterConfig)
                     }
                 }
             },

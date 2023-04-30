@@ -7,6 +7,7 @@ import ui.details.participation.di.ParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.preview.di.PreviewComponent
+import ui.review.di.ReviewComponent
 import ui.uploaddata.di.UploadDataComponent
 
 @Composable
@@ -57,6 +58,15 @@ fun CustomNavigationHost(
                 SharedScreen.ParticipationDetailsScreen.screenRoute,
                 ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
             )
+            component.render()
+        }
+
+        composable(SharedScreen.ReviewScreen.screenRoute) {
+            val component = components.getOrDefault(
+                SharedScreen.ReviewScreen.screenRoute,
+                ReviewComponent(navController = navController, appComponent = appComponent)
+            )
+            components[SharedScreen.ReviewScreen.screenRoute] = component
             component.render()
         }
     }.build()

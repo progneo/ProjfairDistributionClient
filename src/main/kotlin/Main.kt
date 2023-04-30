@@ -45,6 +45,7 @@ fun App() {
         Screen(SharedScreen.UploadScreen),
         Screen(SharedScreen.PreviewScreen),
         Screen(SharedScreen.AlgorithmScreen),
+        Screen(SharedScreen.ReviewScreen),
     )
     val navController by rememberNavController(navBarScreens[0])
     val currentScreen by remember {

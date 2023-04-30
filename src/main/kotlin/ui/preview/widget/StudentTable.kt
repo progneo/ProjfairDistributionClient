@@ -23,12 +23,12 @@ import common.compose.rememberForeverLazyListState
 import common.theme.BlueMainLight
 import common.theme.GrayLight
 import domain.model.Participation
+import domain.model.Project
 import domain.model.Student
 import kotlinx.coroutines.launch
 import navigation.Bundle
 import navigation.NavController
 import navigation.ScreenRoute
-import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PREVIEW_STUDENTS"
 
@@ -103,8 +103,9 @@ fun StudentTableHead(
 fun StudentTable(
     modifier: Modifier = Modifier,
     students: List<Student>,
-    previewViewModel: PreviewViewModel,
     navController: NavController,
+    onStudentClicked: (Student) -> List<Participation>,
+    onProjectLinkClicked: (Int) -> Project?
 ) {
     Column(
         modifier = modifier
@@ -146,7 +147,7 @@ fun StudentTable(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            studentParticipations = previewViewModel.getParticipationByStudent(student.id)
+                            studentParticipations = onStudentClicked(student)
                             studentState = student
                             showPopUp = true
                         },
@@ -165,7 +166,7 @@ fun StudentTable(
                 showPopUp = false
             },
             onProjectLinkClicked = { projectId ->
-                val project = previewViewModel.getProjectById(projectId)
+                val project = onProjectLinkClicked(projectId)
 
                 if (project != null) {
                     val bundle = Bundle().apply {
