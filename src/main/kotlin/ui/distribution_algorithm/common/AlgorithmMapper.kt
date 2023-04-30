@@ -2,32 +2,39 @@ package ui.distribution_algorithm.common
 
 import domain.model.*
 
-typealias AlgorithmStudent = ru.student.distribution.data.model.Student
-typealias AlgorithmProject = ru.student.distribution.data.model.Project
-typealias AlgorithmParticipation = ru.student.distribution.data.model.Participation
-typealias AlgorithmSpecialty = ru.student.distribution.data.model.Specialty
-typealias AlgorithmSupervisor = ru.student.distribution.data.model.Supervisor
+typealias AlgorithmStudent = ru.student.distribution.model.Student
+typealias AlgorithmProject = ru.student.distribution.model.Project
+typealias AlgorithmParticipation = ru.student.distribution.model.Participation
+typealias AlgorithmSpecialty = ru.student.distribution.model.Specialty
+typealias AlgorithmSupervisor = ru.student.distribution.model.Supervisor
+typealias AlgorithmDepartment = ru.student.distribution.model.Department
+typealias AlgorithmInstitute = ru.student.distribution.model.Institute
+typealias AlgorithmProjectSpecialty = ru.student.distribution.model.ProjectSpecialty
 
 fun Student.toAlgorithmModel(): AlgorithmStudent {
     return AlgorithmStudent(
         id = this.id,
         name = this.name,
-        group = this.group.substring(0, group.indexOfFirst { it == '-' }),
-        realGroup = this.group
+        groupFamily = this.group.substring(0, group.indexOfFirst { it == '-' }),
+        fullGroupName = this.group,
+        specialty = this.specialty!!.toAlgorithmModel(),
+        course = 1
     )
 }
 
-fun Project.toAlgorithmModel(groups: List<String>): AlgorithmProject {
+fun Project.toAlgorithmModel(): AlgorithmProject {
     return AlgorithmProject(
         id = this.id,
         title = this.name,
         places = this.places,
         freePlaces = this.places,
-        groups = groups,
+        busyPlaces = 0,
+        groups = this.projectSpecialties.map { it.specialty!!.toAlgorithmModel() }.toSet().toList(),
         difficulty = this.difficulty,
-        customer = this.customer ?: "",
-        //supervisors = this.supervisors TODO: update model
-        supervisors = listOf()
+        customer = this.customer,
+        supervisors = this.supervisors.map { it.toAlgorithmModel() },
+        department = this.supervisors.first().department!!.toAlgorithmModel(),
+        projectSpecialties = this.projectSpecialties.map { it.toAlgorithmModel() }
     )
 }
 
@@ -44,13 +51,41 @@ fun Participation.toAlgorithmModel(): AlgorithmParticipation {
 fun Specialty.toAlgorithmModel(): AlgorithmSpecialty {
     return AlgorithmSpecialty(
         id = this.id,
-        name = this.name
+        name = this.name,
+        institute = this.institute!!.toAlgorithmModel(),
+        department = this.department!!.toAlgorithmModel()
     )
 }
 
 fun Supervisor.toAlgorithmModel(): AlgorithmSupervisor {
     return AlgorithmSupervisor(
         id = this.id,
-        name = this.name
+        name = this.name,
+        department = this.department!!.toAlgorithmModel(),
+        position = this.position
+    )
+}
+
+fun Department.toAlgorithmModel(): AlgorithmDepartment {
+    return AlgorithmDepartment(
+        id = this.id,
+        name = this.name,
+        institute = this.institute!!.toAlgorithmModel()
+    )
+}
+
+fun Institute.toAlgorithmModel(): AlgorithmInstitute {
+    return AlgorithmInstitute(
+        id = this.id,
+        name = this.name,
+    )
+}
+
+fun ProjectSpecialty.toAlgorithmModel(): AlgorithmProjectSpecialty {
+    return AlgorithmProjectSpecialty(
+        id = this.id,
+        course = this.course!!,
+        specialty = this.specialty!!.toAlgorithmModel(),
+        priority = 1
     )
 }

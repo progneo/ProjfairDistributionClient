@@ -12,7 +12,7 @@ open class Project(
     @PrimaryKey override var id: Int,
     @SerializedName("title") override var name: String,
     var places: Int,
-    var freePlaces: Int = places,
+    var freePlaces: Int = places, //TODO: update with participations size
     var goal: String,
     var difficulty: Int,
     var description: String,

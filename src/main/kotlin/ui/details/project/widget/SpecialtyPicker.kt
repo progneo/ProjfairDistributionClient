@@ -67,14 +67,16 @@ fun SpecialtyPicker(
 
         selectedIndexes.forEach { (key, indexes) ->
             indexes.forEachIndexed { index, ind ->
-                val specialty = dropdownItems.find { spec -> spec.id == key }!!
-                val projectSpecialty = ProjectSpecialty(
-                    id = 0,
-                    course = index + 3,
-                    specialty = specialty,
-                    priority = priority
-                )
-                projectSpecialties.add(projectSpecialty)
+                if (ind) {
+                    val specialty = dropdownItems.find { spec -> spec.id == key }!!
+                    val projectSpecialty = ProjectSpecialty(
+                        id = 0,
+                        course = index + 3,
+                        specialty = specialty,
+                        priority = priority
+                    )
+                    projectSpecialties.add(projectSpecialty)
+                }
             }
         }
 
@@ -339,18 +341,18 @@ fun CourseItem(
             text = title,
             color = BlueMainLight
         )
-//        RadioButton(
-//            modifier = Modifier.padding(4.dp),
-//            selected = selected,
-//            onClick = null,
-//            colors = RadioButtonDefaults.colors(selectedColor = BlueMainDark, unselectedColor = Color.Gray)
-//        )
-        Checkbox(
-            modifier = Modifier.padding(4.dp).clip(RoundedCornerShape(10.dp)),
-            checked = selected,
-            onCheckedChange = null,
-            colors = CheckboxDefaults.colors(checkedColor = BlueMainDark, uncheckedColor = Color.Gray)
+        RadioButton(
+            modifier = Modifier.padding(4.dp),
+            selected = selected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(selectedColor = BlueMainDark, unselectedColor = Color.Gray)
         )
+//        Checkbox(
+//            modifier = Modifier.padding(4.dp).clip(RoundedCornerShape(10.dp)),
+//            checked = selected,
+//            onCheckedChange = null,
+//            colors = CheckboxDefaults.colors(checkedColor = BlueMainDark, uncheckedColor = Color.Gray)
+//        )
     }
 }
 

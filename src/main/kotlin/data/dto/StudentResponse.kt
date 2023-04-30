@@ -7,5 +7,6 @@ data class StudentResponse(
     val fio: String,
     val numz: String,
     val course: Int,
-    @SerializedName("training_group") val trainingGroup: String
+    @SerializedName("training_group") val trainingGroup: String,
+    val specialty: SpecialtyResponse
 )

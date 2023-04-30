@@ -13,6 +13,7 @@ import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
 import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
+import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
 import ui.preview.viewmodel.PreviewViewModel
 import ui.uploaddata.viewmodel.UploadDataViewModel
 
@@ -52,6 +53,29 @@ interface ViewModelModule {
                 getStudentsUseCase = getStudentsUseCase,
                 getProjectsUseCase = getProjectsUseCase,
                 updateProjectUseCase = updateProjectUseCase,
+                getParticipationsUseCase = getParticipationsUseCase,
+                getInstitutesUseCase = getInstitutesUseCase,
+                getDepartmentsUseCase = getDepartmentsUseCase,
+                getSpecialtiesUseCase = getSpecialtiesUseCase,
+                getSupervisorsUseCase = getSupervisorsUseCase
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideAlgorithmViewModel(
+            getStudentsUseCase: GetStudentsUseCase,
+            getProjectsUseCase: GetProjectsUseCase,
+            getParticipationsUseCase: GetParticipationsUseCase,
+            getInstitutesUseCase: GetInstitutesUseCase,
+            getDepartmentsUseCase: GetDepartmentsUseCase,
+            getSpecialtiesUseCase: GetSpecialtiesUseCase,
+            getSupervisorsUseCase: GetSupervisorsUseCase
+
+        ): AlgorithmViewModel {
+            return AlgorithmViewModel(
+                getStudentsUseCase = getStudentsUseCase,
+                getProjectsUseCase = getProjectsUseCase,
                 getParticipationsUseCase = getParticipationsUseCase,
                 getInstitutesUseCase = getInstitutesUseCase,
                 getDepartmentsUseCase = getDepartmentsUseCase,

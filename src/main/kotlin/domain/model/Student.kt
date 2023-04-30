@@ -11,12 +11,12 @@ open class Student(
     override var name: String,
     var group: String,
     var shouldDistribute: Boolean,
-    var specialtyId: Int,
+    var specialty: Specialty? = null
 ) : Entity(), RealmObject, FilterEntity {
 
-    constructor() : this(0, 0, "", "", true, 0)
+    constructor() : this(0, 0, "", "", true, null)
 
     override fun members(): List<Any?> {
-        return listOf(id, numz, name, group, shouldDistribute, specialtyId)
+        return listOf(id, numz, name, group, shouldDistribute, specialty)
     }
 }

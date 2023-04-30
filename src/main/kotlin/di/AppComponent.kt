@@ -3,6 +3,7 @@ package di
 import dagger.Component
 import ui.details.participation.di.ParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
+import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.preview.di.PreviewComponent
 import ui.uploaddata.di.UploadDataComponent
 import javax.inject.Scope
@@ -33,4 +34,5 @@ interface AppComponent {
     fun inject(previewComponent: PreviewComponent)
     fun inject(projectDetailsComponent: ProjectDetailsComponent)
     fun inject(participationDetailsComponent: ParticipationDetailsComponent)
+    fun inject(algorithmComponent: AlgorithmComponent)
 }

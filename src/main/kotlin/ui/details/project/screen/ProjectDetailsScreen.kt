@@ -147,6 +147,8 @@ fun ProjectDetailsScreen(
                     projectSpecialties = realmListOf(*(updatedDistributeSpecialties + updatedParticipationSpecialties).toTypedArray())
                 )
 
+                newProject.projectSpecialties.forEach(::println)
+
                 previewViewModel.updateProject(newProject)
             }
             ShowParticipationButton {
