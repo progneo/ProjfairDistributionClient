@@ -11,14 +11,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import common.theme.BlueMainLight
 import navigation.NavController
 
 @Composable
-fun BackButton(
+fun BaseButton(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    icon: ImageVector,
+    onClick: () -> Unit
 ) {
     Surface(
         modifier = modifier,
@@ -28,11 +30,11 @@ fun BackButton(
         Box(
             modifier = Modifier
                 .clickable {
-                    navController.navigateBack()
+                    onClick()
                 },
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = icon,
                 contentDescription = null,
                 tint = BlueMainLight,
                 modifier = Modifier
@@ -41,4 +43,18 @@ fun BackButton(
             )
         }
     }
+}
+
+@Composable
+fun BackButton(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
+    BaseButton(
+        modifier = modifier,
+        icon = Icons.Default.ArrowBack,
+        onClick = {
+            navController.navigateBack()
+        }
+    )
 }

@@ -49,7 +49,7 @@ fun StudentTableItem(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = student.id.toString(),
+            text = student.numz.toString(),
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .wrapContentWidth(),

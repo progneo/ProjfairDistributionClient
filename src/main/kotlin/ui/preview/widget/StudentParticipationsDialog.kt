@@ -38,7 +38,7 @@ fun StudentParticipationsDialog(
         shape = RoundedCornerShape(40.dp),
         onDismissRequest = {
             onDismissRequest()
-        }, textPart = {
+        }, mainPart = {
             Column {
                 Text(
                     text = title,

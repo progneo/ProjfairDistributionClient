@@ -30,7 +30,7 @@ fun FilterDialog(
 ) {
     VisibleDialog(
         visible = visible,
-        textPart = {
+        mainPart = {
             Column {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -82,10 +82,12 @@ fun FilterDialog(
 
 @Composable
 fun FilterConfigurationBlock(
+    modifier: Modifier = Modifier,
     instituteFilterConfiguration: InstituteFilterConfiguration,
     onClick: () -> Unit,
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         FilterValueText(instituteFilterConfiguration.selectedInstitute.name, FilterType.INSTITUTE)
@@ -93,7 +95,7 @@ fun FilterConfigurationBlock(
         FilterValueText(instituteFilterConfiguration.selectedDepartment.name, FilterType.DEPARTMENT)
         Spacer(Modifier.size(16.dp))
         Button(
-            onClick = { onClick() },
+            onClick = onClick,
             colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White)
         ) {
             Text(

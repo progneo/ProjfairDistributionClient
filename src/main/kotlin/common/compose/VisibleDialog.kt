@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 fun VisibleDialog(
     visible: Boolean,
     shape: RoundedCornerShape = RoundedCornerShape(0.dp),
-    textPart: @Composable () -> Unit,
+    mainPart: @Composable () -> Unit,
     buttonsPart: @Composable () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
@@ -22,7 +22,7 @@ fun VisibleDialog(
         onDismissRequest = {
             onDismissRequest()
         }, text = {
-            textPart()
+            mainPart()
         },
         buttons = {
             buttonsPart()

@@ -21,7 +21,7 @@ fun DownloadProgressDialog(
 ) {
     VisibleDialog(
         visible = visible,
-        textPart = {
+        mainPart = {
             Column(
                 modifier = Modifier.size(width = 400.dp, height = Dp.Unspecified).fillMaxWidth().wrapContentHeight()
             ) {

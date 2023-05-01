@@ -2,11 +2,14 @@ package ui.review.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import common.compose.BaseButton
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
 import navigation.NavController
@@ -14,6 +17,7 @@ import ui.filter.FilterConfigurationBlock
 import ui.preview.widget.*
 import ui.preview.widget.filter.ProjectFilterDialog
 import ui.review.viewmodel.ReviewViewModel
+import ui.review.widget.OthersDialog
 
 @Composable
 fun ReviewScreen(
@@ -26,6 +30,7 @@ fun ReviewScreen(
     var studentsTabPage by remember { mutableStateOf(StudentsTabPage.Enrolled) }
 
     var showFilter by remember { mutableStateOf(false) }
+    var showOthers by remember { mutableStateOf(false) }
 
     fun studentTabPageToIndex(): Int {
         return when (studentsTabPage) {
@@ -74,22 +79,38 @@ fun ReviewScreen(
                         }
                     }
 
-                    when (previewTabPage) {
-                        PreviewTabPage.Students -> {
-                            FilterConfigurationBlock(
-                                studentFilterConfiguration.value
-                            ) {
-                                showFilter = true
+                    Row {
+                        when (previewTabPage) {
+                            PreviewTabPage.Students -> {
+                                FilterConfigurationBlock(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically),
+                                    studentFilterConfiguration.value
+                                ) {
+                                    showFilter = true
+                                }
+                            }
+
+                            PreviewTabPage.Projects -> {
+                                FilterConfigurationBlock(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically),
+                                    projectFilterConfiguration.value
+                                ) {
+                                    showFilter = true
+                                }
                             }
                         }
 
-                        PreviewTabPage.Projects -> {
-                            FilterConfigurationBlock(
-                                projectFilterConfiguration.value
-                            ) {
-                                showFilter = true
+                        Spacer(Modifier.size(32.dp))
+
+                        BaseButton(
+                            modifier = Modifier,
+                            icon = Icons.Default.Menu,
+                            onClick = {
+                                showOthers = true
                             }
-                        }
+                        )
                     }
                 }
             }
@@ -141,6 +162,13 @@ fun ReviewScreen(
             },
             onDismissRequest = {
                 showFilter = false
+            }
+        )
+
+        OthersDialog(
+            visible = showOthers,
+            onDismissRequest = {
+                showOthers = false
             }
         )
     }

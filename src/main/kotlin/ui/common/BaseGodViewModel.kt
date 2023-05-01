@@ -96,14 +96,6 @@ open class BaseGodViewModel(
             getProjectsUseCase().collect {
                 _projects.value = it.list
                 filteredProjects.value = it.list
-
-                it.list.forEach { project ->
-                    val specs = project.projectSpecialties.map { psp -> psp.specialty!!.institute!!.id }.toSet()
-
-                    if (specs.size > 1) {
-                        println("${project.id} = ${project.places} = ${specs.size} = ${project.name}")
-                    }
-                }
             }
         }
     }

@@ -81,6 +81,8 @@ fun PreviewScreen(
                     when (previewTabPage) {
                         Students -> {
                             FilterConfigurationBlock(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically),
                                 studentFilterConfiguration.value
                             ) {
                                 showFilter = true
@@ -89,6 +91,8 @@ fun PreviewScreen(
 
                         Projects -> {
                             FilterConfigurationBlock(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically),
                                 projectFilterConfiguration.value
                             ) {
                                 showFilter = true
