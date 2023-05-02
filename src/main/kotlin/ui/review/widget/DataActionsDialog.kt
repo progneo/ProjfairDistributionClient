@@ -63,6 +63,7 @@ fun DataActionsDialog(
                         .defaultMinSize(minHeight = 50.dp)
                         .clip(shape = RoundedCornerShape(14.dp))
                         .background(color = BlueMainLight)
+                        .height(IntrinsicSize.Min)
                         .clickable {
                             showDirPicker = true
                         }
@@ -74,21 +75,20 @@ fun DataActionsDialog(
                         modifier = Modifier
                             .padding(horizontal = 32.dp)
                             .align(Alignment.CenterVertically)
-                            .fillMaxWidth(0.7f)
+                            .weight(3f)
                     )
                     Text(
                         text = "Выбрать",
                         fontSize = 16.sp,
                         color = BlueMainDark,
-                        textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Max)
+                            .fillMaxSize()
+                            .weight(1f)
                             .padding(4.dp)
                             .clip(shape = RoundedCornerShape(14.dp))
                             .background(color = Color.White)
-                            //.height(IntrinsicSize.Min)
-                            //.wrapContentHeight(align = Alignment.CenterVertically)
+                            .wrapContentHeight(Alignment.CenterVertically),
+                        textAlign = TextAlign.Center
                     )
                 }
                 Spacer(Modifier.size(16.dp))
