@@ -17,7 +17,7 @@ import ui.filter.FilterConfigurationBlock
 import ui.preview.widget.*
 import ui.preview.widget.filter.ProjectFilterDialog
 import ui.review.viewmodel.ReviewViewModel
-import ui.review.widget.OthersDialog
+import ui.review.widget.DataActionsDialog
 
 @Composable
 fun ReviewScreen(
@@ -30,7 +30,7 @@ fun ReviewScreen(
     var studentsTabPage by remember { mutableStateOf(StudentsTabPage.Enrolled) }
 
     var showFilter by remember { mutableStateOf(false) }
-    var showOthers by remember { mutableStateOf(false) }
+    var showDataActions by remember { mutableStateOf(false) }
 
     fun studentTabPageToIndex(): Int {
         return when (studentsTabPage) {
@@ -108,7 +108,7 @@ fun ReviewScreen(
                             modifier = Modifier,
                             icon = Icons.Default.Menu,
                             onClick = {
-                                showOthers = true
+                                showDataActions = true
                             }
                         )
                     }
@@ -165,10 +165,10 @@ fun ReviewScreen(
             }
         )
 
-        OthersDialog(
-            visible = showOthers,
+        DataActionsDialog(
+            visible = showDataActions,
             onDismissRequest = {
-                showOthers = false
+                showDataActions = false
             }
         )
     }

@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.dp
-import common.file.openFileDialog
 import common.theme.WhiteDark
 import kotlinx.coroutines.launch
 import navigation.NavController
@@ -146,16 +144,16 @@ fun UploadDataScreenView(
             modifier = Modifier
                 .align(Alignment.Center)
         ) {
-            val file = openFileDialog(
-                window = ComposeWindow(),
-                title = "SHIT",
-                allowedExtensions = listOf(".xlsx", ".xls"),
-                allowMultiSelection = false
-            )
-
-            uploadDataViewModel.setIntent(
-                intent = UploadDataContract.Intent.UploadExceptionalStudents(file)
-            )
+//            val file = openFileDialog(
+//                window = ComposeWindow(),
+//                title = "SHIT",
+//                allowedExtensions = listOf(".xlsx", ".xls"),
+//                allowMultiSelection = false
+//            )
+//
+//            uploadDataViewModel.setIntent(
+//                intent = UploadDataContract.Intent.UploadExceptionalStudents(file)
+//            )
         }
 
         UpdateDataButton(

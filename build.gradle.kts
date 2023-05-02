@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.compose") version "1.3.0"
     id("org.jetbrains.kotlin.kapt") version "1.8.0"
     id("io.realm.kotlin") version "1.6.1"
-    application
+    //application
 }
 
 group = "ru.student.distribution"
@@ -58,6 +58,8 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:1.0.0")
     implementation("br.com.devsrsouza.compose.icons.jetbrains:simple-icons:1.0.0")
     implementation("br.com.devsrsouza.compose.icons.jetbrains:octicons:1.0.0")
+
+    implementation("com.darkrockstudios:mpfilepicker:1.1.0")
 }
 
 kapt {
@@ -74,6 +76,20 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-application {
-    mainClass.set("MainKt")
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+        nativeDistributions {
+            includeAllModules = true
+            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi)
+            packageName = "Adminka"
+            packageVersion = "1.0.0"
+            outputBaseDir.set(project.buildDir.resolve("E:/"))
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
+            windows {
+                //exePackageVersion = "1.0.0"
+                msiPackageVersion = "1.0.0"
+            }
+        }
+    }
 }

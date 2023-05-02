@@ -1,18 +1,18 @@
 package common.compose
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import common.theme.BlueMainLight
 import navigation.NavController
 
@@ -20,7 +20,7 @@ import navigation.NavController
 fun BaseButton(
     modifier: Modifier = Modifier,
     icon: ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Surface(
         modifier = modifier,
@@ -57,4 +57,45 @@ fun BackButton(
             navController.navigateBack()
         }
     )
+}
+
+@Composable
+fun TitledButton(
+    modifier: Modifier = Modifier,
+    title: String,
+    buttonTitle: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .fillMaxWidth(0.6f),
+            text = title,
+            color = Color.Black,
+            fontSize = 16.sp
+        )
+
+        Button(
+            enabled = enabled,
+            onClick = {
+                onClick()
+            },
+            shape = RoundedCornerShape(50.dp),
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .size(width = 100.dp, height = 30.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White),
+            contentPadding = PaddingValues(1.dp)
+        ) {
+            Text(
+                text = buttonTitle,
+                color = Color.White,
+            )
+        }
+    }
 }
