@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import common.file.ExportDataToExcel
 import common.theme.WhiteDark
+import domain.model.GeneratedDistribution
 import navigation.NavController
 import ru.student.distribution.domain.distribution.DistributionLauncher
 import ru.student.distribution.domain.distribution.DistributionRule
@@ -38,17 +38,24 @@ fun AlgorithmScreen(
                 specialInstitute = algorithmViewModel.institutes.value.find { it.id == 0 }!!
             ).launch()
 
-            distributionResults.institutesResults.forEach { instituteResults ->
-                ExportDataToExcel.writeProjectsWithStudents(
-                    students = algorithmViewModel.students.value.toList(),
-                    notApplied = instituteResults.notAppliedStudents,
-                    projects = instituteResults.projects,
-                    participations = instituteResults.participation,
-                    institute = instituteResults.institute,
-                    isUniformly = true,
-                    filePath = "E:/yadmin/"
+//            distributionResults.institutesResults.forEach { instituteResults ->
+//                ExportDataToExcel.writeProjectsWithStudents(
+//                    students = algorithmViewModel.students.value.toList(),
+//                    notApplied = instituteResults.notAppliedStudents,
+//                    projects = instituteResults.projects,
+//                    participations = instituteResults.participation,
+//                    institute = instituteResults.institute,
+//                    isUniformly = true,
+//                    filePath = "E:/yadmin/"
+//                )
+//            }
+
+            algorithmViewModel.saveStudentsByProjects(
+                GeneratedDistribution(
+                    id = 0,
+                    results = distributionResults
                 )
-            }
+            )
         }
     }
 }

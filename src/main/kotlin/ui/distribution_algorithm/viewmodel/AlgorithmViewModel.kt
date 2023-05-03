@@ -1,7 +1,9 @@
 package ui.distribution_algorithm.viewmodel
 
 import base.mvi.BaseViewModel
+import domain.model.GeneratedDistribution
 import domain.usecase.department.GetDepartmentsUseCase
+import domain.usecase.file.SaveStudentsByProjectsFileUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
@@ -22,6 +24,7 @@ class AlgorithmViewModel @Inject constructor(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
+    private val saveStudentsByProjectsFileUseCase: SaveStudentsByProjectsFileUseCase
 ): BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     val students = MutableStateFlow<List<AlgorithmStudent>>(emptyList())
@@ -96,6 +99,10 @@ class AlgorithmViewModel @Inject constructor(
                 supervisors.value = it.list.map { s -> s.toAlgorithmModel() }
             }
         }
+    }
+
+    fun saveStudentsByProjects(generatedDistribution: GeneratedDistribution) {
+        saveStudentsByProjectsFileUseCase(generatedDistribution)
     }
 
     override fun createInitialState(): PreviewContract.ScreenState {

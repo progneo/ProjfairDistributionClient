@@ -60,6 +60,8 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons.jetbrains:octicons:1.0.0")
 
     implementation("com.darkrockstudios:mpfilepicker:1.1.0")
+
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.0")
 }
 
 kapt {
