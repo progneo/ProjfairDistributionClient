@@ -11,8 +11,9 @@ import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import ui.common.BaseGodViewModel
 import ui.preview.widget.PreviewTabPage
+import javax.inject.Inject
 
-class PreviewViewModel constructor(
+class PreviewViewModel @Inject constructor(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val updateProjectUseCase: UpdateProjectUseCase,
@@ -31,6 +32,5 @@ class PreviewViewModel constructor(
     getSpecialtiesUseCase = getSpecialtiesUseCase,
     getSupervisorsUseCase = getSupervisorsUseCase
 ) {
-
     var previewTabPage = mutableStateOf(PreviewTabPage.Students)
 }

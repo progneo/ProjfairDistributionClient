@@ -20,6 +20,7 @@ class ProjectDetailsComponent(
     lateinit var previewViewModel: PreviewViewModel
 
     init {
+        println("COMPONENT PROJECT INIT")
         appComponent.inject(this)
     }
 

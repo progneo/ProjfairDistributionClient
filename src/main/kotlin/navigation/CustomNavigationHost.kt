@@ -19,55 +19,57 @@ fun CustomNavigationHost(
 
     NavigationHost(navController) {
         composable(SharedScreen.UploadScreen.screenRoute) {
-            val component = components.getOrDefault(
-                SharedScreen.UploadScreen.screenRoute,
-                UploadDataComponent(navController = navController, appComponent = appComponent)
-            )
+            var component = components[SharedScreen.UploadScreen.screenRoute]
+            if (component == null) {
+                component = UploadDataComponent(navController = navController, appComponent = appComponent)
+            }
             components[SharedScreen.UploadScreen.screenRoute] = component
             component.render()
         }
 
         composable(SharedScreen.AlgorithmScreen.screenRoute) {
-            val component = components.getOrDefault(
-                SharedScreen.AlgorithmScreen.screenRoute,
-                AlgorithmComponent(navController = navController, appComponent = appComponent)
-            )
-            components[SharedScreen.AlgorithmScreen.screenRoute] = component
-            component.render()
+            var component = components[SharedScreen.AlgorithmScreen.screenRoute]
+            if (component == null) {
+                component = AlgorithmComponent(navController = navController, appComponent = appComponent)
+            }
+            components[SharedScreen.AlgorithmScreen.screenRoute] = component!!
+            component!!.render()
         }
 
         composable(SharedScreen.PreviewScreen.screenRoute) {
-            val component = components.getOrDefault(
-                SharedScreen.PreviewScreen.screenRoute,
-                PreviewComponent(navController = navController, appComponent = appComponent)
-            )
-            components[SharedScreen.PreviewScreen.screenRoute] = component
-            component.render()
+            var component = components[SharedScreen.PreviewScreen.screenRoute]
+            if (component == null) {
+                component = PreviewComponent(navController = navController, appComponent = appComponent)
+            }
+            components[SharedScreen.PreviewScreen.screenRoute] = component!!
+            component!!.render()
         }
 
         composable(SharedScreen.ProjectDetailsScreen.screenRoute) {
-            val component = components.getOrDefault(
-                SharedScreen.ProjectDetailsScreen.screenRoute,
-                ProjectDetailsComponent(navController = navController, appComponent = appComponent)
-            )
-            component.render()
+            var component = components[SharedScreen.ProjectDetailsScreen.screenRoute]
+            if (component == null) {
+                component = ProjectDetailsComponent(navController = navController, appComponent = appComponent)
+            }
+            components[SharedScreen.ProjectDetailsScreen.screenRoute] = component!!
+            component!!.render()
         }
 
         composable(SharedScreen.ParticipationDetailsScreen.screenRoute) {
-            val component = components.getOrDefault(
-                SharedScreen.ParticipationDetailsScreen.screenRoute,
-                ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
-            )
-            component.render()
+            var component = components[SharedScreen.ParticipationDetailsScreen.screenRoute]
+            if (component == null) {
+                component = ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
+            }
+            components[SharedScreen.ParticipationDetailsScreen.screenRoute] = component!!
+            component!!.render()
         }
 
         composable(SharedScreen.ReviewScreen.screenRoute) {
-            val component = components.getOrDefault(
-                SharedScreen.ReviewScreen.screenRoute,
-                ReviewComponent(navController = navController, appComponent = appComponent)
-            )
-            components[SharedScreen.ReviewScreen.screenRoute] = component
-            component.render()
+            var component = components[SharedScreen.ReviewScreen.screenRoute]
+            if (component == null) {
+                component = ReviewComponent(navController = navController, appComponent = appComponent)
+            }
+            components[SharedScreen.ReviewScreen.screenRoute] = component!!
+            component!!.render()
         }
     }.build()
 }

@@ -8,8 +8,9 @@ import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import kotlinx.coroutines.launch
 import ui.uploaddata.contract.UploadDataContract
 import java.io.File
+import javax.inject.Inject
 
-class UploadDataViewModel constructor(
+class UploadDataViewModel @Inject constructor(
     private val syncDataUseCase: SyncDataUseCase,
     private val uploadExceptionalStudentsUseCase: UploadExceptionalStudentsUseCase,
     downloadProgressInteractor: DownloadProgressInteractor,
@@ -30,6 +31,7 @@ class UploadDataViewModel constructor(
         when (intent) {
             is UploadDataContract.Intent.SyncData -> syncData()
             is UploadDataContract.Intent.UploadExceptionalStudents -> uploadExceptionalStudents(intent.file)
+            else -> {}
         }
     }
 
@@ -89,6 +91,8 @@ class UploadDataViewModel constructor(
                     }
                 }
             }
+
+            else -> {}
         }
     }
 }

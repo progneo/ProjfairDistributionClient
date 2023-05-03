@@ -27,4 +27,8 @@ class Bundle {
     }
 
     fun getAny(tag: String): Any? = args[tag]
+
+    override fun toString(): String {
+        return args.toString()
+    }
 }

@@ -144,7 +144,7 @@ open class BaseGodViewModel(
 
     private fun getParticipations() {
         coroutineScope.launch {
-            getParticipationsUseCase().collect {
+            getParticipationsUseCase().collect { it ->
                 _participations.value = it.list
 
                 val set = it.list.map { p -> p.studentId }.toSet()
@@ -159,8 +159,8 @@ open class BaseGodViewModel(
                     }
                 }
 
-                _studentsWithParticipations.value = with
-                _studentsWithoutParticipations.value = without
+                _studentsWithParticipations.value = with.sortedWith(compareBy { student -> student.name })
+                _studentsWithoutParticipations.value = without.sortedWith(compareBy { student -> student.name })
             }
         }
     }

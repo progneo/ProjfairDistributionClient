@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -119,6 +121,24 @@ fun DataActionsDialog(
                 )
                 Spacer(Modifier.size(2.dp))
                 Divider(thickness = 2.dp, color = BlueMainLight)
+                Spacer(Modifier.size(8.dp))
+                Button(
+                    onClick = {
+
+                    },
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .align(Alignment.CenterHorizontally)
+                        .clip(shape = RoundedCornerShape(14.dp)),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White)
+                ) {
+                    Text(
+                        text = "Загрузить",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
                 Spacer(Modifier.size(24.dp))
             }
 

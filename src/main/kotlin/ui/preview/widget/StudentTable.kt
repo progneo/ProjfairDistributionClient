@@ -46,8 +46,9 @@ fun StudentTableItem(
             modifier = Modifier
                 .fillMaxWidth(0.6f),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+            overflow = TextOverflow.Ellipsis,
+
+            )
         Text(
             text = student.numz.toString(),
             modifier = Modifier
@@ -70,6 +71,9 @@ fun StudentTableItem(
 @Composable
 fun StudentTableHead(
     modifier: Modifier = Modifier,
+//    nameFilterState: TableFilterState,
+//    numzFilterState: TableFilterState,
+//    specialtyFilterState: TableFilterState
 ) {
     Row(
         modifier = modifier
@@ -77,12 +81,23 @@ fun StudentTableHead(
             .background(GrayLight)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(
-            text = "ФИО",
+        Row(
             modifier = Modifier
                 .fillMaxWidth(0.6f)
+//                .clickable {
+//                    b.value = !b.value
+//                }
                 .wrapContentWidth()
-        )
+        ) {
+            Text(
+                text = "ФИО",
+                modifier = Modifier
+            )
+//            Icon(
+//                if (b.value) Icons.Default.ArrowBack else Icons.Default.ArrowForward,
+//                ""
+//            )
+        }
         Text(
             text = "Номер з.к.",
             modifier = Modifier
@@ -105,7 +120,7 @@ fun StudentTable(
     students: List<Student>,
     navController: NavController,
     onStudentClicked: (Student) -> List<Participation>,
-    onProjectLinkClicked: (Int) -> Project?
+    onProjectLinkClicked: (Int) -> Project?,
 ) {
     Column(
         modifier = modifier

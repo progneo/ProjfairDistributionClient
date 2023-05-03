@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import common.compose.*
@@ -32,26 +33,24 @@ fun ProjectDetailsScreen(
         val distributeSpecialtyStateHolder = rememberExposedMenuStateHolder()
         val participationSpecialtyStateHolder = rememberExposedMenuStateHolder()
 
-        val supervisors = remember {
+        val supervisors = rememberSaveable {
             mutableStateListOf(*project.supervisors.toTypedArray())
         }
-        val supervisorDropDownItems = previewViewModel.getFilteredSupervisors(project.department!!)
+        val supervisorDropDownItems = rememberSaveable {
+            mutableStateOf(previewViewModel.getFilteredSupervisors(project.department!!))
+        }
 
-        val distributeSpecialties = remember {
+        val distributeSpecialties = rememberSaveable {
             mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
                 ps.priority == null || ps.priority == 1
             }.toTypedArray())
         }
 
-        val distributeSpecialtyDropDownItems = previewViewModel.specialties.value
-
-        val participationSpecialties = remember {
+        val participationSpecialties = rememberSaveable {
             mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
                 ps.priority == null || ps.priority == 2
             }.toTypedArray())
         }
-
-        val participationSpecialtyDropDownItems = previewViewModel.specialties.value
 
         //new project parameters
         var title = project.name
@@ -81,7 +80,7 @@ fun ProjectDetailsScreen(
             isTitleChangeable = false,
             stateHolder = supervisorStateHolder,
             itemsState = supervisors,
-            dropdownItems = supervisorDropDownItems,
+            dropdownItems = supervisorDropDownItems.value,
             toShortName = String::toShortName
         ) {
             updatedSupervisors = it
@@ -110,7 +109,7 @@ fun ProjectDetailsScreen(
             title = "Специальности для молчунов",
             itemsState = distributeSpecialties,
             stateHolder = distributeSpecialtyStateHolder,
-            dropdownItems = distributeSpecialtyDropDownItems,
+            dropdownItems = previewViewModel.specialties.value,
             priority = 1,
             onDataChange = {
                 updatedDistributeSpecialties = it
@@ -119,7 +118,7 @@ fun ProjectDetailsScreen(
             title = "Специальности для заявок",
             itemsState = participationSpecialties,
             stateHolder = participationSpecialtyStateHolder,
-            dropdownItems = participationSpecialtyDropDownItems,
+            dropdownItems = previewViewModel.specialties.value,
             priority = 2,
             onDataChange = {
                 updatedParticipationSpecialties = it
@@ -154,6 +153,7 @@ fun ProjectDetailsScreen(
             ShowParticipationButton {
                 val bundle = Bundle()
                 bundle.put("project", project)
+                println(bundle)
                 navController.navigate(ScreenRoute.PARTICIPATION_DETAILS, bundle)
             }
         }
