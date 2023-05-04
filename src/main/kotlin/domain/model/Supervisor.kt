@@ -12,13 +12,11 @@ open class Supervisor(
     var roles: RealmList<SupervisorRole> = realmListOf(),
     override var name: String,
     var department: Department? = null,
-    var position: String
 ): Entity(), RealmObject, FilterEntity {
 
     constructor() : this(
         id = 0,
         name = "",
-        position = ""
     )
 
     override fun members(): List<Any?> {

@@ -10,6 +10,5 @@ fun supervisorDetailsResponseToSupervisor(supervisor: SupervisorDetailsResponse)
         roles = realmListOf(),
         name = supervisor.fio,
         department = departmentResponseToDepartment(supervisor.department),
-        position = supervisor.position
     )
 }

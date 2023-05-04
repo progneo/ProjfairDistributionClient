@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
+import kotlinx.coroutines.launch
 import navigation.NavController
 import ui.details.project.widget.EditableSearchField
 import ui.filter.FilterConfigurationBlock
@@ -44,6 +45,19 @@ fun PreviewScreen(
 
     val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
     val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
+
+    rememberCoroutineScope().launch {
+        previewViewModel.searchStudentString.collect {
+            previewViewModel.filterStudentsByString(it)
+        }
+    }
+
+    rememberCoroutineScope().launch {
+        previewViewModel.searchProjectString.collect {
+            previewViewModel.filterProjectsByString(it)
+        }
+    }
+
 
     Scaffold(
         topBar = {
@@ -92,9 +106,10 @@ fun PreviewScreen(
                                 Spacer(Modifier.size(24.dp))
                                 EditableSearchField(
                                     modifier = Modifier.size(width = 300.dp, height = Dp.Unspecified),
+                                    text = previewViewModel.lastSearchStudentString.collectAsState().value,
                                     content = "Поиск",
                                     onDataChanged = { searchString ->
-                                        previewViewModel.filterStudentsByString(searchString)
+                                        previewViewModel.lastSearchStudentString.value = searchString
                                     }
                                 )
                             }
@@ -112,9 +127,10 @@ fun PreviewScreen(
                                 Spacer(Modifier.size(24.dp))
                                 EditableSearchField(
                                     modifier = Modifier.size(width = 300.dp, height = Dp.Unspecified),
+                                    text = previewViewModel.lastSearchProjectString.collectAsState().value,
                                     content = "Поиск",
                                     onDataChanged = { searchString ->
-                                        previewViewModel.filterProjectsByString(searchString)
+                                        previewViewModel.lastSearchProjectString.value = searchString
                                     }
                                 )
                             }

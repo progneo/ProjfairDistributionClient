@@ -14,15 +14,11 @@ object StudentFilterApplier {
         if (institute == null) return students
         else if (department == null) {
             return students.filter { stud ->
-                //TODO: add institute filter
-                1==1
-                //proj.department?.institute?.id == institute.id
+                stud.specialty?.institute?.id == institute.id
             }
         }
         return students.filter { stud ->
-            //TODO: add department filter
-            1==1
-            //proj.department?.id == department.id
+            stud.specialty?.department?.id == department.id
         }
     }
 }

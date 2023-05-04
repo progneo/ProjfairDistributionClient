@@ -43,7 +43,9 @@ class UploadDataRepositoryImpl @Inject constructor(
     override suspend fun rebaseData(): Boolean {
         return withContext(ioDispatcher) {
             try {
+                println("started")
                 studentRepository.rebaseStudents()
+                println("after students")
                 projectRepository.rebaseProjects()
                 participationRepository.rebaseParticipations()
                 instituteRepository.uploadInstitutes()

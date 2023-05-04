@@ -10,14 +10,9 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.theme.BlueMainDark
@@ -26,13 +21,10 @@ import common.theme.BlueMainLight
 @Composable
 fun EditableSearchField(
     modifier: Modifier = Modifier,
+    text: String,
     content: String,
     onDataChanged: (String) -> Unit,
 ) {
-    var contentText by rememberSaveable(TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
-    }
-
     TextField(
         modifier = modifier.border(
             border = BorderStroke(2.dp, BlueMainDark),
@@ -40,10 +32,9 @@ fun EditableSearchField(
         ),
         singleLine = true,
         shape = RoundedCornerShape(14.dp),
-        value = contentText,
+        value = text,
         onValueChange = {
-            contentText = it
-            onDataChanged(it.text)
+            onDataChanged(it)
         },
         textStyle = TextStyle(
             fontSize = 18.sp,

@@ -12,6 +12,7 @@ import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import ui.filter.FilterEntity
 import ui.filter.FilterType
@@ -66,8 +67,10 @@ open class BaseGodViewModel(
     val projectFilterConfiguration =
         MutableStateFlow<InstituteFilterConfiguration>(InstituteFilterConfiguration(Institute.Base, Department.Base))
 
-    private var lastSearchStudentString = ""
-    private var lastSearchProjectString = ""
+    var lastSearchStudentString = MutableStateFlow("")
+    var searchStudentString = lastSearchStudentString.debounce(400)
+    var lastSearchProjectString = MutableStateFlow("")
+    var searchProjectString = lastSearchProjectString.debounce(400)
 
     init {
         getStudents()
@@ -105,6 +108,8 @@ open class BaseGodViewModel(
                 _projects.value = it.list
                 _filteredProjectsByDepartments.value = it.list
                 filteredProjects.value = it.list
+
+                it.list.forEach(::println)
             }
         }
     }
@@ -211,8 +216,8 @@ open class BaseGodViewModel(
 
     fun filterStudentsByString(searchString: String) {
         val search = searchString.lowercase()
+        lastSearchStudentString.value = search
         _filteredStudentsWithParticipations.value = _filteredStudentsWithParticipationsByDepartments.value.filter { student ->
-            println(student)
             student.name.lowercase().contains(search) ||
                     student.group.lowercase().contains(search) ||
                     student.numz.toString().lowercase().contains(search) ||
@@ -246,12 +251,12 @@ open class BaseGodViewModel(
         )
         _filteredStudentsWithParticipationsByDepartments.value = newStudentsWithParticipations
         _filteredStudentsWithoutParticipationsByDepartments.value = newStudentsWithoutParticipations
-        filterStudentsByString(lastSearchStudentString)
+        filterStudentsByString(lastSearchStudentString.value)
     }
 
     fun filterProjectsByString(searchString: String) {
         val search = searchString.lowercase()
-        lastSearchProjectString = search
+        lastSearchProjectString.value = search
         filteredProjects.value = _filteredProjectsByDepartments.value.filter { project ->
             project.name.lowercase().contains(search) ||
                     project.department?.name?.lowercase()?.contains(search) == true ||
@@ -275,7 +280,7 @@ open class BaseGodViewModel(
             department = department
         )
         _filteredProjectsByDepartments.value = newProjects
-        filterProjectsByString(lastSearchProjectString)
+        filterProjectsByString(lastSearchProjectString.value)
     }
 
     fun getValuesByType(

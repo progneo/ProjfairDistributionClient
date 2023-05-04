@@ -62,7 +62,7 @@ fun Supervisor.toAlgorithmModel(): AlgorithmSupervisor {
         id = this.id,
         name = this.name,
         department = this.department!!.toAlgorithmModel(),
-        position = this.position
+        position = ""
     )
 }
 

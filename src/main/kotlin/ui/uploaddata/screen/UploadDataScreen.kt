@@ -2,82 +2,82 @@ package ui.uploaddata.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import common.theme.WhiteDark
 import kotlinx.coroutines.launch
 import navigation.NavController
-import ui.uploaddata.contract.UploadDataContract
 import ui.uploaddata.viewmodel.DownloadType
 import ui.uploaddata.viewmodel.UploadDataViewModel
 import ui.uploaddata.widget.DownloadProgressDialog
 import ui.uploaddata.widget.UpdateDataButton
-import ui.uploaddata.widget.UploadFileCard
+
+//@Composable
+//fun UploadDataScreen(
+//    navController: NavController,
+//    uploadDataViewModel: UploadDataViewModel,
+//    id: Int,
+//) {
+//    UploadDataScreenView(navController, uploadDataViewModel)
+//    when (val screenState = uploadDataViewModel.uiState.collectAsState().value) {
+//        is UploadDataContract.ScreenState.Idle -> {
+//        }
+//
+//        is UploadDataContract.ScreenState.Loading -> {
+//
+//        }
+//
+//        is UploadDataContract.ScreenState.SideEffect -> {
+//            SideEffectHandler(
+//                effectState = screenState.sideEffect
+//            )
+//        }
+//
+//        is UploadDataContract.ScreenState.Data -> {
+//            UploadDataStateHandler(navController, screenState.uploadDataState, uploadDataViewModel)
+//        }
+//    }
+//}
+//
+//@Composable
+//fun SideEffectHandler(effectState: UploadDataContract.SideEffect) {
+//    when (effectState) {
+//        is UploadDataContract.SideEffect.ShowError -> {
+//            println("ERROR SIDE EFFECT ${effectState.message}")
+//        }
+//    }
+//}
+//
+//@Composable
+//fun UploadDataStateHandler(
+//    navController: NavController,
+//    uploadDataState: UploadDataContract.UploadDataState,
+//    uploadDataViewModel: UploadDataViewModel,
+//) {
+//    when (uploadDataState) {
+//        is UploadDataContract.UploadDataState.Loading -> {
+//            println("LOADING")
+//        }
+//
+//        is UploadDataContract.UploadDataState.Error -> {
+//            println("ERROR")
+//        }
+//
+//        is UploadDataContract.UploadDataState.Success -> {
+//            println("SUCCESS")
+//            //UploadDataScreenView(navController, uploadDataViewModel)
+//        }
+//    }
+//}
 
 @Composable
 fun UploadDataScreen(
-    navController: NavController,
-    uploadDataViewModel: UploadDataViewModel,
-    id: Int,
-) {
-    UploadDataScreenView(navController, uploadDataViewModel)
-    when (val screenState = uploadDataViewModel.uiState.collectAsState().value) {
-        is UploadDataContract.ScreenState.Idle -> {
-        }
-
-        is UploadDataContract.ScreenState.Loading -> {
-
-        }
-
-        is UploadDataContract.ScreenState.SideEffect -> {
-            SideEffectHandler(
-                effectState = screenState.sideEffect
-            )
-        }
-
-        is UploadDataContract.ScreenState.Data -> {
-            UploadDataStateHandler(navController, screenState.uploadDataState, uploadDataViewModel)
-        }
-    }
-}
-
-@Composable
-fun SideEffectHandler(effectState: UploadDataContract.SideEffect) {
-    when (effectState) {
-        is UploadDataContract.SideEffect.ShowError -> {
-            println("ERROR SIDE EFFECT ${effectState.message}")
-        }
-    }
-}
-
-@Composable
-fun UploadDataStateHandler(
-    navController: NavController,
-    uploadDataState: UploadDataContract.UploadDataState,
-    uploadDataViewModel: UploadDataViewModel,
-) {
-    when (uploadDataState) {
-        is UploadDataContract.UploadDataState.Loading -> {
-            println("LOADING")
-        }
-
-        is UploadDataContract.UploadDataState.Error -> {
-            println("ERROR")
-        }
-
-        is UploadDataContract.UploadDataState.Success -> {
-            println("SUCCESS")
-            //UploadDataScreenView(navController, uploadDataViewModel)
-        }
-    }
-}
-
-@Composable
-fun UploadDataScreenView(
     navController: NavController,
     uploadDataViewModel: UploadDataViewModel,
 ) {
@@ -139,32 +139,26 @@ fun UploadDataScreenView(
             }
         }
 
-        UploadFileCard(
-            "Студенты-исключения",
+        Row(
             modifier = Modifier
                 .align(Alignment.Center)
         ) {
-//            val file = openFileDialog(
-//                window = ComposeWindow(),
-//                title = "SHIT",
-//                allowedExtensions = listOf(".xlsx", ".xls"),
-//                allowMultiSelection = false
-//            )
-//
-//            uploadDataViewModel.setIntent(
-//                intent = UploadDataContract.Intent.UploadExceptionalStudents(file)
-//            )
-        }
-
-        UpdateDataButton(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 64.dp)
-        ) {
-            uploadDataViewModel.setIntent(
-                intent = UploadDataContract.Intent.SyncData
+            UpdateDataButton(
+                title = "Синхронизировать данные",
+                icon = Icons.Rounded.Refresh,
+                onClick = {
+                    uploadDataViewModel.syncData()
+                    showDownloadProgress = true
+                }
             )
-            showDownloadProgress = true
+            UpdateDataButton(
+                title = "Сбросить и загрузить данные",
+                icon = Icons.Rounded.Clear,
+                onClick = {
+                    uploadDataViewModel.rebaseData()
+                    showDownloadProgress = true
+                }
+            )
         }
 
         DownloadProgressDialog(

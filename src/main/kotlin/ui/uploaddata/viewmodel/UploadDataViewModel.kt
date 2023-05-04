@@ -1,18 +1,16 @@
 package ui.uploaddata.viewmodel
 
 import base.mvi.BaseViewModel
-import base.mvi.DataState
 import domain.interactor.DownloadProgressInteractor
+import domain.usecase.uploaddata.RebaseDataUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
-import domain.usecase.uploaddata.UploadExceptionalStudentsUseCase
 import kotlinx.coroutines.launch
 import ui.uploaddata.contract.UploadDataContract
-import java.io.File
 import javax.inject.Inject
 
 class UploadDataViewModel @Inject constructor(
     private val syncDataUseCase: SyncDataUseCase,
-    private val uploadExceptionalStudentsUseCase: UploadExceptionalStudentsUseCase,
+    private val rebaseDataUseCase: RebaseDataUseCase,
     downloadProgressInteractor: DownloadProgressInteractor,
 ) : BaseViewModel<UploadDataContract.Intent, UploadDataContract.ScreenState>() {
 
@@ -28,71 +26,23 @@ class UploadDataViewModel @Inject constructor(
     }
 
     override fun handleIntent(intent: UploadDataContract.Intent) {
-        when (intent) {
-            is UploadDataContract.Intent.SyncData -> syncData()
-            is UploadDataContract.Intent.UploadExceptionalStudents -> uploadExceptionalStudents(intent.file)
-            else -> {}
-        }
+
     }
 
-    private fun syncData() {
+    fun syncData() {
         coroutineScope.launch {
             syncDataUseCase().collect {
-                handleRequest(it)
+                println("$it")
             }
         }
     }
 
-    private fun uploadExceptionalStudents(file: File) {
+    fun rebaseData() {
+        println("rebase")
         coroutineScope.launch {
-            uploadExceptionalStudentsUseCase(file).collect {
-                handleRequest(it, file)
+            rebaseDataUseCase().collect {
+                println("$it")
             }
-        }
-    }
-
-    private fun handleRequest(it: DataState<Boolean>, file: File? = null) {
-        when (it) {
-            is DataState.Error -> {
-                setState {
-                    UploadDataContract.ScreenState.SideEffect(
-                        UploadDataContract.SideEffect.ShowError(
-                            "cannot LOAD data from ${if (file == null) "server" else "database"}"
-                        )
-                    )
-                }
-            }
-
-            is DataState.Loading -> {
-                println("LOADING")
-                setState {
-                    UploadDataContract.ScreenState.Data(
-                        UploadDataContract.UploadDataState.Loading
-                    )
-                }
-            }
-
-            is DataState.Success -> {
-                println("SUCCESS")
-                if (it.data) {
-                    println("setstate")
-                    setState {
-                        UploadDataContract.ScreenState.Data(
-                            UploadDataContract.UploadDataState.Success
-                        )
-                    }
-                } else {
-                    setState {
-                        UploadDataContract.ScreenState.SideEffect(
-                            UploadDataContract.SideEffect.ShowError(
-                                "cannot SAVE data to ${if (file == null) "server" else "database"}"
-                            )
-                        )
-                    }
-                }
-            }
-
-            else -> {}
         }
     }
 }

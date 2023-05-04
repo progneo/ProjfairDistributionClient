@@ -4,17 +4,18 @@ import base.mvi.DataState
 import domain.repository.UploadDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.io.File
 import javax.inject.Inject
 
-class UploadExceptionalStudentsUseCase @Inject constructor(
-    private val uploadDataRepository: UploadDataRepository,
+class RebaseDataUseCase @Inject constructor(
+    private val uploadDataRepository: UploadDataRepository
 ) {
 
-    operator fun invoke(exceptionalStudentsFile: File): Flow<DataState<Boolean>> = flow {
+    operator fun invoke(): Flow<DataState<Boolean>> = flow {
         emit(DataState.Loading)
         try {
-            val response = uploadDataRepository.uploadExceptionalStudents(exceptionalStudentsFile)
+            println("before trying")
+            val response = uploadDataRepository.rebaseData()
+            println("$response")
             emit(DataState.Success(response))
         } catch (e: Exception) {
             println(e)

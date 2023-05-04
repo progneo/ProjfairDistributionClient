@@ -55,8 +55,10 @@ class StudentRepositoryImpl @Inject constructor(
             var current = 0f
             val overall = students.size
 
+            println("before delete")
             deleteAllStudents()
             students.forEach { studentResponse ->
+                if (studentResponse.specialty == null) return@forEach
                 val newStudent = studentResponseToStudent(studentResponse)
                 insertStudent(newStudent)
                 downloadFlow.value = ++current / overall
@@ -78,6 +80,7 @@ class StudentRepositoryImpl @Inject constructor(
             val overall = students.size
 
             students.forEach { studentResponse ->
+                if (studentResponse.specialty == null) return@forEach
                 val newStudent = studentResponseToStudent(studentResponse)
                 val oldStudent = oldMap[newStudent.numz]
                 if (oldStudent == null) {

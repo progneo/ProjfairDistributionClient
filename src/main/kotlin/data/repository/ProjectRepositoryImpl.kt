@@ -52,6 +52,7 @@ class ProjectRepositoryImpl @Inject constructor(
 
     override suspend fun syncProjects() {
         withContext(ioDispatcher) {
+            deleteAllProjects()
             val projects = projectFairApi.getProjects().data
             val oldProjects = projectDao.getAll<Project>().first().list
             val oldMap = mutableMapOf<Int, Project>()
@@ -78,6 +79,7 @@ class ProjectRepositoryImpl @Inject constructor(
             var current = 0f
             val overall = projects.size
 
+            deleteAllProjects()
             projects.forEach {
                 val newProject = projectResponseToProject(it)
                 insertProject(newProject)

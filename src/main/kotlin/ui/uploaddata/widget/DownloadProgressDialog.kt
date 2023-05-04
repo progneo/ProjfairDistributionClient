@@ -1,6 +1,7 @@
 package ui.uploaddata.widget
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +47,11 @@ fun DownloadProgressDialog(
                         )
                     }
                     Spacer(Modifier.size(16.dp))
+                }
+                Button(
+                    onClick = onDismissRequest
+                ) {
+                    Text("Close")
                 }
             }
         },

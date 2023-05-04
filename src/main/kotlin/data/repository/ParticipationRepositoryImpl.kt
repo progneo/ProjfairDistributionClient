@@ -77,6 +77,7 @@ class ParticipationRepositoryImpl @Inject constructor(
             var current = 0f
             val overall = participations.size
 
+            deleteAllParticipations()
             participations.forEach {
                 val newParticipation = participationResponseToParticipation(it)
                 insertParticipation(newParticipation)
