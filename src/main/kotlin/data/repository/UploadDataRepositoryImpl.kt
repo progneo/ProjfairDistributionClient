@@ -3,8 +3,6 @@ package data.repository
 import domain.repository.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import parsing.excel.student.ExceptionalStudentExcelReader
-import java.io.File
 import javax.inject.Inject
 
 class UploadDataRepositoryImpl @Inject constructor(
@@ -27,9 +25,9 @@ class UploadDataRepositoryImpl @Inject constructor(
     override suspend fun syncData(): Boolean {
         return withContext(ioDispatcher) {
             try {
-                studentRepository.uploadStudents()
-                projectRepository.uploadProjects()
-                participationRepository.uploadParticipations()
+                studentRepository.syncStudents()
+                projectRepository.syncProjects()
+                participationRepository.syncParticipations()
                 instituteRepository.uploadInstitutes()
                 departmentRepository.uploadDepartments()
                 supervisorRepository.uploadSupervisors()
@@ -42,13 +40,19 @@ class UploadDataRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadExceptionalStudents(file: File): Boolean {
+    override suspend fun rebaseData(): Boolean {
         return withContext(ioDispatcher) {
             try {
-                val studentIds = ExceptionalStudentExcelReader().read(file.path)
-                //StudentDao.markStudentsAsExceptional(studentIds)
+                studentRepository.rebaseStudents()
+                projectRepository.rebaseProjects()
+                participationRepository.rebaseParticipations()
+                instituteRepository.uploadInstitutes()
+                departmentRepository.uploadDepartments()
+                supervisorRepository.uploadSupervisors()
+
                 true
             } catch (e: Exception) {
+                println(e)
                 false
             }
         }

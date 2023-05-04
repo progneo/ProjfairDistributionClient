@@ -49,7 +49,24 @@ class StudentRepositoryImpl @Inject constructor(
         studentDao.deleteAll<Student>()
     }
 
-    override suspend fun uploadStudents() {
+    override suspend fun rebaseStudents() {
+        withContext(ioDispatcher) {
+            val students = projectFairApi.getCandidates()
+            var current = 0f
+            val overall = students.size
+
+            deleteAllStudents()
+            students.forEach { studentResponse ->
+                val newStudent = studentResponseToStudent(studentResponse)
+                insertStudent(newStudent)
+                downloadFlow.value = ++current / overall
+            }
+
+            getStudents().first().list.forEach(::println)
+        }
+    }
+
+    override suspend fun syncStudents() {
         withContext(ioDispatcher) {
             val students = projectFairApi.getCandidates()
             val oldStudents = studentDao.getAll<Student>().first().list
@@ -63,7 +80,7 @@ class StudentRepositoryImpl @Inject constructor(
             students.forEach { studentResponse ->
                 val newStudent = studentResponseToStudent(studentResponse)
                 val oldStudent = oldMap[newStudent.numz]
-                if (oldStudent == null || oldStudent != newStudent) {
+                if (oldStudent == null) {
                     insertStudent(newStudent)
                 }
                 downloadFlow.value = ++current / overall

@@ -1,7 +1,6 @@
 package domain.repository
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.io.File
 
 interface UploadDataRepository {
     val studentsDownloadFlow: MutableStateFlow<Float>
@@ -11,5 +10,5 @@ interface UploadDataRepository {
     val departmentsDownloadFlow: MutableStateFlow<Float>
     val supervisorsDownloadFlow: MutableStateFlow<Float>
     suspend fun syncData(): Boolean
-    suspend fun uploadExceptionalStudents(file: File): Boolean
+    suspend fun rebaseData(): Boolean
 }

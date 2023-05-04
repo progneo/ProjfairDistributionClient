@@ -49,7 +49,7 @@ class ParticipationRepositoryImpl @Inject constructor(
         participationDao.deleteAll<Participation>()
     }
 
-    override suspend fun uploadParticipations() {
+    override suspend fun syncParticipations() {
         withContext(ioDispatcher) {
             val participations = ordinaryProjectFairApi.getParticipations().data
             val oldParticipations = participationDao.getAll<Participation>().first().list
@@ -63,9 +63,23 @@ class ParticipationRepositoryImpl @Inject constructor(
             participations.forEach {
                 val newParticipation = participationResponseToParticipation(it)
                 val oldParticipation = oldMap[newParticipation.id]
-                if (oldParticipation == null || oldParticipation != newParticipation) {
+                if (oldParticipation == null) {
                     insertParticipation(newParticipation)
                 }
+                downloadFlow.value = ++current / overall
+            }
+        }
+    }
+
+    override suspend fun rebaseParticipations() {
+        withContext(ioDispatcher) {
+            val participations = ordinaryProjectFairApi.getParticipations().data
+            var current = 0f
+            val overall = participations.size
+
+            participations.forEach {
+                val newParticipation = participationResponseToParticipation(it)
+                insertParticipation(newParticipation)
                 downloadFlow.value = ++current / overall
             }
         }

@@ -50,7 +50,7 @@ class ProjectRepositoryImpl @Inject constructor(
         projectDao.deleteAll<Project>()
     }
 
-    override suspend fun uploadProjects() {
+    override suspend fun syncProjects() {
         withContext(ioDispatcher) {
             val projects = projectFairApi.getProjects().data
             val oldProjects = projectDao.getAll<Project>().first().list
@@ -64,9 +64,23 @@ class ProjectRepositoryImpl @Inject constructor(
             projects.forEach {
                 val newProject = projectResponseToProject(it)
                 val oldProject = oldMap[newProject.id]
-                if (oldProject == null || oldProject != newProject) {
+                if (oldProject == null) {
                     insertProject(newProject)
                 }
+                downloadFlow.value = ++current / overall
+            }
+        }
+    }
+
+    override suspend fun rebaseProjects() {
+        withContext(ioDispatcher) {
+            val projects = projectFairApi.getProjects().data
+            var current = 0f
+            val overall = projects.size
+
+            projects.forEach {
+                val newProject = projectResponseToProject(it)
+                insertProject(newProject)
                 downloadFlow.value = ++current / overall
             }
         }

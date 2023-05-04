@@ -13,5 +13,6 @@ interface StudentRepository {
     suspend fun insertStudent(students: List<Student>)
     suspend fun deleteStudent(student: Student)
     suspend fun deleteAllStudents()
-    suspend fun uploadStudents()
+    suspend fun rebaseStudents()
+    suspend fun syncStudents()
 }
