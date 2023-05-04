@@ -141,6 +141,7 @@ fun ProjectTable(
                             val bundle = Bundle().apply {
                                 put("project", project)
                             }
+                            println(bundle)
                             navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
                         },
                     project = project

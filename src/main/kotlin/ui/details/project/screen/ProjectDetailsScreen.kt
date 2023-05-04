@@ -146,7 +146,8 @@ fun ProjectDetailsScreen(
                     projectSpecialties = realmListOf(*(updatedDistributeSpecialties + updatedParticipationSpecialties).toTypedArray())
                 )
 
-                newProject.projectSpecialties.forEach(::println)
+                println(newProject.supervisors.toList())
+                //newProject.projectSpecialties.forEach(::println)
 
                 previewViewModel.updateProject(newProject)
             }

@@ -108,8 +108,6 @@ open class BaseGodViewModel(
                 _projects.value = it.list
                 _filteredProjectsByDepartments.value = it.list
                 filteredProjects.value = it.list
-
-                it.list.forEach(::println)
             }
         }
     }

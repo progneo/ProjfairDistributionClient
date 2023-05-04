@@ -14,8 +14,6 @@ class ProjectDetailsComponent(
     private val navController: NavController
 ): BaseComponent {
 
-    val project = navController.currentScreen.value.bundle!!.getAny("project") as Project
-
     @Inject
     lateinit var previewViewModel: PreviewViewModel
 
@@ -26,6 +24,7 @@ class ProjectDetailsComponent(
 
     @Composable
     override fun render() {
+        val project = navController.currentScreen.value.bundle!!.getAny("project") as Project
         ProjectDetailsScreen(navController, previewViewModel, project)
     }
 }
