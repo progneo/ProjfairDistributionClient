@@ -68,6 +68,8 @@ class StudentRepositoryImpl @Inject constructor(
                 }
                 downloadFlow.value = ++current / overall
             }
+
+            getStudents().first().list.forEach(::println)
         }
     }
 }

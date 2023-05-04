@@ -19,4 +19,13 @@ open class Student(
     override fun members(): List<Any?> {
         return listOf(id, numz, name, group, shouldDistribute, specialty)
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id," +
+                "numz=$numz," +
+                "group=$group," +
+                "specialty=$specialty" +
+                "}"
+    }
 }

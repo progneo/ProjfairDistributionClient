@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
 import navigation.NavController
+import ui.details.project.widget.EditableSearchField
 import ui.filter.FilterConfigurationBlock
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.*
@@ -80,22 +81,42 @@ fun PreviewScreen(
 
                     when (previewTabPage) {
                         Students -> {
-                            FilterConfigurationBlock(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically),
-                                studentFilterConfiguration.value
-                            ) {
-                                showFilter = true
+                            Row {
+                                FilterConfigurationBlock(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically),
+                                    studentFilterConfiguration.value
+                                ) {
+                                    showFilter = true
+                                }
+                                Spacer(Modifier.size(24.dp))
+                                EditableSearchField(
+                                    modifier = Modifier.size(width = 300.dp, height = Dp.Unspecified),
+                                    content = "Поиск",
+                                    onDataChanged = { searchString ->
+                                        previewViewModel.filterStudentsByString(searchString)
+                                    }
+                                )
                             }
                         }
 
                         Projects -> {
-                            FilterConfigurationBlock(
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically),
-                                projectFilterConfiguration.value
-                            ) {
-                                showFilter = true
+                            Row {
+                                FilterConfigurationBlock(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically),
+                                    projectFilterConfiguration.value
+                                ) {
+                                    showFilter = true
+                                }
+                                Spacer(Modifier.size(24.dp))
+                                EditableSearchField(
+                                    modifier = Modifier.size(width = 300.dp, height = Dp.Unspecified),
+                                    content = "Поиск",
+                                    onDataChanged = { searchString ->
+                                        previewViewModel.filterProjectsByString(searchString)
+                                    }
+                                )
                             }
                         }
                     }
@@ -139,6 +160,7 @@ fun PreviewScreen(
                 when (previewTabPage) {
                     Students -> {
                         previewViewModel.studentFilterConfiguration.value = filterConfig.copy()
+                        previewViewModel.filterStudents(filterConfig)
                     }
 
                     Projects -> {

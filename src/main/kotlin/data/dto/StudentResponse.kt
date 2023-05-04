@@ -8,5 +8,5 @@ data class StudentResponse(
     val numz: String,
     val course: Int,
     @SerializedName("training_group") val trainingGroup: String,
-    val specialty: SpecialtyResponse
+    @SerializedName("speciality") val specialty: SpecialtyResponse
 )

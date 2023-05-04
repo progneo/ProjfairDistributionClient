@@ -71,7 +71,6 @@ fun StudentTableItem(
 @Composable
 fun StudentTableHead(
     modifier: Modifier = Modifier,
-//    nameFilterState: TableFilterState,
 //    numzFilterState: TableFilterState,
 //    specialtyFilterState: TableFilterState
 ) {
@@ -84,19 +83,12 @@ fun StudentTableHead(
         Row(
             modifier = Modifier
                 .fillMaxWidth(0.6f)
-//                .clickable {
-//                    b.value = !b.value
-//                }
                 .wrapContentWidth()
         ) {
             Text(
                 text = "ФИО",
                 modifier = Modifier
             )
-//            Icon(
-//                if (b.value) Icons.Default.ArrowBack else Icons.Default.ArrowForward,
-//                ""
-//            )
         }
         Text(
             text = "Номер з.к.",
@@ -118,6 +110,8 @@ fun StudentTableHead(
 fun StudentTable(
     modifier: Modifier = Modifier,
     students: List<Student>,
+//    numzFilterState: TableFilterState,
+//    specialtyFilterState: TableFilterState
     navController: NavController,
     onStudentClicked: (Student) -> List<Participation>,
     onProjectLinkClicked: (Int) -> Project?,
