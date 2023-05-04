@@ -16,4 +16,13 @@ open class Specialty(
     override fun members(): List<Any?> {
         return listOf(id, name, institute, department)
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id," +
+                "name=$name," +
+                "institute=$institute," +
+                "department=$department" +
+                "}"
+    }
 }

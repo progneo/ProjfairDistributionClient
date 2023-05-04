@@ -24,4 +24,12 @@ open class Supervisor(
     override fun members(): List<Any?> {
         return listOf(id, name)
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id," +
+                "name=$name," +
+                "department=$department" +
+                "}"
+    }
 }

@@ -19,4 +19,11 @@ open class Institute(
     object Base: Institute() {
         override var name: String = "Все"
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id," +
+                "name=$name" +
+                "}"
+    }
 }

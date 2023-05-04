@@ -61,4 +61,14 @@ open class Project(
             projectSpecialties
         )
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id," +
+                "name=$name," +
+                "department=$department," +
+                "supervisors=$supervisors," +
+                "projectSpecialties=$projectSpecialties" +
+                "}"
+    }
 }

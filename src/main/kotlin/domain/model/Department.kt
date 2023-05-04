@@ -20,4 +20,12 @@ open class Department(
     object Base: Department() {
         override var name: String = "Все"
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id," +
+                "name=$name," +
+                "institute=$institute" +
+                "}"
+    }
 }

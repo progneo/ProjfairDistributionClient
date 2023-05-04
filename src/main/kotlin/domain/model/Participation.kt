@@ -16,4 +16,13 @@ open class Participation(
     override fun members(): List<Any?> {
         return listOf(id, studentId, projectId, priority)
     }
+
+    override fun toString(): String {
+        return "{" +
+                "id=$id," +
+                "studentId=$studentId," +
+                "projectId=$projectId," +
+                "priority=$priority" +
+                "}"
+    }
 }
