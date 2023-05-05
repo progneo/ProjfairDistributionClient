@@ -43,6 +43,10 @@ fun PreviewScreen(
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
 
+    val specialtySelected = remember {
+        mutableStateOf(false)
+    }
+
     val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
     val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
 
@@ -146,12 +150,17 @@ fun PreviewScreen(
                 StudentTable(
                     modifier = Modifier.padding(24.dp),
                     students = students.value,
+                    specialtySelected = specialtySelected.value,
                     navController,
                     onStudentClicked = { student ->
                         previewViewModel.getParticipationByStudent(student.id)
                     },
                     onProjectLinkClicked = { projectId ->
                         previewViewModel.getProjectById(projectId)
+                    },
+                    onSpecialtyClicked = {
+                        specialtySelected.value = !specialtySelected.value
+                        previewViewModel.filterStudentsBySpecialty(specialtySelected.value)
                     }
                 )
             }

@@ -58,6 +58,7 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:1.0.0")
     implementation("br.com.devsrsouza.compose.icons.jetbrains:simple-icons:1.0.0")
     implementation("br.com.devsrsouza.compose.icons.jetbrains:octicons:1.0.0")
+    implementation("br.com.devsrsouza.compose.icons:tabler-icons:1.1.0")
 
     implementation("com.darkrockstudios:mpfilepicker:1.1.0")
 

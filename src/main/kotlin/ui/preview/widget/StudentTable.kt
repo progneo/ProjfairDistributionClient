@@ -13,15 +13,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import common.compose.rememberForeverLazyListState
+import common.theme.BlueMainDark
 import common.theme.BlueMainLight
 import common.theme.GrayLight
+import compose.icons.FontAwesomeIcons
+import compose.icons.TablerIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.SortAlphaDown
+import compose.icons.tablericons.ArrowsSort
 import domain.model.Participation
 import domain.model.Project
 import domain.model.Student
@@ -71,37 +79,48 @@ fun StudentTableItem(
 @Composable
 fun StudentTableHead(
     modifier: Modifier = Modifier,
-//    numzFilterState: TableFilterState,
-//    specialtyFilterState: TableFilterState
+    specialtySelected: Boolean,
+    onSpecialtyClicked: () -> Unit,
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
             .background(GrayLight)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        Text(
+            text = "ФИО",
             modifier = Modifier
                 .fillMaxWidth(0.6f)
-                .wrapContentWidth()
-        ) {
-            Text(
-                text = "ФИО",
-                modifier = Modifier
-            )
-        }
+        )
         Text(
             text = "Номер з.к.",
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .wrapContentWidth()
         )
-        Text(
-            text = "Группа",
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable {
+                    onSpecialtyClicked()
+                }
                 .wrapContentWidth()
-        )
+        ) {
+            Text(
+                text = "Группа",
+                modifier = Modifier
+                    .wrapContentWidth()
+            )
+            Spacer(Modifier.size(8.dp))
+            Icon(
+                modifier = Modifier.size(20.dp, 20.dp),
+                imageVector = if (specialtySelected) FontAwesomeIcons.Solid.SortAlphaDown else TablerIcons.ArrowsSort,
+                contentDescription = null,
+                tint = BlueMainDark
+            )
+        }
     }
     Divider(thickness = 2.dp)
 }
@@ -110,11 +129,11 @@ fun StudentTableHead(
 fun StudentTable(
     modifier: Modifier = Modifier,
     students: List<Student>,
-//    numzFilterState: TableFilterState,
-//    specialtyFilterState: TableFilterState
+    specialtySelected: Boolean,
     navController: NavController,
     onStudentClicked: (Student) -> List<Participation>,
     onProjectLinkClicked: (Int) -> Project?,
+    onSpecialtyClicked: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -125,7 +144,9 @@ fun StudentTable(
             )
     ) {
         StudentTableHead(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            specialtySelected = specialtySelected,
+            onSpecialtyClicked = onSpecialtyClicked
         )
 
         val scrollState = rememberForeverLazyListState(KEY)

@@ -44,6 +44,10 @@ fun ReviewScreen(
     val students = reviewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = reviewViewModel.filteredProjects.collectAsState()
 
+    val specialtySelected = remember {
+        mutableStateOf(false)
+    }
+
     val studentFilterConfiguration = reviewViewModel.studentFilterConfiguration.collectAsState()
     val projectFilterConfiguration = reviewViewModel.projectFilterConfiguration.collectAsState()
 
@@ -158,12 +162,17 @@ fun ReviewScreen(
                 StudentTable(
                     modifier = Modifier.padding(24.dp),
                     students = students.value,
+                    specialtySelected = specialtySelected.value,
                     navController,
                     onStudentClicked = { student ->
                         reviewViewModel.getParticipationByStudent(student.id)
                     },
                     onProjectLinkClicked = { projectId ->
                         reviewViewModel.getProjectById(projectId)
+                    },
+                    onSpecialtyClicked = {
+                        specialtySelected.value = !specialtySelected.value
+                        reviewViewModel.filterStudentsBySpecialty(specialtySelected.value)
                     }
                 )
             }

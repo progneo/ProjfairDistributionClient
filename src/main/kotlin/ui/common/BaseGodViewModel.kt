@@ -57,6 +57,7 @@ open class BaseGodViewModel(
     private val _studentsWithParticipations = MutableStateFlow<List<Student>>(emptyList())
     private val _filteredStudentsWithParticipationsByDepartments = MutableStateFlow<List<Student>>(emptyList())
     private val _filteredStudentsWithParticipations = MutableStateFlow<List<Student>>(emptyList())
+
     private val _studentsWithoutParticipations = MutableStateFlow<List<Student>>(emptyList())
     private val _filteredStudentsWithoutParticipationsByDepartments = MutableStateFlow<List<Student>>(emptyList())
     private val _filteredStudentsWithoutParticipations = MutableStateFlow<List<Student>>(emptyList())
@@ -211,6 +212,29 @@ open class BaseGodViewModel(
 
     fun getProjectById(projectId: Int): Project? {
         return _projects.value.find { proj -> proj.id == projectId }
+    }
+
+    fun filterStudentsBySpecialty(enable: Boolean) {
+        if (enable) {
+            _studentsWithParticipations.value =
+                _studentsWithParticipations.value.sortedWith(compareBy({ it.specialty?.name }, { it.name }))
+            _filteredStudentsWithParticipationsByDepartments.value =
+                _filteredStudentsWithParticipationsByDepartments.value.sortedWith(compareBy({ it.specialty?.name }, { it.name }))
+            filterStudentsByString(lastSearchStudentString.value)
+
+
+            _studentsWithoutParticipations.value =
+                _studentsWithoutParticipations.value.sortedWith(compareBy({ it.specialty?.name }, { it.name }))
+        } else {
+            _studentsWithParticipations.value =
+                _studentsWithParticipations.value.sortedWith(compareBy { student -> student.name })
+            _filteredStudentsWithParticipationsByDepartments.value =
+                _filteredStudentsWithParticipationsByDepartments.value.sortedWith(compareBy { student -> student.name })
+            filterStudentsByString(lastSearchStudentString.value)
+
+            _studentsWithoutParticipations.value =
+                _studentsWithoutParticipations.value.sortedWith(compareBy { student -> student.name })
+        }
     }
 
     fun filterStudentsByString(searchString: String) {
