@@ -51,14 +51,15 @@ class StudentRepositoryImpl @Inject constructor(
 
     override suspend fun rebaseStudents() {
         withContext(ioDispatcher) {
-            val students = projectFairApi.getCandidates()
+            val students = projectFairApi.getCandidates().filter {
+                it.specialty != null && it.course > 2
+            }
             var current = 0f
             val overall = students.size
 
             println("before delete")
             deleteAllStudents()
             students.forEach { studentResponse ->
-                if (studentResponse.specialty == null) return@forEach
                 val newStudent = studentResponseToStudent(studentResponse)
                 insertStudent(newStudent)
                 downloadFlow.value = ++current / overall
@@ -70,7 +71,9 @@ class StudentRepositoryImpl @Inject constructor(
 
     override suspend fun syncStudents() {
         withContext(ioDispatcher) {
-            val students = projectFairApi.getCandidates()
+            val students = projectFairApi.getCandidates().filter {
+                it.specialty != null && it.course > 2
+            }
             val oldStudents = studentDao.getAll<Student>().first().list
             val oldMap = mutableMapOf<Int, Student>()
             oldStudents.forEach {

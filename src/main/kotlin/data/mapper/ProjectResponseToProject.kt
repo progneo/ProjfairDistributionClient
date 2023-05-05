@@ -21,7 +21,7 @@ fun projectResponseToProject(project: ProjectResponse): Project {
         supervisors = realmListOf(*project.supervisors.map { supervisorResponseToSupervisor(it) }.toTypedArray()),
         department = departmentResponseToDepartment(
             try {
-                project.specialities[0].department
+                project.supervisors[0].supervisor.department
             } catch (e: IndexOutOfBoundsException) {
                 null
             }

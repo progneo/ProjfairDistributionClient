@@ -98,6 +98,7 @@ open class BaseGodViewModel(
         coroutineScope.launch {
             getStudentsUseCase().collect {
                 _students.value = it.list
+                println(it.list)
             }
         }
     }
@@ -215,18 +216,20 @@ open class BaseGodViewModel(
     fun filterStudentsByString(searchString: String) {
         val search = searchString.lowercase()
         lastSearchStudentString.value = search
-        _filteredStudentsWithParticipations.value = _filteredStudentsWithParticipationsByDepartments.value.filter { student ->
-            student.name.lowercase().contains(search) ||
-                    student.group.lowercase().contains(search) ||
-                    student.numz.toString().lowercase().contains(search) ||
-                    student.specialty!!.name.lowercase().contains(search)
-        }
-        _filteredStudentsWithoutParticipations.value = _filteredStudentsWithoutParticipationsByDepartments.value.filter { student ->
-            student.name.lowercase().contains(search) ||
-                    student.group.lowercase().contains(search) ||
-                    student.numz.toString().lowercase().contains(search) ||
-                    student.specialty!!.name.lowercase().contains(search)
-        }
+        _filteredStudentsWithParticipations.value =
+            _filteredStudentsWithParticipationsByDepartments.value.filter { student ->
+                student.name.lowercase().contains(search) ||
+                        student.group.lowercase().contains(search) ||
+                        student.numz.toString().lowercase().contains(search) ||
+                        student.specialty!!.name.lowercase().contains(search)
+            }
+        _filteredStudentsWithoutParticipations.value =
+            _filteredStudentsWithoutParticipationsByDepartments.value.filter { student ->
+                student.name.lowercase().contains(search) ||
+                        student.group.lowercase().contains(search) ||
+                        student.numz.toString().lowercase().contains(search) ||
+                        student.specialty!!.name.lowercase().contains(search)
+            }
     }
 
     fun filterStudents(instituteFilterConfiguration: InstituteFilterConfiguration) {

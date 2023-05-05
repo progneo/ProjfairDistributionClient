@@ -12,7 +12,9 @@ import androidx.compose.ui.unit.dp
 import common.compose.BaseButton
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
+import kotlinx.coroutines.launch
 import navigation.NavController
+import ui.details.project.widget.EditableSearchField
 import ui.filter.FilterConfigurationBlock
 import ui.preview.widget.*
 import ui.preview.widget.filter.ProjectFilterDialog
@@ -44,6 +46,18 @@ fun ReviewScreen(
 
     val studentFilterConfiguration = reviewViewModel.studentFilterConfiguration.collectAsState()
     val projectFilterConfiguration = reviewViewModel.projectFilterConfiguration.collectAsState()
+
+    rememberCoroutineScope().launch {
+        reviewViewModel.searchStudentString.collect {
+            reviewViewModel.filterStudentsByString(it)
+        }
+    }
+
+    rememberCoroutineScope().launch {
+        reviewViewModel.searchProjectString.collect {
+            reviewViewModel.filterProjectsByString(it)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -82,22 +96,44 @@ fun ReviewScreen(
                     Row {
                         when (previewTabPage) {
                             PreviewTabPage.Students -> {
-                                FilterConfigurationBlock(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically),
-                                    studentFilterConfiguration.value
-                                ) {
-                                    showFilter = true
+                                Row {
+                                    FilterConfigurationBlock(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically),
+                                        studentFilterConfiguration.value
+                                    ) {
+                                        showFilter = true
+                                    }
+                                    Spacer(Modifier.size(24.dp))
+                                    EditableSearchField(
+                                        modifier = Modifier.size(width = 300.dp, height = Dp.Unspecified),
+                                        text = reviewViewModel.lastSearchStudentString.collectAsState().value,
+                                        content = "Поиск",
+                                        onDataChanged = { searchString ->
+                                            reviewViewModel.lastSearchStudentString.value = searchString
+                                        }
+                                    )
                                 }
                             }
 
                             PreviewTabPage.Projects -> {
-                                FilterConfigurationBlock(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically),
-                                    projectFilterConfiguration.value
-                                ) {
-                                    showFilter = true
+                                Row {
+                                    FilterConfigurationBlock(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically),
+                                        projectFilterConfiguration.value
+                                    ) {
+                                        showFilter = true
+                                    }
+                                    Spacer(Modifier.size(24.dp))
+                                    EditableSearchField(
+                                        modifier = Modifier.size(width = 300.dp, height = Dp.Unspecified),
+                                        text = reviewViewModel.lastSearchProjectString.collectAsState().value,
+                                        content = "Поиск",
+                                        onDataChanged = { searchString ->
+                                            reviewViewModel.lastSearchProjectString.value = searchString
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -152,6 +188,7 @@ fun ReviewScreen(
                 when (previewTabPage) {
                     PreviewTabPage.Students -> {
                         reviewViewModel.studentFilterConfiguration.value = filterConfig.copy()
+                        reviewViewModel.filterStudents(filterConfig)
                     }
 
                     PreviewTabPage.Projects -> {
