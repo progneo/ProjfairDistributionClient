@@ -108,8 +108,7 @@ open class BaseGodViewModel(
         coroutineScope.launch {
             getProjectsUseCase().collect {
                 _projects.value = it.list
-                _filteredProjectsByDepartments.value = it.list
-                filteredProjects.value = it.list
+                filterProjects(projectFilterConfiguration.value)
             }
         }
     }

@@ -31,24 +31,8 @@ fun PreviewScreen(
     var previewTabPage by remember { mutableStateOf(previewViewModel.previewTabPage.value) }
     var studentsTabPage by remember { mutableStateOf(Enrolled) }
 
-    var showFilter by remember { mutableStateOf(false) }
-
-    fun studentTabPageToIndex(): Int {
-        return when (studentsTabPage) {
-            Enrolled -> 0
-            Uncounted -> 1
-        }
-    }
-
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
-
-    val specialtySelected = remember {
-        mutableStateOf(false)
-    }
-
-    val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
-    val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
 
     rememberCoroutineScope().launch {
         previewViewModel.searchStudentString.collect {
@@ -58,10 +42,26 @@ fun PreviewScreen(
 
     rememberCoroutineScope().launch {
         previewViewModel.searchProjectString.collect {
+            println("get $it")
             previewViewModel.filterProjectsByString(it)
         }
     }
 
+    var showFilter by remember { mutableStateOf(false) }
+
+    fun studentTabPageToIndex(): Int {
+        return when (studentsTabPage) {
+            Enrolled -> 0
+            Uncounted -> 1
+        }
+    }
+
+    val specialtySelected = remember {
+        mutableStateOf(false)
+    }
+
+    val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
+    val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
 
     Scaffold(
         topBar = {
