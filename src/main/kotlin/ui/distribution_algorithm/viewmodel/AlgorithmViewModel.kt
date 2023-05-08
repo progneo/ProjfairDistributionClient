@@ -1,15 +1,14 @@
 package ui.distribution_algorithm.viewmodel
 
 import base.mvi.BaseViewModel
+import domain.model.CleanProject
+import domain.model.CleanProjectSpecialty
 import domain.model.GeneratedDistribution
-import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.file.SaveStudentsByProjectsFileUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
-import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
-import domain.usecase.supervisor.GetSupervisorsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ui.distribution_algorithm.common.*
@@ -21,9 +20,6 @@ class AlgorithmViewModel @Inject constructor(
     private val getProjectsUseCase: GetProjectsUseCase,
     private val getParticipationsUseCase: GetParticipationsUseCase,
     private val getInstitutesUseCase: GetInstitutesUseCase,
-    private val getDepartmentsUseCase: GetDepartmentsUseCase,
-    private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
-    private val getSupervisorsUseCase: GetSupervisorsUseCase,
     private val saveStudentsByProjectsFileUseCase: SaveStudentsByProjectsFileUseCase
 ): BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
@@ -31,18 +27,12 @@ class AlgorithmViewModel @Inject constructor(
     val projects = MutableStateFlow<List<AlgorithmProject>>(emptyList())
     val participations = MutableStateFlow<List<AlgorithmParticipation>>(emptyList())
     val institutes = MutableStateFlow<List<AlgorithmInstitute>>(emptyList())
-    val departments = MutableStateFlow<List<AlgorithmDepartment>>(emptyList())
-    val supervisors = MutableStateFlow<List<AlgorithmSupervisor>>(emptyList())
-    val specialties = MutableStateFlow<List<AlgorithmSpecialty>>(emptyList())
 
     init {
         getStudents()
         getProjects()
-        getDepartments()
         getInstitutes()
-        getSpecialties()
         getParticipations()
-        getSupervisors()
     }
 
     private fun getStudents() {
@@ -56,15 +46,57 @@ class AlgorithmViewModel @Inject constructor(
     private fun getProjects() {
         coroutineScope.launch {
             getProjectsUseCase().collect {
-                projects.value = it.list.map { p -> p.toAlgorithmModel() }
-            }
-        }
-    }
+                val temp = mutableListOf<CleanProject>()
+                it.list.forEach { project ->
+                    println(project)
+                    val projectCopy = CleanProject(
+                        id = project.id,
+                        name = project.name,
+                        places = project.places,
+                        freePlaces = project.freePlaces,
+                        goal = project.goal,
+                        description = project.description,
+                        difficulty = project.difficulty,
+                        dateStart = project.dateStart,
+                        dateEnd = project.dateEnd,
+                        customer = project.customer,
+                        productResult = project.productResult,
+                        studyResult = project.studyResult,
+                        department = project.department!!,
+                        supervisors = project.supervisors.toList(),
+                        projectSpecialties = project.projectSpecialties.map { oldPsp ->
+                            CleanProjectSpecialty(
+                                id = oldPsp.id,
+                                course = oldPsp.course,
+                                specialty = oldPsp.specialty!!,
+                                priority = oldPsp.priority
+                            )
+                        }
+                    )
+                    val projectsSpecialties = projectCopy.projectSpecialties
+                    val newProjectSpecialties = mutableListOf<CleanProjectSpecialty>()
 
-    private fun getDepartments() {
-        coroutineScope.launch {
-            getDepartmentsUseCase().collect {
-                departments.value = it.list.map { d -> d.toAlgorithmModel() }
+                    projectsSpecialties.forEach { psp ->
+                        if (psp.course == null) {
+                            val isNormal = psp.specialty.name.endsWith("б")
+                            val count = if (isNormal) 2 else 3
+                            (3 until (count+3)).forEach { number ->
+                                newProjectSpecialties.add(
+                                    psp.apply {
+                                        course = number
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    temp.add(
+                        projectCopy.apply {
+                            projectSpecialties = newProjectSpecialties
+                        }
+                    )
+                }
+                projects.value = temp.map { p -> p.toAlgorithmModel() }
             }
         }
     }
@@ -77,14 +109,6 @@ class AlgorithmViewModel @Inject constructor(
         }
     }
 
-    private fun getSpecialties() {
-        coroutineScope.launch {
-            getSpecialtiesUseCase().collect {
-                specialties.value = it.list.map { s -> s.toAlgorithmModel() }
-            }
-        }
-    }
-
     private fun getParticipations() {
         coroutineScope.launch {
             getParticipationsUseCase().collect {
@@ -93,13 +117,6 @@ class AlgorithmViewModel @Inject constructor(
         }
     }
 
-    private fun getSupervisors() {
-        coroutineScope.launch {
-            getSupervisorsUseCase().collect {
-                supervisors.value = it.list.map { s -> s.toAlgorithmModel() }
-            }
-        }
-    }
 
     fun saveStudentsByProjects(generatedDistribution: GeneratedDistribution) {
         saveStudentsByProjectsFileUseCase(generatedDistribution)

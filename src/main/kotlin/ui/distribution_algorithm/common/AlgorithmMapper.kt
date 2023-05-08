@@ -22,14 +22,14 @@ fun Student.toAlgorithmModel(): AlgorithmStudent {
     )
 }
 
-fun Project.toAlgorithmModel(): AlgorithmProject {
+fun CleanProject.toAlgorithmModel(): AlgorithmProject {
     return AlgorithmProject(
         id = this.id,
         title = this.name,
         places = this.places,
         freePlaces = this.places,
         busyPlaces = 0,
-        groups = this.projectSpecialties.map { it.specialty!!.toAlgorithmModel() }.toSet().toList(),
+        groups = this.projectSpecialties.map { it.specialty.toAlgorithmModel() }.toSet().toList(),
         difficulty = this.difficulty,
         customer = this.customer,
         supervisors = this.supervisors.map { it.toAlgorithmModel() },
@@ -81,11 +81,11 @@ fun Institute.toAlgorithmModel(): AlgorithmInstitute {
     )
 }
 
-fun ProjectSpecialty.toAlgorithmModel(): AlgorithmProjectSpecialty {
+fun CleanProjectSpecialty.toAlgorithmModel(): AlgorithmProjectSpecialty {
     return AlgorithmProjectSpecialty(
         id = this.id,
         course = this.course!!,
-        specialty = this.specialty!!.toAlgorithmModel(),
+        specialty = this.specialty.toAlgorithmModel(),
         priority = 1
     )
 }

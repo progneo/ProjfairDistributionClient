@@ -26,3 +26,10 @@ open class ProjectSpecialty(
                 "}"
     }
 }
+
+data class CleanProjectSpecialty(
+    var id: Int,
+    var course: Int? = null,
+    var specialty: Specialty,
+    var priority: Int? = null
+)

@@ -72,3 +72,21 @@ open class Project(
                 "}"
     }
 }
+
+data class CleanProject(
+    var id: Int,
+    var name: String,
+    var places: Int,
+    var freePlaces: Int = places,
+    var goal: String,
+    var difficulty: Int,
+    var description: String,
+    var dateStart: String,
+    var dateEnd: String,
+    var customer: String,
+    var productResult: String,
+    var studyResult: String,
+    var department: Department,
+    var supervisors: List<Supervisor>,
+    var projectSpecialties: List<CleanProjectSpecialty>
+)

@@ -51,9 +51,9 @@ dependencies {
     implementation("com.github.mal1s:algorithm-student-distribution:2.0.0")
     //implementation("ru.student.distribution:student-distribution-algorithm:1.1.8")
 
-    implementation("io.realm.kotlin:library-sync:1.6.1")
+    implementation("io.realm.kotlin:library-sync:1.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
-    implementation("io.realm.kotlin:library-base:1.6.1")
+    implementation("io.realm.kotlin:library-base:1.7.0")
 
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:1.0.0")
     implementation("br.com.devsrsouza.compose.icons.jetbrains:simple-icons:1.0.0")
