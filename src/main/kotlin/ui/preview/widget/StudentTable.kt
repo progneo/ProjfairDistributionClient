@@ -1,9 +1,6 @@
 package ui.preview.widget
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -141,7 +138,7 @@ fun StudentTable(
             .fillMaxSize()
             .border(
                 BorderStroke(2.dp, BlueMainLight),
-                RoundedCornerShape(10.dp)
+                RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
             )
     ) {
         StudentTableHead(
@@ -159,33 +156,52 @@ fun StudentTable(
         var studentState by remember { mutableStateOf<Student?>(null) }
         var showPopUp by remember { mutableStateOf(false) }
 
-        LazyColumn(
-            state = scrollState,
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .draggable(
-                    orientation = Orientation.Vertical,
-                    state = rememberDraggableState { delta ->
-                        coroutineScope.launch {
-                            scrollState.scrollBy(-delta)
+                .fillMaxSize()
+        ) {
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .draggable(
+                        orientation = Orientation.Vertical,
+                        state = rememberDraggableState { delta ->
+                            coroutineScope.launch {
+                                scrollState.scrollBy(-delta)
+                            }
                         }
-                    }
-                ),
-
+                    ),
             ) {
-            items(students) { student ->
-                StudentTableItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            studentParticipations = onStudentClicked(student)
-                            studentState = student
-                            showPopUp = true
-                        },
-                    student = student
-                )
-                Divider()
+                items(students) { student ->
+                    StudentTableItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                studentParticipations = onStudentClicked(student)
+                                studentState = student
+                                showPopUp = true
+                            },
+                        student = student
+                    )
+                    Divider()
+                }
             }
+
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(
+                    scrollState = scrollState
+                ),
+                style = ScrollbarStyle(
+                    minimalHeight = LocalScrollbarStyle.current.minimalHeight,
+                    thickness = 16.dp,
+                    shape = LocalScrollbarStyle.current.shape,
+                    hoverDurationMillis = LocalScrollbarStyle.current.hoverDurationMillis,
+                    unhoverColor = LocalScrollbarStyle.current.unhoverColor,
+                    hoverColor = LocalScrollbarStyle.current.hoverColor
+                )
+            )
         }
 
         StudentParticipationsDialog(
@@ -209,3 +225,4 @@ fun StudentTable(
         )
     }
 }
+

@@ -1,9 +1,6 @@
 package ui.preview.widget
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -137,7 +134,7 @@ fun ProjectTable(
             .fillMaxSize()
             .border(
                 BorderStroke(2.dp, BlueMainLight),
-                RoundedCornerShape(10.dp)
+                RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
             )
     ) {
         ProjectTableHead(
@@ -149,35 +146,55 @@ fun ProjectTable(
         val scrollState = rememberForeverLazyListState(KEY)
         val coroutineScope = rememberCoroutineScope()
 
-        LazyColumn(
-            state = scrollState,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .draggable(
-                    orientation = Orientation.Vertical,
-                    state = rememberDraggableState { delta ->
-                        coroutineScope.launch {
-                            scrollState.scrollBy(-delta)
-                        }
-                    }
-                ),
-
-            ) {
-            items(projects) { project ->
-                ProjectTableItem(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            val bundle = Bundle().apply {
-                                put("project", project)
+        ) {
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .draggable(
+                        orientation = Orientation.Vertical,
+                        state = rememberDraggableState { delta ->
+                            coroutineScope.launch {
+                                scrollState.scrollBy(-delta)
                             }
-                            println(bundle)
-                            navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
-                        },
-                    project = project
-                )
-                Divider()
+                        }
+                    ),
+
+                ) {
+                items(projects) { project ->
+                    ProjectTableItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val bundle = Bundle().apply {
+                                    put("project", project)
+                                }
+                                println(bundle)
+                                navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
+                            },
+                        project = project
+                    )
+                    Divider()
+                }
             }
+
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(
+                    scrollState = scrollState
+                ),
+                style = ScrollbarStyle(
+                    minimalHeight = LocalScrollbarStyle.current.minimalHeight,
+                    thickness = 16.dp,
+                    shape = LocalScrollbarStyle.current.shape,
+                    hoverDurationMillis = LocalScrollbarStyle.current.hoverDurationMillis,
+                    unhoverColor = LocalScrollbarStyle.current.unhoverColor,
+                    hoverColor = LocalScrollbarStyle.current.hoverColor
+                )
+            )
         }
     }
 }
