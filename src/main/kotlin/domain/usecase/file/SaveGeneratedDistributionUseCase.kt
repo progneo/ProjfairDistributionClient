@@ -5,9 +5,9 @@ import domain.model.GeneratedDistribution
 import java.io.File
 import javax.inject.Inject
 
-class SaveStudentsByProjectsFileUseCase @Inject constructor() {
+class SaveGeneratedDistributionUseCase @Inject constructor() {
 
-    operator fun  invoke(generatedDistribution: GeneratedDistribution) {
+    operator fun invoke(generatedDistribution: GeneratedDistribution) {
         val path = "/generated_distributions/${generatedDistribution.id}.json"
         File(path).createNewFile()
         ExportDataToJson.exportGeneratedDistribution(

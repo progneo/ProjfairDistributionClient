@@ -1,7 +1,9 @@
 package ui.review.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
+import domain.model.GeneratedDistribution
 import domain.usecase.department.GetDepartmentsUseCase
+import domain.usecase.file.GetGeneratedDistributionUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
@@ -22,6 +24,7 @@ class ReviewViewModel @Inject constructor(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
+    private val getGeneratedDistributionUseCase: GetGeneratedDistributionUseCase
 ) : BaseGodViewModel(
     getStudentsUseCase = getStudentsUseCase,
     getProjectsUseCase = getProjectsUseCase,
@@ -34,4 +37,8 @@ class ReviewViewModel @Inject constructor(
 ) {
 
     var reviewTabPage = mutableStateOf(PreviewTabPage.Students)
+
+    fun getGeneratedDistribution(): GeneratedDistribution {
+        return getGeneratedDistributionUseCase()
+    }
 }

@@ -95,6 +95,10 @@ open class BaseGodViewModel(
         }
     }
 
+    fun getAllStudents(): List<Student> {
+        return _students.value
+    }
+
     private fun getStudents() {
         coroutineScope.launch {
             getStudentsUseCase().collect {
@@ -107,7 +111,7 @@ open class BaseGodViewModel(
     private fun getProjects() {
         coroutineScope.launch {
             getProjectsUseCase().collect {
-                _projects.value = it.list
+                _projects.value = it.list.sortedWith(compareBy { project -> project.name })
                 filterProjects(projectFilterConfiguration.value)
             }
         }
@@ -306,6 +310,17 @@ open class BaseGodViewModel(
         _filteredProjectsByDepartments.value = newProjects
         filterProjectsByString(lastSearchProjectString.value)
     }
+
+    fun filterProjectsByInstitute(enable: Boolean) {
+        if (enable) {
+            _projects.value.sortedWith(compareBy({ it.name }, { it.department?.institute?.name }))
+            filterProjects(projectFilterConfiguration.value)
+        } else {
+            _projects.value.sortedWith(compareBy { it.name })
+            filterProjects(projectFilterConfiguration.value)
+        }
+    }
+
 
     fun getValuesByType(
         filterType: FilterType,

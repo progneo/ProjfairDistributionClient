@@ -93,6 +93,7 @@ fun StudentTableHead(
             text = "ФИО",
             modifier = Modifier
                 .fillMaxWidth(0.6f)
+                .wrapContentWidth()
         )
         Text(
             text = "Номер з.к.",

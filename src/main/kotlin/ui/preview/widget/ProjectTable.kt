@@ -13,16 +13,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import common.compose.rememberForeverLazyListState
+import common.theme.BlueMainDark
 import common.theme.BlueMainLight
 import common.theme.GrayLight
+import compose.icons.FontAwesomeIcons
+import compose.icons.TablerIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.SortAlphaDown
+import compose.icons.tablericons.ArrowsSort
 import domain.model.Project
 import kotlinx.coroutines.launch
 import navigation.Bundle
@@ -69,12 +77,15 @@ fun ProjectTableItem(
 @Composable
 fun ProjectTableHead(
     modifier: Modifier = Modifier,
+    instituteSelected: Boolean,
+    onInstituteClicked: () -> Unit,
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
             .background(GrayLight)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Название",
@@ -88,12 +99,27 @@ fun ProjectTableHead(
                 .fillMaxWidth(0.3f)
                 .wrapContentWidth()
         )
-        Text(
-            text = "Институт",
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable {
+                    onInstituteClicked()
+                }
                 .wrapContentWidth()
-        )
+        ) {
+            Text(
+                text = "Институт",
+                modifier = Modifier
+                    .wrapContentWidth()
+            )
+            Spacer(Modifier.size(8.dp))
+            Icon(
+                modifier = Modifier.size(20.dp, 20.dp),
+                imageVector = if (instituteSelected) FontAwesomeIcons.Solid.SortAlphaDown else TablerIcons.ArrowsSort,
+                contentDescription = null,
+                tint = BlueMainDark
+            )
+        }
     }
     Divider(thickness = 2.dp)
 }
@@ -103,6 +129,8 @@ fun ProjectTable(
     modifier: Modifier = Modifier,
     projects: List<Project>,
     navController: NavController,
+    instituteSelected: Boolean,
+    onInstituteClicked: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -113,7 +141,9 @@ fun ProjectTable(
             )
     ) {
         ProjectTableHead(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            instituteSelected = instituteSelected,
+            onInstituteClicked = onInstituteClicked
         )
 
         val scrollState = rememberForeverLazyListState(KEY)

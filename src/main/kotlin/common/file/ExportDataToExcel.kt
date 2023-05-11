@@ -2,10 +2,7 @@ package common.file
 
 import com.grapecity.documents.excel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
-import ru.student.distribution.model.Institute
-import ru.student.distribution.model.Participation
-import ru.student.distribution.model.Project
-import ru.student.distribution.model.Student
+import ru.student.distribution.model.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -109,6 +106,62 @@ object ExportDataToExcel {
         }
         workBook.save(finalPath)
         deleteExcessLists(finalPath, filePath, index, institute.name, isUniformly)
+    }
+
+    fun writeStudentsByProjects(
+        students: List<Student>,
+        projects: List<Project>,
+        participations: List<Participation>,
+        institute: Institute,
+        filePath: String,
+    ) {
+        val finalPath = "$filePath/$institute.xlsx"
+
+        val workBook = Workbook()
+
+        var statIndex = 1
+        val workSheetStats = workBook.worksheets.get(0)
+        workSheetStats.name = "Статистика по студентам"
+        workSheetStats.getRange("A$statIndex:F$statIndex").value =
+            arrayOf("project.id", "project.title", "supervisor.fio", "supervisor.id", "candidate.numz", "candidate.fio", "candidate.name")
+
+        statIndex++
+
+        for (project in projects) {
+            val supervisors = project.supervisors + if (project.supervisors.isEmpty())
+                listOf(
+                    Supervisor(
+                        id = -1,
+                        name = "Нет руководителя",
+                        department = Department(id = 0, name = "", institute = Institute(0, "")),
+                        position = ""
+                    )
+                )
+            else emptyList()
+
+            val parts = participations.filter { part -> part.projectId == project.id }
+
+            for (supervisor in supervisors) {
+                for (part in parts) {
+                    val student = students.find { stud -> stud.id == part.studentId }!!
+
+                    workSheetStats.getRange("A$statIndex:G$statIndex").value =
+                        arrayOf(
+                            project.id,
+                            project.title,
+                            supervisor.name,
+                            supervisor.id,
+                            //TODO: student.numz
+                            student.name,
+                            institute.name
+                        )
+                    statIndex++
+                }
+            }
+        }
+
+        workBook.save(finalPath)
+        deleteExcessLists(finalPath, filePath, 0, institute.name, false)
     }
 
     private fun deleteExcessLists(

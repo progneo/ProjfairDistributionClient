@@ -20,12 +20,17 @@ import androidx.compose.ui.unit.sp
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
 import common.compose.TitledButton
 import common.compose.VisibleDialog
+import common.file.ExportDataToExcel
 import common.theme.BlueMainDark
 import common.theme.BlueMainLight
+import ru.student.distribution.model.DistributionResults
+import ru.student.distribution.model.Student
 
 @Composable
 fun DataActionsDialog(
     visible: Boolean,
+    students: List<Student>,
+    distributionResults: DistributionResults,
     onDismissRequest: () -> Unit,
 ) {
     val defaultPathText = "Выберите папку для выгрузки"
@@ -100,7 +105,15 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-
+                        distributionResults.institutesResults.forEach { instituteResult ->
+                            ExportDataToExcel.writeStudentsByProjects(
+                                students = students,
+                                projects = instituteResult.projects,
+                                participations = instituteResult.participation,
+                                institute = instituteResult.institute,
+                                filePath = filePathText.value!!
+                            )
+                        }
                     }
                 )
                 Spacer(Modifier.size(16.dp))
@@ -110,7 +123,16 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-
+                        distributionResults.institutesResults.forEach { instituteResult ->
+                            ExportDataToExcel.writeProjectsWithStudents(
+                                students = students,
+                                notApplied = instituteResult.notAppliedStudents,
+                                projects = instituteResult.projects,
+                                participations = instituteResult.participation,
+                                institute = instituteResult.institute,
+                                filePath = filePathText.value!!
+                            )
+                        }
                     }
                 )
                 Spacer(Modifier.size(24.dp))

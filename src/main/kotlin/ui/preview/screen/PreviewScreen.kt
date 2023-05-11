@@ -60,6 +60,10 @@ fun PreviewScreen(
         mutableStateOf(false)
     }
 
+    val instituteSelected = remember {
+        mutableStateOf(false)
+    }
+
     val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
     val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
 
@@ -169,7 +173,12 @@ fun PreviewScreen(
                 ProjectTable(
                     modifier = Modifier.padding(24.dp),
                     projects = projects.value,
-                    navController
+                    navController,
+                    instituteSelected = instituteSelected.value,
+                    onInstituteClicked = {
+                        instituteSelected.value = !instituteSelected.value
+                        previewViewModel.filterProjectsByInstitute(instituteSelected.value)
+                    }
                 )
             }
         }

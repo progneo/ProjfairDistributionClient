@@ -15,6 +15,7 @@ import common.compose.Title
 import kotlinx.coroutines.launch
 import navigation.NavController
 import ui.details.project.widget.EditableSearchField
+import ui.distribution_algorithm.common.toAlgorithmModel
 import ui.filter.FilterConfigurationBlock
 import ui.preview.widget.*
 import ui.preview.widget.filter.ProjectFilterDialog
@@ -45,6 +46,10 @@ fun ReviewScreen(
     val projects = reviewViewModel.filteredProjects.collectAsState()
 
     val specialtySelected = remember {
+        mutableStateOf(false)
+    }
+
+    val instituteSelected = remember {
         mutableStateOf(false)
     }
 
@@ -181,7 +186,12 @@ fun ReviewScreen(
                 ProjectTable(
                     modifier = Modifier.padding(24.dp),
                     projects = projects.value,
-                    navController
+                    navController,
+                    instituteSelected = instituteSelected.value,
+                    onInstituteClicked = {
+                        instituteSelected.value = !instituteSelected.value
+                        reviewViewModel.filterProjectsByInstitute(instituteSelected.value)
+                    }
                 )
             }
         }
@@ -213,6 +223,8 @@ fun ReviewScreen(
 
         DataActionsDialog(
             visible = showDataActions,
+            students = reviewViewModel.getAllStudents().map { it.toAlgorithmModel() },
+            distributionResults = reviewViewModel.getGeneratedDistribution().results,
             onDismissRequest = {
                 showDataActions = false
             }
