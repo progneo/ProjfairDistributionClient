@@ -23,18 +23,18 @@ fun TitleField(
     title: String,
     onDataChanged: (String) -> Unit
 ) {
-    var titleText by rememberSaveable(TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(title))
-    }
+//    println("NEW TITLE = $title")
+//    var titleText by rememberSaveable(TextFieldValue.Saver) {
+//        mutableStateOf(TextFieldValue(title))
+//    }
 
     BorderedTitledComposable(
         modifier = modifier
     ) {
         BasicTextField(
-            value = titleText,
+            value = title,
             onValueChange = {
-                titleText = it
-                onDataChanged(it.text)
+                onDataChanged(it)
             },
             textStyle = TextStyle(
                 fontSize = 36.sp,

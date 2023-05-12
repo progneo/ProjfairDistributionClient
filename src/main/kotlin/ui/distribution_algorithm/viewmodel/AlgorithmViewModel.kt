@@ -48,7 +48,6 @@ class AlgorithmViewModel @Inject constructor(
             getProjectsUseCase().collect {
                 val temp = mutableListOf<CleanProject>()
                 it.list.forEach { project ->
-                    println(project)
                     val projectCopy = CleanProject(
                         id = project.id,
                         name = project.name,

@@ -173,7 +173,8 @@ fun PreviewScreen(
                 ProjectTable(
                     modifier = Modifier.padding(24.dp),
                     projects = projects.value,
-                    navController,
+                    navController = navController,
+                    baseGodViewModel = previewViewModel,
                     instituteSelected = instituteSelected.value,
                     onInstituteClicked = {
                         instituteSelected.value = !instituteSelected.value

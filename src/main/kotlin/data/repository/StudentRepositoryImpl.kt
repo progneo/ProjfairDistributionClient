@@ -57,27 +57,30 @@ class StudentRepositoryImpl @Inject constructor(
             var current = 0f
             val overall = students.size
 
-            println("before delete")
             deleteAllStudents()
             students.forEach { studentResponse ->
                 val newStudent = studentResponseToStudent(studentResponse)
                 insertStudent(newStudent)
                 downloadFlow.value = ++current / overall
             }
-
-            getStudents().first().list.forEach(::println)
         }
     }
 
     override suspend fun syncStudents() {
+
+        data class StudentAlive(
+            var isAlive: Boolean,
+            val student: Student
+        )
+
         withContext(ioDispatcher) {
             val students = projectFairApi.getCandidates().filter {
                 it.specialty != null && it.course > 2
             }
             val oldStudents = studentDao.getAll<Student>().first().list
-            val oldMap = mutableMapOf<Int, Student>()
+            val oldMap = mutableMapOf<Int, StudentAlive>()
             oldStudents.forEach {
-                oldMap[it.numz] = it
+                oldMap[it.numz] = StudentAlive(false, it)
             }
             var current = 0f
             val overall = students.size
@@ -88,11 +91,16 @@ class StudentRepositoryImpl @Inject constructor(
                 val oldStudent = oldMap[newStudent.numz]
                 if (oldStudent == null) {
                     insertStudent(newStudent)
+                    downloadFlow.value = ++current / overall
+                } else {
+                    oldMap[newStudent.id]!!.isAlive = true
                 }
-                downloadFlow.value = ++current / overall
             }
 
-            getStudents().first().list.forEach(::println)
+            oldMap.filter { !it.value.isAlive }.forEach {
+                deleteStudent(it.value.student)
+                downloadFlow.value = ++current / overall
+            }
         }
     }
 }

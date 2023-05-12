@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import ui.common.BaseGodViewModel
 
 class NavController(
     private val startDestination: Screen,
@@ -12,7 +13,11 @@ class NavController(
 
     var currentScreen: MutableState<Screen> = mutableStateOf(startDestination)
 
-    fun navigate(route: ScreenRoute, bundle: Bundle? = null) {
+    fun navigate(
+        route: ScreenRoute,
+        bundle: Bundle? = null,
+        baseGodViewModel: BaseGodViewModel? = null
+    ) {
         if (route != currentScreen.value.sharedScreen.screenRoute) {
             if (backStackScreens.contains(currentScreen.value) && currentScreen.value != startDestination) {
                 backStackScreens.remove(currentScreen.value)
@@ -24,7 +29,11 @@ class NavController(
                 backStackScreens.add(currentScreen.value)
             }
 
-            currentScreen.value = Screen(SharedScreen.findByRoute(route), bundle)
+            currentScreen.value = Screen(
+                SharedScreen.findByRoute(route),
+                bundle,
+                baseGodViewModel
+            )
         }
     }
 

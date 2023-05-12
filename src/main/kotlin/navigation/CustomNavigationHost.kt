@@ -37,6 +37,7 @@ fun CustomNavigationHost(
         }
 
         composable(SharedScreen.PreviewScreen.screenRoute) {
+            components.remove(SharedScreen.ProjectDetailsScreen.screenRoute)
             var component = components[SharedScreen.PreviewScreen.screenRoute]
             if (component == null) {
                 component = PreviewComponent(navController = navController, appComponent = appComponent)
@@ -64,6 +65,7 @@ fun CustomNavigationHost(
         }
 
         composable(SharedScreen.ReviewScreen.screenRoute) {
+            components.remove(SharedScreen.ProjectDetailsScreen.screenRoute)
             var component = components[SharedScreen.ReviewScreen.screenRoute]
             if (component == null) {
                 component = ReviewComponent(navController = navController, appComponent = appComponent)

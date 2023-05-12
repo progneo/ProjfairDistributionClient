@@ -6,12 +6,14 @@ import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.project.SyncProjectUseCase
 import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import ui.filter.FilterEntity
@@ -31,6 +33,7 @@ open class BaseGodViewModel(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
+    private val syncProjectUseCase: SyncProjectUseCase
 ) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     override fun createInitialState(): PreviewContract.ScreenState {
@@ -103,10 +106,11 @@ open class BaseGodViewModel(
         coroutineScope.launch {
             getStudentsUseCase().collect {
                 _students.value = it.list
-                println(it.list)
             }
         }
     }
+
+    fun getAllProjectsFlow() = _projects
 
     private fun getProjects() {
         coroutineScope.launch {
@@ -217,6 +221,14 @@ open class BaseGodViewModel(
         return _projects.value.find { proj -> proj.id == projectId }
     }
 
+    fun syncProject(id: Int, onDataAction: () -> Unit) {
+        coroutineScope.launch {
+            syncProjectUseCase(id).collect {
+                onDataAction()
+            }
+        }
+    }
+
     fun filterStudentsBySpecialty(enable: Boolean) {
         if (enable) {
             _studentsWithParticipations.value =
@@ -320,7 +332,6 @@ open class BaseGodViewModel(
             filterProjects(projectFilterConfiguration.value)
         }
     }
-
 
     fun getValuesByType(
         filterType: FilterType,

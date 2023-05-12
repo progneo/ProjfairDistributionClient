@@ -3,10 +3,12 @@ package navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import ui.common.BaseGodViewModel
 
 data class Screen(
     val sharedScreen: SharedScreen,
     val bundle: Bundle? = null,
+    val baseGodViewModel: BaseGodViewModel? = null
 )
 
 enum class ScreenRoute {

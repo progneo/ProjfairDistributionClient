@@ -5,6 +5,7 @@ import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.project.SyncProjectUseCase
 import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
@@ -22,6 +23,7 @@ class PreviewViewModel @Inject constructor(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
+    private val syncProjectUseCase: SyncProjectUseCase
 ) : BaseGodViewModel(
     getStudentsUseCase = getStudentsUseCase,
     getProjectsUseCase = getProjectsUseCase,
@@ -30,7 +32,12 @@ class PreviewViewModel @Inject constructor(
     getInstitutesUseCase = getInstitutesUseCase,
     getDepartmentsUseCase = getDepartmentsUseCase,
     getSpecialtiesUseCase = getSpecialtiesUseCase,
-    getSupervisorsUseCase = getSupervisorsUseCase
+    getSupervisorsUseCase = getSupervisorsUseCase,
+    syncProjectUseCase = syncProjectUseCase
 ) {
     var previewTabPage = mutableStateOf(PreviewTabPage.Students)
+
+    init {
+        println("INIT PREVIEW")
+    }
 }

@@ -3,9 +3,9 @@ package ui.details.project.screen
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -13,19 +13,61 @@ import common.compose.*
 import common.mapper.toShortName
 import domain.model.Project
 import domain.model.ProjectSpecialty
+import domain.model.Supervisor
 import io.realm.kotlin.ext.realmListOf
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import navigation.Bundle
 import navigation.NavController
 import navigation.ScreenRoute
+import ui.common.BaseGodViewModel
 import ui.details.project.widget.*
 import ui.preview.viewmodel.PreviewViewModel
 
 @Composable
 fun ProjectDetailsScreen(
     navController: NavController,
-    previewViewModel: PreviewViewModel,
+    viewModel: BaseGodViewModel,
     project: Project,
 ) {
+    //new project parameters
+    var title by rememberSaveable {
+        mutableStateOf(project.name)
+    }
+
+    var updatedSupervisors by remember {
+        mutableStateOf(project.supervisors.toList())
+    }
+    var goal by remember {
+        mutableStateOf(project.goal)
+    }
+    var customer by remember {
+        mutableStateOf(project.customer)
+    }
+    var description by remember {
+        mutableStateOf(project.description)
+    }
+    var productResult by remember {
+        mutableStateOf(project.productResult)
+    }
+    var studyResult by remember {
+        mutableStateOf(project.studyResult)
+    }
+    var updatedDistributeSpecialties by remember {
+        mutableStateOf(
+            project.projectSpecialties.filter { ps ->
+                ps.priority == null || ps.priority == 1
+            }
+        )
+    }
+    var updatedParticipationSpecialties by remember {
+        mutableStateOf(
+            project.projectSpecialties.filter { ps ->
+                ps.priority == null || ps.priority == 2
+            }
+        )
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.verticalScroll(ScrollState(0))
     ) {
@@ -37,7 +79,8 @@ fun ProjectDetailsScreen(
             mutableStateListOf(*project.supervisors.toTypedArray())
         }
         val supervisorDropDownItems = rememberSaveable {
-            mutableStateOf(previewViewModel.getFilteredSupervisors(project.department!!))
+            //mutableStateOf(viewModel.getFilteredSupervisors(project.department!!))
+            mutableStateOf<List<Supervisor>>(emptyList())
         }
 
         val distributeSpecialties = rememberSaveable {
@@ -52,26 +95,13 @@ fun ProjectDetailsScreen(
             }.toTypedArray())
         }
 
-        //new project parameters
-        var title = project.name
-        var updatedSupervisors = project.supervisors.toList()
-        var goal = project.goal
-        var customer = project.customer
-        var description = project.description
-        var productResult = project.productResult
-        var studyResult = project.studyResult
-        var updatedDistributeSpecialties = project.projectSpecialties.filter { ps ->
-            ps.priority == null || ps.priority == 1
-        }
-        var updatedParticipationSpecialties = project.projectSpecialties.filter { ps ->
-            ps.priority == null || ps.priority == 2
-        }
-
         Row(modifier = Modifier.padding(16.dp)) {
             BackButton(navController = navController)
             Spacer(modifier = Modifier.size(16.dp))
-            TitleField(title = project.name) {
+            TitleField(title = title) {
+                println("$it")
                 title = it
+                println("NOW = $title")
             }
         }
         ExposedTypedDropdownMenuWithChips(
@@ -85,7 +115,7 @@ fun ProjectDetailsScreen(
         ) {
             updatedSupervisors = it
         }
-        EditableDescriptionField(title = "Цель проекта", content = project.goal ?: "") {
+        EditableDescriptionField(title = "Цель проекта", content = goal ?: "") {
             goal = it
         }
         BorderedRadioButtonGroupColumn(
@@ -93,23 +123,23 @@ fun ProjectDetailsScreen(
                 Title("Легко"), Title("Средне"), Title("Сложно")
             ), selected = project.difficulty - 1, title = "Сложность"
         )
-        EditableDescriptionField(title = "Заказчик", content = project.customer ?: "") {
+        EditableDescriptionField(title = "Заказчик", content = customer ?: "") {
             customer = it
         }
-        EditableDescriptionField(title = "Описание", content = project.description ?: "") {
+        EditableDescriptionField(title = "Описание", content = description ?: "") {
             description = it
         }
-        EditableDescriptionField(title = "Ожидаемый продуктовый результат", content = project.productResult) {
+        EditableDescriptionField(title = "Ожидаемый продуктовый результат", content = productResult) {
             productResult = it
         }
-        EditableDescriptionField(title = "Ожидаемый учебный результат", content = project.studyResult) {
+        EditableDescriptionField(title = "Ожидаемый учебный результат", content = studyResult) {
             studyResult = it
         }
         SpecialtyPicker(modifier = Modifier.width(200.dp),
             title = "Специальности для молчунов",
             itemsState = distributeSpecialties,
             stateHolder = distributeSpecialtyStateHolder,
-            dropdownItems = previewViewModel.specialties.value,
+            dropdownItems = viewModel.specialties.value,
             priority = 1,
             onDataChange = {
                 updatedDistributeSpecialties = it
@@ -118,7 +148,7 @@ fun ProjectDetailsScreen(
             title = "Специальности для заявок",
             itemsState = participationSpecialties,
             stateHolder = participationSpecialtyStateHolder,
-            dropdownItems = previewViewModel.specialties.value,
+            dropdownItems = viewModel.specialties.value,
             priority = 2,
             onDataChange = {
                 updatedParticipationSpecialties = it
@@ -128,7 +158,7 @@ fun ProjectDetailsScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             SaveButton {
-                val newProject = Project(
+                val projectToUpdate = Project(
                     id = project.id,
                     name = title,
                     places = project.places, //TODO: maybe update places somehow
@@ -146,22 +176,34 @@ fun ProjectDetailsScreen(
                     projectSpecialties = realmListOf(*(updatedDistributeSpecialties + updatedParticipationSpecialties).toTypedArray())
                 )
 
-                println(newProject.supervisors.toList())
-                //newProject.projectSpecialties.forEach(::println)
-
-                previewViewModel.updateProject(newProject)
+                viewModel.updateProject(projectToUpdate)
             }
             ShowParticipationButton {
                 val bundle = Bundle()
                 bundle.put("project", project)
-                println(bundle)
                 navController.navigate(ScreenRoute.PARTICIPATION_DETAILS, bundle)
+            }
+            BaseButton(
+                icon = Icons.Default.Refresh
+            ) {
+                viewModel.syncProject(project.id) {
+                    val newProject = viewModel.getProjectById(project.id)!!
+                    title = newProject.name
+                    updatedSupervisors = newProject.supervisors.toList()
+                    goal = newProject.goal
+                    customer = newProject.customer
+                    description = newProject.description
+                    productResult = newProject.productResult
+                    studyResult = newProject.studyResult
+                    updatedDistributeSpecialties = newProject.projectSpecialties.filter { ps ->
+                        ps.priority == null || ps.priority == 1
+                    }
+                    updatedParticipationSpecialties = newProject.projectSpecialties.filter { ps ->
+                        ps.priority == null || ps.priority == 2
+                    }
+                }
             }
         }
         Spacer(modifier = Modifier.size(12.dp))
     }
 }
-
-data class SelectedIndexes(
-    val map: MutableMap<Int, List<Boolean>>,
-)

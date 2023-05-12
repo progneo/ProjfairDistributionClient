@@ -1,8 +1,6 @@
 package data.local.dao.base
 
-import domain.model.Project
-import domain.model.ProjectSpecialty
-import domain.model.Supervisor
+import domain.model.*
 import domain.model.base.Entity
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
@@ -39,25 +37,29 @@ abstract class Dao<T : Entity>(val realm: Realm) {
             val supervisors = realmListOf<Supervisor>()
             val projectSpecialties = realmListOf<ProjectSpecialty>()
 
-            item.supervisors.forEach { s ->
+            item.supervisors.forEach { supervisor ->
+                val realmSupervisor = realm.query<Supervisor>("id = ${supervisor.id}").find().first()
                 supervisors.add(
-                    findLatest(s)!!
+                    findLatest(realmSupervisor)!!
                 )
             }
 
             var lastId = this.query<ProjectSpecialty>().max<Int>("id").find()!! + 1
 
-            item.projectSpecialties.forEach { sp ->
+            item.projectSpecialties.forEach { projectSpecialty ->
+                val realmSpecialty = realm.query<Specialty>("id = ${projectSpecialty.specialty!!.id}").find().first()
                 projectSpecialties.add(
                     ProjectSpecialty(
                         id = lastId,
-                        course = sp.course,
-                        specialty = findLatest(sp.specialty!!),
-                        priority = sp.priority
+                        course = projectSpecialty.course,
+                        specialty = findLatest(realmSpecialty),
+                        priority = projectSpecialty.priority
                     )
                 )
                 lastId++
             }
+
+            val realmDepartment = realm.query<Department>("id = ${item.department!!.id}").find().first()
 
             project?.name = item.name
             project?.places = item.places
@@ -69,7 +71,7 @@ abstract class Dao<T : Entity>(val realm: Realm) {
             project?.customer = item.customer
             project?.productResult = item.productResult
             project?.studyResult = item.studyResult
-            project?.department = findLatest(item.department!!)
+            project?.department = findLatest(realmDepartment)
             project?.supervisors = supervisors
             project?.projectSpecialties = projectSpecialties
         }

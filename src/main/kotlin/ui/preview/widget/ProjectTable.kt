@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import navigation.Bundle
 import navigation.NavController
 import navigation.ScreenRoute
+import ui.common.BaseGodViewModel
 
 private const val KEY = "PREVIEW_PROJECTS"
 
@@ -126,6 +127,7 @@ fun ProjectTable(
     modifier: Modifier = Modifier,
     projects: List<Project>,
     navController: NavController,
+    baseGodViewModel: BaseGodViewModel,
     instituteSelected: Boolean,
     onInstituteClicked: () -> Unit,
 ) {
@@ -173,7 +175,11 @@ fun ProjectTable(
                                     put("project", project)
                                 }
                                 println(bundle)
-                                navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
+                                navController.navigate(
+                                    ScreenRoute.PROJECT_DETAILS,
+                                    bundle,
+                                    baseGodViewModel
+                                )
                             },
                         project = project
                     )

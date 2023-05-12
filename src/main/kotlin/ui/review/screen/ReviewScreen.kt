@@ -186,7 +186,8 @@ fun ReviewScreen(
                 ProjectTable(
                     modifier = Modifier.padding(24.dp),
                     projects = projects.value,
-                    navController,
+                    navController = navController,
+                    baseGodViewModel = reviewViewModel,
                     instituteSelected = instituteSelected.value,
                     onInstituteClicked = {
                         instituteSelected.value = !instituteSelected.value

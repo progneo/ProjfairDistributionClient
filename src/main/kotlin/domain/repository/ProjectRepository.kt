@@ -9,6 +9,7 @@ interface ProjectRepository {
     val downloadFlow: MutableStateFlow<Float>
     fun getProjects(): Flow<ResultsChange<Project>>
     suspend fun updateProject(project: Project)
+    suspend fun syncProjectById(id: Int): Boolean
     suspend fun insertProject(project: Project)
     suspend fun insertProject(projects: List<Project>)
     suspend fun deleteProject(project: Project)
