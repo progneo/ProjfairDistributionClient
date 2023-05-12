@@ -181,7 +181,7 @@ fun ProjectDetailsScreen(
             ShowParticipationButton {
                 val bundle = Bundle()
                 bundle.put("project", project)
-                navController.navigate(ScreenRoute.PARTICIPATION_DETAILS, bundle)
+                navController.navigate(ScreenRoute.PARTICIPATION_DETAILS, bundle, viewModel)
             }
             BaseButton(
                 icon = Icons.Default.Refresh

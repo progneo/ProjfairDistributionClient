@@ -14,9 +14,6 @@ class ParticipationDetailsComponent(
     private val navController: NavController
 ): BaseComponent {
 
-    @Inject
-    lateinit var previewViewModel: PreviewViewModel
-
     val project = navController.currentScreen.value.bundle!!.getAny("project") as Project
 
     init {
@@ -25,6 +22,7 @@ class ParticipationDetailsComponent(
 
     @Composable
     override fun render() {
-        ParticipationDetailsScreen(navController, project, previewViewModel)
+        val viewModel = navController.currentScreen.value.baseGodViewModel!!
+        ParticipationDetailsScreen(navController, project, viewModel)
     }
 }

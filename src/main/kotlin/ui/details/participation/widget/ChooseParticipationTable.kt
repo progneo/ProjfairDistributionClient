@@ -30,6 +30,7 @@ import domain.model.Department
 import domain.model.Institute
 import domain.model.Project
 import kotlinx.coroutines.launch
+import ui.common.BaseGodViewModel
 import ui.filter.FilterEntity
 import ui.filter.FilterNode
 import ui.filter.FilterType
@@ -97,13 +98,13 @@ fun ChooseParticipationTableHead(
 fun ChooseParticipationTable(
     modifier: Modifier = Modifier,
     filterNode: FilterNode,
-    previewViewModel: PreviewViewModel,
+    viewModel: BaseGodViewModel,
 ) {
     val filterStack by remember { mutableStateOf(ArrayDeque<FilterNode>().apply {
         add(filterNode)
     }) }
 
-    var currentItems by remember { mutableStateOf(previewViewModel.getValuesByType(filterStack.last().type)) }
+    var currentItems by remember { mutableStateOf(viewModel.getValuesByType(filterStack.last().type)) }
     var currentFilterTitle by remember { mutableStateOf(filterNode.type.title) }
 
     val scrollState = rememberForeverLazyListState(KEY)
@@ -131,7 +132,7 @@ fun ChooseParticipationTable(
                 if (filterStack.last().selectedValue != null) {
                     filterStack.removeLast()
                     val filterValue = filterStack.last().selectedValue
-                    currentItems = previewViewModel.getValuesByType(
+                    currentItems = viewModel.getValuesByType(
                         filterType = filterStack.last().type,
                         institute = filterValue as? Institute,
                         department = filterValue as? Department,
@@ -174,7 +175,7 @@ fun ChooseParticipationTable(
                                 }
                             )
                             filterStack.addLast(newFilterNode)
-                            currentItems = previewViewModel.getValuesByType(
+                            currentItems = viewModel.getValuesByType(
                                 filterType = filterStack.last().type,
                                 institute = clickedFilter as? Institute,
                                 department = clickedFilter as? Department,

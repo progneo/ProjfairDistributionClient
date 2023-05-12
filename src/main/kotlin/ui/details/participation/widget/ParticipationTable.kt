@@ -26,6 +26,7 @@ import common.theme.GrayLight
 import domain.model.Participation
 import domain.model.Student
 import kotlinx.coroutines.launch
+import ui.common.BaseGodViewModel
 import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PROJECT_PARTICIPATION"
@@ -102,7 +103,7 @@ fun ParticipationTableHead(
 fun ParticipationTable(
     modifier: Modifier = Modifier,
     participations: List<Participation>,
-    previewViewModel: PreviewViewModel,
+    viewModel: BaseGodViewModel,
 ) {
     Column(
         modifier = modifier
@@ -141,7 +142,7 @@ fun ParticipationTable(
 
                         },
                     participation = participation,
-                    student = previewViewModel.getStudentById(participation.studentId)
+                    student = viewModel.getStudentById(participation.studentId)
                 )
                 Divider()
             }

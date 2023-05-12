@@ -15,17 +15,17 @@ import common.compose.BackButton
 import common.theme.BlueMainLight
 import domain.model.Project
 import navigation.NavController
+import ui.common.BaseGodViewModel
 import ui.details.participation.widget.ChooseParticipationTable
 import ui.details.participation.widget.ParticipationTable
 import ui.filter.FilterNode
 import ui.filter.FilterType
-import ui.preview.viewmodel.PreviewViewModel
 
 @Composable
 fun ParticipationDetailsScreen(
     navController: NavController,
     project: Project,
-    previewViewModel: PreviewViewModel,
+    viewModel: BaseGodViewModel,
 ) {
     Column {
         Box(
@@ -65,8 +65,8 @@ fun ParticipationDetailsScreen(
         Row {
             ParticipationTable(
                 modifier = Modifier.fillMaxWidth(0.475f).padding(24.dp),
-                participations = previewViewModel.getParticipationByProject(project.id),
-                previewViewModel = previewViewModel
+                participations = viewModel.getParticipationByProject(project.id),
+                viewModel = viewModel
             )
             Column(
                 modifier = Modifier.fillMaxWidth(2f/24).fillMaxHeight(),
@@ -84,7 +84,7 @@ fun ParticipationDetailsScreen(
                     selectedValue = null,
                     next = FilterType.DEPARTMENT
                 ),
-                previewViewModel = previewViewModel
+                viewModel = viewModel
             )
         }
     }
