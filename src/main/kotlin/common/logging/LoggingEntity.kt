@@ -1,5 +1,5 @@
 package common.logging
 
-interface LoggingEntity {
-    fun toLog(): String
-}
+//interface LoggingEntity {
+//    fun toLog(): String
+//}

@@ -215,6 +215,7 @@ open class BaseGodViewModel(
         coroutineScope.launch {
             getLogsUseCase().collect {
                 logs.value = it.list
+                println(it.list)
             }
         }
     }

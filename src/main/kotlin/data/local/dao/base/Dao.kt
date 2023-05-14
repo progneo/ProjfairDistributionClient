@@ -1,16 +1,20 @@
 package data.local.dao.base
 
+import data.repository.ParticipationRepositoryImpl
 import domain.model.*
 import domain.model.base.Entity
 import domain.model.base.StringIdEntity
 import domain.repository.LoggingRepository
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
+import io.realm.kotlin.ext.asRealmObject
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.query.max
+import io.realm.kotlin.types.RealmAny
 import kotlinx.coroutines.flow.Flow
+import java.lang.IllegalArgumentException
 import java.util.UUID
 
 
@@ -30,6 +34,10 @@ abstract class Dao<T : Entity>(val realm: Realm) {
         items.forEach {
             insert(it)
         }
+    }
+
+    suspend inline fun <reified R: Entity> getById(id: Int): R {
+        return realm.query<R>("id", id).find().first()
     }
 
     protected suspend inline fun <reified R : Entity> updateItem(
@@ -101,49 +109,46 @@ abstract class LoggingDao(val realm: Realm) {
 
     suspend fun insert(item: Log, logType: LogType, logSource: LogSource) {
         realm.writeBlocking {
-            val lastLogType = try {
-                realm.query<LogTypeRealm>("_logType = ${logType.name}").find().first()
-            } catch (e: NoSuchElementException) {
-                when(logType) {
+            val lastLogType =
+                when (logType) {
                     LogType.SAVE -> {
                         LogTypeRealm(
                             id = 0,
-                            _logType = LogType.SAVE.name
+                            logType = LogType.SAVE.name
                         )
                     }
+
                     LogType.REMOVE -> {
                         LogTypeRealm(
                             id = 1,
-                            _logType = LogType.REMOVE.name
+                            logType = LogType.REMOVE.name
                         )
                     }
+
                     LogType.CHANGE -> {
                         LogTypeRealm(
                             id = 2,
-                            _logType = LogType.CHANGE.name
+                            logType = LogType.CHANGE.name
                         )
                     }
                 }
-            }
 
-            val lastLogSource = try {
-                realm.query<LogSourceRealm>("_logSource = ${logSource.name}").find().first()
-            } catch (e: NoSuchElementException) {
-                when(logSource) {
+            val lastLogSource =
+                when (logSource) {
                     LogSource.USER -> {
                         LogSourceRealm(
                             id = 0,
-                            _logSource = LogSource.USER.name
+                            logSource = LogSource.USER.name
                         )
                     }
+
                     LogSource.SERVER -> {
                         LogSourceRealm(
                             id = 1,
-                            _logSource = LogSource.SERVER.name
+                            logSource = LogSource.SERVER.name
                         )
                     }
                 }
-            }
 
             val newItem = item.apply {
                 type = lastLogType

@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.8.0"
     id("org.jetbrains.compose") version "1.4.0"
     id("org.jetbrains.kotlin.kapt") version "1.8.0"
-    id("io.realm.kotlin") version "1.6.1"
+    id("io.realm.kotlin") version "1.8.0"
 }
 
 group = "ru.student.distribution"
@@ -27,7 +27,9 @@ dependencies {
 
     implementation(compose.desktop.currentOs)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+    implementation("org.jetbrains.compose.material3:material3-desktop:1.4.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
     implementation("com.google.code.gson:gson:2.10")
@@ -37,22 +39,22 @@ dependencies {
     api("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
+    //implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
 
-    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
-    implementation("org.xerial:sqlite-jdbc:3.40.0.0")
-    implementation("mysql:mysql-connector-java:8.0.30")
+//    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+//    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+//    implementation("org.xerial:sqlite-jdbc:3.40.0.0")
+//    implementation("mysql:mysql-connector-java:8.0.30")
 
-    implementation("org.apache.poi:poi-ooxml:5.2.2")
-    implementation("com.grapecity.documents:gcexcel:5.0.3")
+    //implementation("org.apache.poi:poi-ooxml:5.2.2")
+    //implementation("com.grapecity.documents:gcexcel:6.0.4")
 
     implementation("com.github.mal1s:algorithm-student-distribution:2.0.0")
     //implementation("ru.student.distribution:student-distribution-algorithm:1.1.8")
 
-    implementation("io.realm.kotlin:library-sync:1.7.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
-    implementation("io.realm.kotlin:library-base:1.7.0")
+    implementation("io.realm.kotlin:library-sync:1.8.0")
+    //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3-native-mt")
+    implementation("io.realm.kotlin:library-base:1.8.0")
 
     implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:1.0.0")
     implementation("br.com.devsrsouza.compose.icons.jetbrains:simple-icons:1.0.0")
@@ -90,6 +92,11 @@ compose.desktop {
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
             windows {
                 msiPackageVersion = "1.0.0"
+            }
+            buildTypes.release {
+                proguard {
+                    configurationFiles.from("compose-desktop.pro")
+                }
             }
         }
     }

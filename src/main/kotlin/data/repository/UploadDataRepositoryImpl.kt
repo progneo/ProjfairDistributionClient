@@ -44,15 +44,13 @@ class UploadDataRepositoryImpl @Inject constructor(
     override suspend fun rebaseData(): Boolean {
         return withContext(ioDispatcher) {
             try {
-                println("started")
-                studentRepository.rebaseStudents()
-                println("after students")
-                projectRepository.rebaseProjects()
-                participationRepository.rebaseParticipations()
-                instituteRepository.uploadInstitutes()
-                departmentRepository.uploadDepartments()
-                supervisorRepository.uploadSupervisors()
                 loggingRepository.deleteAll()
+                //studentRepository.rebaseStudents()
+                projectRepository.rebaseProjects()
+                //participationRepository.rebaseParticipations()
+                //instituteRepository.uploadInstitutes()
+                //departmentRepository.uploadDepartments()
+                //supervisorRepository.uploadSupervisors()
 
                 true
             } catch (e: Exception) {

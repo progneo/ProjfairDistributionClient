@@ -10,7 +10,9 @@ import domain.model.LogType
 import domain.model.Student
 import domain.repository.LoggingRepository
 import domain.repository.StudentRepository
+import io.realm.kotlin.ext.copyFromRealm
 import io.realm.kotlin.notifications.ResultsChange
+import io.realm.kotlin.types.RealmAny
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,15 +41,15 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun insertStudent(student: Student) {
         withContext(ioDispatcher) {
             studentDao.insert(student)
-            loggingRepository.saveLog(
-                log = Log(
-                    id = UUID.randomUUID().toString(),
-                    dateTime = getCurrentDateTime(),
-                    subject = student,
-                ),
-                logType = LogType.SAVE,
-                logSource = LogSource.SERVER
-            )
+//            loggingRepository.saveLog(
+//                log = Log(
+//                    id = UUID.randomUUID().toString(),
+//                    dateTime = getCurrentDateTime(),
+//                    subject = student
+//                ),
+//                logType = LogType.SAVE,
+//                logSource = LogSource.SERVER
+//            )
         }
     }
 

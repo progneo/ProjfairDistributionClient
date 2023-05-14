@@ -1,7 +1,6 @@
 package domain.model
 
 import com.google.gson.annotations.SerializedName
-import common.logging.LoggingEntity
 import domain.model.base.Entity
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
@@ -25,7 +24,7 @@ open class Project(
     var department: Department? = null,
     var supervisors: RealmList<Supervisor> = realmListOf(),
     @SerializedName("project_specialities") var projectSpecialties: RealmList<ProjectSpecialty> = realmListOf()
-) : Entity(), RealmObject, FilterEntity, LoggingEntity {
+) : LoggingEntity(), RealmObject, FilterEntity {
 
     constructor() : this(
         0,
