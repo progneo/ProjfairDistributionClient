@@ -11,7 +11,7 @@ interface ParticipationRepository {
     suspend fun updateParticipation(participation: Participation)
     suspend fun insertParticipation(participation: Participation)
     suspend fun insertParticipation(participations: List<Participation>)
-    suspend fun deleteParticipation(participation: Participation)
+    suspend fun deleteParticipation(participation: Participation, bySystem: Boolean)
     suspend fun deleteAllParticipations()
     suspend fun syncParticipations()
     suspend fun rebaseParticipations()

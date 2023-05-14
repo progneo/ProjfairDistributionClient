@@ -5,6 +5,8 @@ import domain.model.GeneratedDistribution
 import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.file.GetGeneratedDistributionUseCase
 import domain.usecase.institute.GetInstitutesUseCase
+import domain.usecase.logging.GetLogsUseCase
+import domain.usecase.logging.SaveLogUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.project.SyncProjectUseCase
@@ -28,6 +30,8 @@ class ReviewViewModel @Inject constructor(
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
     private val getGeneratedDistributionUseCase: GetGeneratedDistributionUseCase,
     private val syncProjectUseCase: SyncProjectUseCase,
+    private val getLogsUseCase: GetLogsUseCase,
+    private val saveLogUseCase: SaveLogUseCase
 ) : BaseGodViewModel(
     getStudentsUseCase = getStudentsUseCase,
     getProjectsUseCase = getProjectsUseCase,
@@ -37,7 +41,9 @@ class ReviewViewModel @Inject constructor(
     getDepartmentsUseCase = getDepartmentsUseCase,
     getSpecialtiesUseCase = getSpecialtiesUseCase,
     getSupervisorsUseCase = getSupervisorsUseCase,
-    syncProjectUseCase = syncProjectUseCase
+    syncProjectUseCase = syncProjectUseCase,
+    getLogsUseCase = getLogsUseCase,
+    saveLogUseCase = saveLogUseCase
 ) {
 
     var reviewTabPage = mutableStateOf(PreviewTabPage.Students)

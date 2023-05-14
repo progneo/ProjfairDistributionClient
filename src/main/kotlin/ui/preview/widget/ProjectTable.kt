@@ -119,7 +119,6 @@ fun ProjectTableHead(
             )
         }
     }
-    Divider(thickness = 2.dp)
 }
 
 @Composable

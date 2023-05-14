@@ -6,33 +6,32 @@ import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlin.math.log
 
-enum class LogType {
-    SAVE,
-    REMOVE,
-    CHANGE
+enum class LogSource {
+    USER,
+    SERVER
 }
 
-open class LogTypeRealm(
+open class LogSourceRealm(
     @PrimaryKey override var id: Int = 0,
-    private var _logType: String = LogType.SAVE.name
+    private var _logSource: String = LogSource.SERVER.name
 ) : RealmObject, Entity() {
 
     constructor() : this(0, "")
 
-    var logType: LogType
-        get() = LogType.values().first { it.name == _logType }
+    var logSource: LogSource
+        get() = LogSource.values().first() { it.name == _logSource }
         set(value) {
-            _logType = value.name
+            _logSource = value.name
         }
 
     override fun members(): List<Any?> {
-        return listOf(id, _logType)
+        return listOf(id, _logSource)
     }
 
     override fun toString(): String {
         return "{" +
                 "id=$id," +
-                "logType=$_logType" +
+                "logSource=$_logSource" +
                 "}"
     }
 }

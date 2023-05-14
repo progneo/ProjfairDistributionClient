@@ -13,6 +13,7 @@ class UploadDataRepositoryImpl @Inject constructor(
     private val instituteRepository: InstituteRepository,
     private val departmentRepository: DepartmentRepository,
     private val supervisorRepository: SupervisorRepository,
+    private val loggingRepository: LoggingRepository
 ) : UploadDataRepository {
 
     override val studentsDownloadFlow = studentRepository.downloadFlow
@@ -51,6 +52,7 @@ class UploadDataRepositoryImpl @Inject constructor(
                 instituteRepository.uploadInstitutes()
                 departmentRepository.uploadDepartments()
                 supervisorRepository.uploadSupervisors()
+                loggingRepository.deleteAll()
 
                 true
             } catch (e: Exception) {

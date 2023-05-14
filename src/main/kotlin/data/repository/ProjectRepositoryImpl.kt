@@ -1,11 +1,12 @@
 package data.repository
 
 import com.grapecity.documents.excel.drawing.b.it
+import common.date.getCurrentDateTime
 import data.local.dao.ProjectDao
 import data.mapper.projectResponseToProject
 import data.remote.api.OrdinaryProjectFairApi
-import domain.model.Project
-import domain.model.Student
+import domain.model.*
+import domain.repository.LoggingRepository
 import domain.repository.ProjectRepository
 import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,12 +15,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 
 class ProjectRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val projectDao: ProjectDao,
     private val projectFairApi: OrdinaryProjectFairApi,
+    private val loggingRepository: LoggingRepository,
 ) : ProjectRepository {
 
     override val downloadFlow = MutableStateFlow<Float>(0f)
@@ -30,6 +33,15 @@ class ProjectRepositoryImpl @Inject constructor(
 
     override suspend fun updateProject(project: Project) {
         projectDao.update(project)
+        loggingRepository.saveLog(
+            log = Log(
+                id = UUID.randomUUID().toString(),
+                dateTime = getCurrentDateTime(),
+                subject = project,
+            ),
+            logType = LogType.CHANGE,
+            logSource = LogSource.USER
+        )
     }
 
     override suspend fun syncProjectById(id: Int): Boolean {
@@ -45,6 +57,15 @@ class ProjectRepositoryImpl @Inject constructor(
     override suspend fun insertProject(project: Project) {
         withContext(ioDispatcher) {
             projectDao.insert(project)
+            loggingRepository.saveLog(
+                log = Log(
+                    id = UUID.randomUUID().toString(),
+                    dateTime = getCurrentDateTime(),
+                    subject = project,
+                ),
+                logType = LogType.SAVE,
+                logSource = LogSource.SERVER
+            )
         }
     }
 
@@ -56,6 +77,15 @@ class ProjectRepositoryImpl @Inject constructor(
 
     override suspend fun deleteProject(project: Project) {
         projectDao.delete<Student>(project)
+        loggingRepository.saveLog(
+            log = Log(
+                id = UUID.randomUUID().toString(),
+                dateTime = getCurrentDateTime(),
+                subject = project,
+            ),
+            logType = LogType.REMOVE,
+            logSource = LogSource.SERVER
+        )
     }
 
     override suspend fun deleteAllProjects() {

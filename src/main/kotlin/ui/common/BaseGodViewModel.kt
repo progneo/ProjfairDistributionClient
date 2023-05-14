@@ -4,6 +4,8 @@ import base.mvi.BaseViewModel
 import domain.model.*
 import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
+import domain.usecase.logging.GetLogsUseCase
+import domain.usecase.logging.SaveLogUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.project.SyncProjectUseCase
@@ -33,7 +35,9 @@ open class BaseGodViewModel(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
-    private val syncProjectUseCase: SyncProjectUseCase
+    private val syncProjectUseCase: SyncProjectUseCase,
+    private val getLogsUseCase: GetLogsUseCase,
+    private val saveLogUseCase: SaveLogUseCase
 ) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     override fun createInitialState(): PreviewContract.ScreenState {
@@ -48,6 +52,7 @@ open class BaseGodViewModel(
     private val _institutes = MutableStateFlow<List<Institute>>(emptyList())
     private val _departments = MutableStateFlow<List<Department>>(emptyList())
     private val _supervisors = MutableStateFlow<List<Supervisor>>(emptyList())
+    val logs = MutableStateFlow<List<Log>>(emptyList())
 
     val specialties = MutableStateFlow<List<Specialty>>(emptyList())
     val filteredDepartments = MutableStateFlow<List<Department>>(emptyList())
@@ -84,6 +89,7 @@ open class BaseGodViewModel(
         getDepartments()
         getSpecialties()
         getSupervisors()
+        getLogs()
     }
 
     fun getFilteredStudents(studentsTabPage: StudentsTabPage): StateFlow<List<Student>> {
@@ -202,6 +208,20 @@ open class BaseGodViewModel(
     fun getFilteredSupervisors(department: Department): List<Supervisor> {
         return _supervisors.value.filter { s ->
             s.department != null && s.department!!.id == department.id
+        }
+    }
+
+    private fun getLogs() {
+        coroutineScope.launch {
+            getLogsUseCase().collect {
+                logs.value = it.list
+            }
+        }
+    }
+
+    fun saveLog(log: Log) {
+        coroutineScope.launch {
+            saveLogUseCase(log)
         }
     }
 

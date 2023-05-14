@@ -2,13 +2,20 @@ package ui.preview.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import common.compose.BaseButton
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.ClipboardList
 import kotlinx.coroutines.launch
 import navigation.NavController
 import ui.details.project.widget.EditableSearchField
@@ -33,6 +40,7 @@ fun PreviewScreen(
 
     val students = previewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = previewViewModel.filteredProjects.collectAsState()
+    val logs = previewViewModel.logs.collectAsState()
 
     rememberCoroutineScope().launch {
         previewViewModel.searchStudentString.collect {
@@ -48,6 +56,7 @@ fun PreviewScreen(
     }
 
     var showFilter by remember { mutableStateOf(false) }
+    var showLogging by remember { mutableStateOf(false) }
 
     fun studentTabPageToIndex(): Int {
         return when (studentsTabPage) {
@@ -120,6 +129,14 @@ fun PreviewScreen(
                                         previewViewModel.lastSearchStudentString.value = searchString
                                     }
                                 )
+                                Spacer(Modifier.size(24.dp))
+                                BaseButton(
+                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    icon = FontAwesomeIcons.Solid.ClipboardList,
+                                    requiredSize = DpSize(50.dp, 50.dp)
+                                ) {
+                                    showLogging = true
+                                }
                             }
                         }
 
@@ -141,6 +158,14 @@ fun PreviewScreen(
                                         previewViewModel.lastSearchProjectString.value = searchString
                                     }
                                 )
+                                Spacer(Modifier.size(24.dp))
+                                BaseButton(
+                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    icon = FontAwesomeIcons.Solid.ClipboardList,
+                                    requiredSize = DpSize(50.dp, 50.dp)
+                                ) {
+                                    showLogging = true
+                                }
                             }
                         }
                     }
@@ -206,6 +231,16 @@ fun PreviewScreen(
             },
             onDismissRequest = {
                 showFilter = false
+            }
+        )
+
+        LoggingDialog(
+            visible = showLogging,
+            items = logs.value,
+            students = previewViewModel.getAllStudents(),
+            projects = previewViewModel.getAllProjectsFlow().value,
+            onDismissRequest = {
+                showLogging = false
             }
         )
     }

@@ -1,5 +1,6 @@
 package common.compose
 
+import androidx.annotation.Size
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.theme.BlueMainLight
@@ -20,6 +22,7 @@ import navigation.NavController
 fun BaseButton(
     modifier: Modifier = Modifier,
     icon: ImageVector,
+    requiredSize: DpSize = DpSize(60.dp, 60.dp),
     onClick: () -> Unit,
 ) {
     Surface(
@@ -38,7 +41,7 @@ fun BaseButton(
                 contentDescription = null,
                 tint = BlueMainLight,
                 modifier = Modifier
-                    .size(60.dp, 60.dp)
+                    .size(requiredSize)
                     .padding(8.dp)
             )
         }

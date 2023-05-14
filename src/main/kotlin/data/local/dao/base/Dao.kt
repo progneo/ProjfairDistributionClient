@@ -2,6 +2,8 @@ package data.local.dao.base
 
 import domain.model.*
 import domain.model.base.Entity
+import domain.model.base.StringIdEntity
+import domain.repository.LoggingRepository
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
@@ -9,6 +11,7 @@ import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.query.max
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 
 abstract class Dao<T : Entity>(val realm: Realm) {
@@ -86,6 +89,74 @@ abstract class Dao<T : Entity>(val realm: Realm) {
     suspend inline fun <reified R : Entity> deleteAll() {
         realm.writeBlocking {
             delete(this.query(R::class))
+        }
+    }
+}
+
+abstract class LoggingDao(val realm: Realm) {
+
+    inline fun <reified R : StringIdEntity> getAll(): Flow<ResultsChange<R>> {
+        return realm.query(R::class).asFlow()
+    }
+
+    suspend fun insert(item: Log, logType: LogType, logSource: LogSource) {
+        realm.writeBlocking {
+            val lastLogType = try {
+                realm.query<LogTypeRealm>("_logType = ${logType.name}").find().first()
+            } catch (e: NoSuchElementException) {
+                when(logType) {
+                    LogType.SAVE -> {
+                        LogTypeRealm(
+                            id = 0,
+                            _logType = LogType.SAVE.name
+                        )
+                    }
+                    LogType.REMOVE -> {
+                        LogTypeRealm(
+                            id = 1,
+                            _logType = LogType.REMOVE.name
+                        )
+                    }
+                    LogType.CHANGE -> {
+                        LogTypeRealm(
+                            id = 2,
+                            _logType = LogType.CHANGE.name
+                        )
+                    }
+                }
+            }
+
+            val lastLogSource = try {
+                realm.query<LogSourceRealm>("_logSource = ${logSource.name}").find().first()
+            } catch (e: NoSuchElementException) {
+                when(logSource) {
+                    LogSource.USER -> {
+                        LogSourceRealm(
+                            id = 0,
+                            _logSource = LogSource.USER.name
+                        )
+                    }
+                    LogSource.SERVER -> {
+                        LogSourceRealm(
+                            id = 1,
+                            _logSource = LogSource.SERVER.name
+                        )
+                    }
+                }
+            }
+
+            val newItem = item.apply {
+                type = lastLogType
+                source = lastLogSource
+            }
+
+            copyToRealm(newItem, UpdatePolicy.ALL)
+        }
+    }
+
+    suspend inline fun deleteAll() {
+        realm.writeBlocking {
+            delete(this.query(Log::class))
         }
     }
 }

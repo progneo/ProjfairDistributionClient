@@ -26,16 +26,13 @@ interface DatabaseModule {
                     ProjectSupervisor::class,
                     Institute::class,
                     Department::class,
-                    SupervisorRole::class
+                    SupervisorRole::class,
+                    LogTypeRealm::class,
+                    LogSourceRealm::class,
+                    Log::class,
                 )
             )
             return Realm.open(configuration)
-        }
-
-        @AppScope
-        @Provides
-        fun provideStudentDao(realm: Realm): StudentDao {
-            return StudentDao(realm)
         }
     }
 }

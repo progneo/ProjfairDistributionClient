@@ -3,6 +3,8 @@ package ui.preview.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
+import domain.usecase.logging.GetLogsUseCase
+import domain.usecase.logging.SaveLogUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.project.SyncProjectUseCase
@@ -23,7 +25,9 @@ class PreviewViewModel @Inject constructor(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
-    private val syncProjectUseCase: SyncProjectUseCase
+    private val syncProjectUseCase: SyncProjectUseCase,
+    private val getLogsUseCase: GetLogsUseCase,
+    private val saveLogUseCase: SaveLogUseCase
 ) : BaseGodViewModel(
     getStudentsUseCase = getStudentsUseCase,
     getProjectsUseCase = getProjectsUseCase,
@@ -33,7 +37,9 @@ class PreviewViewModel @Inject constructor(
     getDepartmentsUseCase = getDepartmentsUseCase,
     getSpecialtiesUseCase = getSpecialtiesUseCase,
     getSupervisorsUseCase = getSupervisorsUseCase,
-    syncProjectUseCase = syncProjectUseCase
+    syncProjectUseCase = syncProjectUseCase,
+    getLogsUseCase = getLogsUseCase,
+    saveLogUseCase = saveLogUseCase
 ) {
     var previewTabPage = mutableStateOf(PreviewTabPage.Students)
 

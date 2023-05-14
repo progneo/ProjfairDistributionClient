@@ -5,7 +5,6 @@ plugins {
     id("org.jetbrains.compose") version "1.4.0"
     id("org.jetbrains.kotlin.kapt") version "1.8.0"
     id("io.realm.kotlin") version "1.6.1"
-    //application
 }
 
 group = "ru.student.distribution"
@@ -90,7 +89,6 @@ compose.desktop {
             outputBaseDir.set(project.buildDir.resolve("E:/"))
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
             windows {
-                //exePackageVersion = "1.0.0"
                 msiPackageVersion = "1.0.0"
             }
         }

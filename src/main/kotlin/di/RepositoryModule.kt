@@ -8,11 +8,24 @@ import data.remote.api.OrdinaryProjectFairApi
 import data.repository.*
 import domain.repository.*
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlin.math.log
 
 @Module
 interface RepositoryModule {
 
     companion object {
+
+        @AppScope
+        @Provides
+        fun provideLoggingRepository(
+            ioDispatcher: CoroutineDispatcher,
+            logDao: LogDao,
+        ): LoggingRepository {
+            return LoggingRepositoryImpl(
+                ioDispatcher = ioDispatcher,
+                logDao = logDao
+            )
+        }
 
         @AppScope
         @Provides
@@ -23,7 +36,8 @@ interface RepositoryModule {
             participationRepository: ParticipationRepository,
             instituteRepository: InstituteRepository,
             departmentRepository: DepartmentRepository,
-            supervisorRepository: SupervisorRepository
+            supervisorRepository: SupervisorRepository,
+            loggingRepository: LoggingRepository
         ): UploadDataRepository {
             return UploadDataRepositoryImpl(
                 ioDispatcher = ioDispatcher,
@@ -32,7 +46,8 @@ interface RepositoryModule {
                 participationRepository = participationRepository,
                 instituteRepository = instituteRepository,
                 departmentRepository = departmentRepository,
-                supervisorRepository = supervisorRepository
+                supervisorRepository = supervisorRepository,
+                loggingRepository = loggingRepository
             )
         }
 
@@ -42,11 +57,13 @@ interface RepositoryModule {
             ioDispatcher: CoroutineDispatcher,
             studentDao: StudentDao,
             projectFairApi: OrdinaryProjectFairApi,
+            loggingRepository: LoggingRepository
         ): StudentRepository {
             return StudentRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 studentDao = studentDao,
-                projectFairApi = projectFairApi
+                projectFairApi = projectFairApi,
+                loggingRepository = loggingRepository
             )
         }
 
@@ -56,11 +73,13 @@ interface RepositoryModule {
             ioDispatcher: CoroutineDispatcher,
             projectDao: ProjectDao,
             projectFairApi: OrdinaryProjectFairApi,
+            loggingRepository: LoggingRepository
         ): ProjectRepository {
             return ProjectRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 projectDao = projectDao,
-                projectFairApi = projectFairApi
+                projectFairApi = projectFairApi,
+                loggingRepository = loggingRepository
             )
         }
 
@@ -70,11 +89,13 @@ interface RepositoryModule {
             ioDispatcher: CoroutineDispatcher,
             participationDao: ParticipationDao,
             ordinaryProjectFairApi: OrdinaryProjectFairApi,
+            loggingRepository: LoggingRepository
         ): ParticipationRepository {
             return ParticipationRepositoryImpl(
                 ioDispatcher = ioDispatcher,
                 participationDao = participationDao,
-                ordinaryProjectFairApi = ordinaryProjectFairApi
+                ordinaryProjectFairApi = ordinaryProjectFairApi,
+                loggingRepository = loggingRepository
             )
         }
 

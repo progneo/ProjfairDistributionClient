@@ -7,6 +7,7 @@ fun participationResponseToParticipation(participation: ParticipationResponse): 
     return Participation(
         id = participation.id,
         studentId = participation.candidateId.toInt(),
+        studentNumz = participation.numzResponse.numz.toInt(),
         projectId = participation.projectId.toInt(),
         priority = participation.priority
     )

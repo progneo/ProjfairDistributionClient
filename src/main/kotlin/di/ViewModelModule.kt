@@ -4,8 +4,11 @@ import dagger.Module
 import dagger.Provides
 import domain.interactor.DownloadProgressInteractor
 import domain.usecase.department.GetDepartmentsUseCase
+import domain.usecase.file.GetGeneratedDistributionUseCase
 import domain.usecase.file.SaveGeneratedDistributionUseCase
 import domain.usecase.institute.GetInstitutesUseCase
+import domain.usecase.logging.GetLogsUseCase
+import domain.usecase.logging.SaveLogUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
 import domain.usecase.project.SyncProjectUseCase
@@ -17,6 +20,7 @@ import domain.usecase.uploaddata.RebaseDataUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
 import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
 import ui.preview.viewmodel.PreviewViewModel
+import ui.review.viewmodel.ReviewViewModel
 import ui.uploaddata.viewmodel.UploadDataViewModel
 
 @Module
@@ -50,6 +54,8 @@ interface ViewModelModule {
             getSpecialtiesUseCase: GetSpecialtiesUseCase,
             getSupervisorsUseCase: GetSupervisorsUseCase,
             syncProjectUseCase: SyncProjectUseCase,
+            getLogsUseCase: GetLogsUseCase,
+            saveLogUseCase: SaveLogUseCase
         ): PreviewViewModel {
             return PreviewViewModel(
                 getStudentsUseCase = getStudentsUseCase,
@@ -60,7 +66,41 @@ interface ViewModelModule {
                 getDepartmentsUseCase = getDepartmentsUseCase,
                 getSpecialtiesUseCase = getSpecialtiesUseCase,
                 getSupervisorsUseCase = getSupervisorsUseCase,
-                syncProjectUseCase = syncProjectUseCase
+                syncProjectUseCase = syncProjectUseCase,
+                getLogsUseCase = getLogsUseCase,
+                saveLogUseCase = saveLogUseCase
+            )
+        }
+
+        @AppScope
+        @Provides
+        fun provideReviewViewModel(
+            getStudentsUseCase: GetStudentsUseCase,
+            getProjectsUseCase: GetProjectsUseCase,
+            updateProjectUseCase: UpdateProjectUseCase,
+            getParticipationsUseCase: GetParticipationsUseCase,
+            getInstitutesUseCase: GetInstitutesUseCase,
+            getDepartmentsUseCase: GetDepartmentsUseCase,
+            getSpecialtiesUseCase: GetSpecialtiesUseCase,
+            getSupervisorsUseCase: GetSupervisorsUseCase,
+            syncProjectUseCase: SyncProjectUseCase,
+            getLogsUseCase: GetLogsUseCase,
+            saveLogUseCase: SaveLogUseCase,
+            getGeneratedDistributionUseCase: GetGeneratedDistributionUseCase
+        ): ReviewViewModel {
+            return ReviewViewModel(
+                getStudentsUseCase = getStudentsUseCase,
+                getProjectsUseCase = getProjectsUseCase,
+                updateProjectUseCase = updateProjectUseCase,
+                getParticipationsUseCase = getParticipationsUseCase,
+                getInstitutesUseCase = getInstitutesUseCase,
+                getDepartmentsUseCase = getDepartmentsUseCase,
+                getSpecialtiesUseCase = getSpecialtiesUseCase,
+                getSupervisorsUseCase = getSupervisorsUseCase,
+                syncProjectUseCase = syncProjectUseCase,
+                getLogsUseCase = getLogsUseCase,
+                saveLogUseCase = saveLogUseCase,
+                getGeneratedDistributionUseCase = getGeneratedDistributionUseCase
             )
         }
 

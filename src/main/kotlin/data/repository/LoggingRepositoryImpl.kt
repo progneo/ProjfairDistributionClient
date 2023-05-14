@@ -3,6 +3,8 @@ package data.repository
 import data.local.dao.LogDao
 import domain.model.Department
 import domain.model.Log
+import domain.model.LogSource
+import domain.model.LogType
 import domain.repository.LoggingRepository
 import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,9 +22,13 @@ class LoggingRepositoryImpl @Inject constructor(
         return logDao.getAll()
     }
 
-    override suspend fun saveLog(log: Log) {
+    override suspend fun saveLog(log: Log, logType: LogType, logSource: LogSource) {
         withContext(ioDispatcher) {
-            logDao.insert(log)
+            logDao.insert(log, logType, logSource)
         }
+    }
+
+    override suspend fun deleteAll() {
+        logDao.deleteAll()
     }
 }

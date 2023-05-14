@@ -1,9 +1,14 @@
 package data.repository
 
+import common.date.getCurrentDateTime
 import data.local.dao.StudentDao
 import data.mapper.studentResponseToStudent
 import data.remote.api.OrdinaryProjectFairApi
+import domain.model.Log
+import domain.model.LogSource
+import domain.model.LogType
 import domain.model.Student
+import domain.repository.LoggingRepository
 import domain.repository.StudentRepository
 import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
@@ -11,12 +16,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class StudentRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val studentDao: StudentDao,
     private val projectFairApi: OrdinaryProjectFairApi,
+    private val loggingRepository: LoggingRepository
 ) : StudentRepository {
 
     override val downloadFlow = MutableStateFlow(0f)
@@ -32,6 +39,15 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun insertStudent(student: Student) {
         withContext(ioDispatcher) {
             studentDao.insert(student)
+            loggingRepository.saveLog(
+                log = Log(
+                    id = UUID.randomUUID().toString(),
+                    dateTime = getCurrentDateTime(),
+                    subject = student,
+                ),
+                logType = LogType.SAVE,
+                logSource = LogSource.SERVER
+            )
         }
     }
 

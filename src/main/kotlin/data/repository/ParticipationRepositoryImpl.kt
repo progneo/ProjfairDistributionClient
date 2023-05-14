@@ -1,9 +1,11 @@
 package data.repository
 
+import common.date.getCurrentDateTime
 import data.local.dao.ParticipationDao
 import data.mapper.participationResponseToParticipation
 import data.remote.api.OrdinaryProjectFairApi
-import domain.model.Participation
+import domain.model.*
+import domain.repository.LoggingRepository
 import domain.repository.ParticipationRepository
 import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.CoroutineDispatcher
@@ -11,12 +13,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class ParticipationRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val participationDao: ParticipationDao,
     private val ordinaryProjectFairApi: OrdinaryProjectFairApi,
+    private val loggingRepository: LoggingRepository
 ) : ParticipationRepository {
 
     override val downloadFlow = MutableStateFlow<Float>(0f)
@@ -32,6 +36,15 @@ class ParticipationRepositoryImpl @Inject constructor(
     override suspend fun insertParticipation(participation: Participation) {
         withContext(ioDispatcher) {
             participationDao.insert(participation)
+            loggingRepository.saveLog(
+                log = Log(
+                    id = UUID.randomUUID().toString(),
+                    dateTime = getCurrentDateTime(),
+                    subject = participation,
+                ),
+                logType = LogType.SAVE,
+                logSource = LogSource.SERVER
+            )
         }
     }
 
@@ -41,8 +54,17 @@ class ParticipationRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteParticipation(participation: Participation) {
+    override suspend fun deleteParticipation(participation: Participation, byServer: Boolean) {
         participationDao.delete<Participation>(participation)
+        loggingRepository.saveLog(
+            log = Log(
+                id = UUID.randomUUID().toString(),
+                dateTime = getCurrentDateTime(),
+                subject = participation,
+            ),
+            logType = LogType.REMOVE,
+            logSource = if (byServer) LogSource.SERVER else LogSource.USER
+        )
     }
 
     override suspend fun deleteAllParticipations() {
@@ -50,12 +72,18 @@ class ParticipationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun syncParticipations() {
+
+        data class ParticipationAlive(
+            var isAlive: Boolean,
+            val participation: Participation,
+        )
+
         withContext(ioDispatcher) {
             val participations = ordinaryProjectFairApi.getParticipations().data
             val oldParticipations = participationDao.getAll<Participation>().first().list
-            val oldMap = mutableMapOf<Int, Participation>()
+            val oldMap = mutableMapOf<Int, ParticipationAlive>()
             oldParticipations.forEach {
-                oldMap[it.id] = it
+                oldMap[it.id] = ParticipationAlive(false, it)
             }
             var current = 0f
             val overall = participations.size
@@ -65,7 +93,14 @@ class ParticipationRepositoryImpl @Inject constructor(
                 val oldParticipation = oldMap[newParticipation.id]
                 if (oldParticipation == null) {
                     insertParticipation(newParticipation)
+                    downloadFlow.value = ++current / overall
+                } else {
+                    oldMap[newParticipation.id]!!.isAlive = true
                 }
+            }
+
+            oldMap.filter { !it.value.isAlive }.forEach {
+                deleteParticipation(it.value.participation, true)
                 downloadFlow.value = ++current / overall
             }
         }
