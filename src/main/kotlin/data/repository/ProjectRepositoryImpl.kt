@@ -116,15 +116,14 @@ class ProjectRepositoryImpl @Inject constructor(
                 val oldProject = oldMap[newProject.id]
                 if (oldProject == null) {
                     insertProject(newProject)
-                    downloadFlow.value = ++current / overall
                 } else {
                     oldMap[newProject.id]!!.isAlive = true
                 }
+                downloadFlow.value = ++current / overall
             }
 
             oldMap.filter { !it.value.isAlive }.forEach {
                 deleteProject(it.value.project)
-                downloadFlow.value = ++current / overall
             }
         }
     }

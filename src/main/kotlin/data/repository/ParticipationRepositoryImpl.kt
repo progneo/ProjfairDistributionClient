@@ -94,15 +94,14 @@ class ParticipationRepositoryImpl @Inject constructor(
                 val oldParticipation = oldMap[newParticipation.id]
                 if (oldParticipation == null) {
                     insertParticipation(newParticipation)
-                    downloadFlow.value = ++current / overall
                 } else {
                     oldMap[newParticipation.id]!!.isAlive = true
                 }
+                downloadFlow.value = ++current / overall
             }
 
             oldMap.filter { !it.value.isAlive }.forEach {
                 deleteParticipation(it.value.participation, true)
-                downloadFlow.value = ++current / overall
             }
         }
     }

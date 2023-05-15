@@ -112,17 +112,16 @@ class StudentRepositoryImpl @Inject constructor(
                 val oldStudent = oldMap[newStudent.numz]
                 if (oldStudent == null) {
                     insertStudent(newStudent)
-                    downloadFlow.value = ++current / overall
                 } else {
-                    oldMap[newStudent.id]!!.isAlive = true
+                    oldMap[newStudent.numz]!!.isAlive = true
                 }
+                downloadFlow.value = ++current / overall
             }
 
             println("BETWEEN")
 
             oldMap.filter { !it.value.isAlive }.forEach {
                 deleteStudent(it.value.student)
-                downloadFlow.value = ++current / overall
             }
         }
     }
