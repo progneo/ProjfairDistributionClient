@@ -36,7 +36,7 @@ abstract class Dao<T : Entity>(val realm: Realm) {
         }
     }
 
-    suspend inline fun <reified R: Entity> getById(id: Int): R {
+    suspend inline fun <reified R : Entity> getById(id: Int): R {
         return realm.query<R>("id", id).find().first()
     }
 
@@ -153,6 +153,14 @@ abstract class LoggingDao(val realm: Realm) {
             val newItem = item.apply {
                 type = lastLogType
                 source = lastLogSource
+            }
+
+            if (item.project != null) {
+                newItem.project = findLatest(realm.query<Project>("id == ${item.project!!.id}").find().first())
+            } else if (item.student != null) {
+                newItem.student = findLatest(realm.query<Student>("id == ${item.student!!.id}").find().first())
+            } else if (item.participation != null) {
+                newItem.participation = findLatest(realm.query<Participation>("id = ${item.participation!!.id}").find().first())
             }
 
             copyToRealm(newItem, UpdatePolicy.ALL)

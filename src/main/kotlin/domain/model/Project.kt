@@ -1,7 +1,6 @@
 package domain.model
 
 import com.google.gson.annotations.SerializedName
-import domain.model.base.Entity
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
