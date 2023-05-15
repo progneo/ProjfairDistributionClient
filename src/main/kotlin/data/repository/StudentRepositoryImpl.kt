@@ -1,6 +1,7 @@
 package data.repository
 
 import common.date.getCurrentDateTime
+import common.student.canParticipate
 import data.local.dao.StudentDao
 import data.mapper.studentResponseToStudent
 import data.remote.api.OrdinaryProjectFairApi
@@ -70,7 +71,7 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun rebaseStudents() {
         withContext(ioDispatcher) {
             val students = projectFairApi.getCandidates().filter {
-                it.specialty != null && it.course > 2
+                it.specialty != null && it.canParticipate()
             }
             var current = 0f
             val overall = students.size
@@ -93,7 +94,7 @@ class StudentRepositoryImpl @Inject constructor(
 
         withContext(ioDispatcher) {
             val students = projectFairApi.getCandidates().filter {
-                it.specialty != null && it.course > 2
+                it.specialty != null
             }
             val oldStudents = studentDao.getAll<Student>().first().list
             val oldMap = mutableMapOf<Int, StudentAlive>()
@@ -102,6 +103,8 @@ class StudentRepositoryImpl @Inject constructor(
             }
             var current = 0f
             val overall = students.size
+
+            println("BEFORE = $oldMap")
 
             students.forEach { studentResponse ->
                 if (studentResponse.specialty == null) return@forEach
@@ -114,6 +117,8 @@ class StudentRepositoryImpl @Inject constructor(
                     oldMap[newStudent.id]!!.isAlive = true
                 }
             }
+
+            println("BETWEEN")
 
             oldMap.filter { !it.value.isAlive }.forEach {
                 deleteStudent(it.value.student)

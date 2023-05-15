@@ -60,7 +60,7 @@ fun CustomNavigationHost(
             if (component == null) {
                 component = ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
             }
-            components[SharedScreen.ParticipationDetailsScreen.screenRoute] = component!!
+            //components[SharedScreen.ParticipationDetailsScreen.screenRoute] = component!!
             component!!.render()
         }
 
