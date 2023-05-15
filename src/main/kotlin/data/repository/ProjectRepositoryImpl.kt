@@ -38,7 +38,7 @@ class ProjectRepositoryImpl @Inject constructor(
             log = Log(
                 id = UUID.randomUUID().toString(),
                 dateTime = getCurrentDateTime(),
-                subject = project,
+                project = project
             ),
             logType = LogType.CHANGE,
             logSource = LogSource.USER
@@ -62,7 +62,7 @@ class ProjectRepositoryImpl @Inject constructor(
                 log = Log(
                     id = UUID.randomUUID().toString(),
                     dateTime = getCurrentDateTime(),
-                    subject = project,
+                    project = project,
                 ),
                 logType = LogType.SAVE,
                 logSource = LogSource.SERVER
@@ -82,7 +82,7 @@ class ProjectRepositoryImpl @Inject constructor(
             log = Log(
                 id = UUID.randomUUID().toString(),
                 dateTime = getCurrentDateTime(),
-                subject = project,
+                project = project,
             ),
             logType = LogType.REMOVE,
             logSource = LogSource.SERVER

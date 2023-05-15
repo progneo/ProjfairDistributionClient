@@ -19,7 +19,7 @@ open class Participation(
     }
 
     override fun toLog(): String {
-        return "studentNumz: $studentNumz, projectId: $projectId"
+        return "Заявка - studentNumz: $studentNumz, projectId: $projectId"
     }
 
     override fun toString(): String {

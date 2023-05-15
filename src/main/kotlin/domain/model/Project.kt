@@ -63,7 +63,7 @@ open class Project(
     }
 
     override fun toLog(): String {
-        return "id: $id, name: $name"
+        return "Проект - id: $id, name: $name"
     }
 
     override fun toString(): String {

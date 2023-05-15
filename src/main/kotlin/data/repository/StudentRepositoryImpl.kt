@@ -41,15 +41,15 @@ class StudentRepositoryImpl @Inject constructor(
     override suspend fun insertStudent(student: Student) {
         withContext(ioDispatcher) {
             studentDao.insert(student)
-//            loggingRepository.saveLog(
-//                log = Log(
-//                    id = UUID.randomUUID().toString(),
-//                    dateTime = getCurrentDateTime(),
-//                    subject = student
-//                ),
-//                logType = LogType.SAVE,
-//                logSource = LogSource.SERVER
-//            )
+            loggingRepository.saveLog(
+                log = Log(
+                    id = UUID.randomUUID().toString(),
+                    dateTime = getCurrentDateTime(),
+                    student = student
+                ),
+                logType = LogType.SAVE,
+                logSource = LogSource.SERVER
+            )
         }
     }
 

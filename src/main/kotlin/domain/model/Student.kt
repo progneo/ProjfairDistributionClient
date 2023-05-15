@@ -20,7 +20,7 @@ open class Student(
     }
 
     override fun toLog(): String {
-        return "numz: $numz, name: $name"
+        return "Студент - numz: $numz, name: $name"
     }
 
     override fun toString(): String {

@@ -148,7 +148,7 @@ private fun LoggingDialogItem(
                 .wrapContentWidth(),
         )
         Text(
-            text = mapLogSubjectToString(log.subject!!),
+            text = mapLogSubjectToString(log.project ?: log.student ?: log.participation),
             modifier = Modifier
                 .weight(6f)
                 .fillMaxWidth(),
@@ -171,7 +171,7 @@ private fun LoggingDialogItem(
     }
 }
 
-private fun mapLogSubjectToString(subject: Any): String {
-    return (subject as? LoggingEntity)?.toLog() ?: "Неподдерживаемая сущность"
+private fun mapLogSubjectToString(subject: LoggingEntity?): String {
+    return subject?.toLog() ?: "Неподдерживаемая сущность"
 }
 

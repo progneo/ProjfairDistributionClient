@@ -37,15 +37,15 @@ class ParticipationRepositoryImpl @Inject constructor(
     override suspend fun insertParticipation(participation: Participation) {
         withContext(ioDispatcher) {
             participationDao.insert(participation)
-//            loggingRepository.saveLog(
-//                log = Log(
-//                    id = UUID.randomUUID().toString(),
-//                    dateTime = getCurrentDateTime(),
-//                    subject = participation,
-//                ),
-//                logType = LogType.SAVE,
-//                logSource = LogSource.SERVER
-//            )
+            loggingRepository.saveLog(
+                log = Log(
+                    id = UUID.randomUUID().toString(),
+                    dateTime = getCurrentDateTime(),
+                    participation = participation,
+                ),
+                logType = LogType.SAVE,
+                logSource = LogSource.SERVER
+            )
         }
     }
 
@@ -57,15 +57,15 @@ class ParticipationRepositoryImpl @Inject constructor(
 
     override suspend fun deleteParticipation(participation: Participation, byServer: Boolean) {
         participationDao.delete<Participation>(participation)
-//        loggingRepository.saveLog(
-//            log = Log(
-//                id = UUID.randomUUID().toString(),
-//                dateTime = getCurrentDateTime(),
-//                subject = participation,
-//            ),
-//            logType = LogType.REMOVE,
-//            logSource = if (byServer) LogSource.SERVER else LogSource.USER
-//        )
+        loggingRepository.saveLog(
+            log = Log(
+                id = UUID.randomUUID().toString(),
+                dateTime = getCurrentDateTime(),
+                participation = participation,
+            ),
+            logType = LogType.REMOVE,
+            logSource = if (byServer) LogSource.SERVER else LogSource.USER
+        )
     }
 
     override suspend fun deleteAllParticipations() {

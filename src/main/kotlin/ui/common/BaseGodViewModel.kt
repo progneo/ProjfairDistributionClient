@@ -214,8 +214,7 @@ open class BaseGodViewModel(
     private fun getLogs() {
         coroutineScope.launch {
             getLogsUseCase().collect {
-                logs.value = it.list
-                println(it.list)
+                logs.value = it.list.sortedByDescending { log -> log.dateTime }
             }
         }
     }

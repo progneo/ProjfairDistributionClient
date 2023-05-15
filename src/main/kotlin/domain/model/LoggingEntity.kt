@@ -6,7 +6,12 @@ import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.RealmUUID
 import io.realm.kotlin.types.annotations.PrimaryKey
 
-abstract class LoggingEntity: RealmObject, Entity() {
+open class LoggingEntity: RealmObject, Entity() {
 
-    abstract fun toLog(): String
+    open fun toLog(): String {
+        return ""
+    }
+    override fun members(): List<Any?> {
+        return emptyList()
+    }
 }
