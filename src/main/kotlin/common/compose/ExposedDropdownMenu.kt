@@ -80,6 +80,7 @@ fun <T: FilterEntity> ExposedTypedDropdownMenuWithChips(
                 .padding(12.dp)
         ) {
             ChipsTypedVerticalGrid(
+                modifier = Modifier,
                 itemsState,
                 onItemRemoved = { removedItem ->
                     itemsState.removeIf { item -> item == removedItem }
@@ -154,12 +155,13 @@ fun ChipsVerticalGrid(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun <T: FilterEntity> ChipsTypedVerticalGrid(
+    modifier: Modifier = Modifier,
     itemsState: SnapshotStateList<T>,
     onItemRemoved: (T) -> Unit,
     toShortName: String.() -> String,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         itemsState.chunked(3).forEach { threeRow ->

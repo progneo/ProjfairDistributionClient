@@ -50,7 +50,6 @@ fun PreviewScreen(
 
     rememberCoroutineScope().launch {
         previewViewModel.searchProjectString.collect {
-            println("get $it")
             previewViewModel.filterProjectsByString(it)
         }
     }

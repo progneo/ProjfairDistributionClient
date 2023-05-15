@@ -13,10 +13,7 @@ import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ui.filter.FilterEntity
 import ui.filter.FilterType
@@ -37,7 +34,7 @@ open class BaseGodViewModel(
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
     private val syncProjectUseCase: SyncProjectUseCase,
     private val getLogsUseCase: GetLogsUseCase,
-    private val saveLogUseCase: SaveLogUseCase
+    private val saveLogUseCase: SaveLogUseCase,
 ) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
 
     override fun createInitialState(): PreviewContract.ScreenState {
@@ -80,6 +77,11 @@ open class BaseGodViewModel(
     var searchStudentString = lastSearchStudentString.debounce(400)
     var lastSearchProjectString = MutableStateFlow("")
     var searchProjectString = lastSearchProjectString.debounce(400)
+
+
+    var lastSearchSupervisorString = MutableStateFlow("")
+    var searchSupervisorString = lastSearchStudentString.debounce(400)
+    val searchSupervisors = MutableStateFlow<List<Supervisor>>(emptyList())
 
     init {
         getStudents()
@@ -205,9 +207,13 @@ open class BaseGodViewModel(
         }
     }
 
-    fun getFilteredSupervisors(department: Department): List<Supervisor> {
-        return _supervisors.value.filter { s ->
-            s.department != null && s.department!!.id == department.id
+    fun filterSupervisors() {
+        searchSupervisors.value = _supervisors.value.filter { supervisor ->
+            supervisor.name
+                .lowercase()
+                .contains(lastSearchSupervisorString.value.lowercase())
+        }.sortedBy { supervisor ->
+            supervisor.name
         }
     }
 
@@ -254,7 +260,11 @@ open class BaseGodViewModel(
             _studentsWithParticipations.value =
                 _studentsWithParticipations.value.sortedWith(compareBy({ it.specialty?.name }, { it.name }))
             _filteredStudentsWithParticipationsByDepartments.value =
-                _filteredStudentsWithParticipationsByDepartments.value.sortedWith(compareBy({ it.specialty?.name }, { it.name }))
+                _filteredStudentsWithParticipationsByDepartments.value.sortedWith(
+                    compareBy(
+                        { it.specialty?.name },
+                        { it.name })
+                )
             filterStudentsByString(lastSearchStudentString.value)
 
 

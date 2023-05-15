@@ -3,14 +3,20 @@ package ui.details.project.screen
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import common.compose.*
 import common.mapper.toShortName
+import common.theme.BlueMainLight
 import domain.model.Project
 import domain.model.ProjectSpecialty
 import domain.model.Supervisor
@@ -23,6 +29,7 @@ import navigation.ScreenRoute
 import ui.common.BaseGodViewModel
 import ui.details.project.widget.*
 import ui.preview.viewmodel.PreviewViewModel
+import ui.preview.widget.SupervisorSearchDialog
 
 @Composable
 fun ProjectDetailsScreen(
@@ -35,8 +42,8 @@ fun ProjectDetailsScreen(
         mutableStateOf(project.name)
     }
 
-    var updatedSupervisors by remember {
-        mutableStateOf(project.supervisors.toList())
+    var supervisors = rememberSaveable {
+        mutableStateListOf(*project.supervisors.toTypedArray())
     }
     var goal by remember {
         mutableStateOf(project.goal)
@@ -68,20 +75,20 @@ fun ProjectDetailsScreen(
         )
     }
 
+    var showSupervisorSearch by remember { mutableStateOf(false) }
+    val supervisorSearchItems = viewModel.searchSupervisors.collectAsState()
+
+    rememberCoroutineScope().launch {
+        viewModel.searchSupervisorString.collect {
+            viewModel.filterSupervisors()
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.verticalScroll(ScrollState(0))
     ) {
-        val supervisorStateHolder = rememberExposedMenuStateHolder()
         val distributeSpecialtyStateHolder = rememberExposedMenuStateHolder()
         val participationSpecialtyStateHolder = rememberExposedMenuStateHolder()
-
-        val supervisors = rememberSaveable {
-            mutableStateListOf(*project.supervisors.toTypedArray())
-        }
-        val supervisorDropDownItems = rememberSaveable {
-            //mutableStateOf(viewModel.getFilteredSupervisors(project.department!!))
-            mutableStateOf<List<Supervisor>>(emptyList())
-        }
 
         val distributeSpecialties = rememberSaveable {
             mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
@@ -99,22 +106,48 @@ fun ProjectDetailsScreen(
             BackButton(navController = navController)
             Spacer(modifier = Modifier.size(16.dp))
             TitleField(title = title) {
-                println("$it")
                 title = it
-                println("NOW = $title")
             }
         }
-        ExposedTypedDropdownMenuWithChips(
-            modifier = Modifier.width(300.dp),
-            title = "Преподаватель",
-            isTitleChangeable = false,
-            stateHolder = supervisorStateHolder,
-            itemsState = supervisors,
-            dropdownItems = supervisorDropDownItems.value,
-            toShortName = String::toShortName
+        BorderedTitledComposable(
+            title = "Преподаватели"
         ) {
-            updatedSupervisors = it
+            ChipsTypedVerticalGrid(
+                modifier = Modifier.padding(8.dp),
+                itemsState = supervisors,
+                toShortName = String::toShortName,
+                onItemRemoved = { supervisor ->
+                    supervisors.remove(supervisor)
+                }
+            )
         }
+        Button(
+            modifier = Modifier
+                .padding(
+                    start = 12.dp,
+                    bottom = 12.dp,
+                ),
+            onClick = {
+                showSupervisorSearch = true
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = BlueMainLight,
+                contentColor = Color.White
+            )
+        ) {
+            Text("Выбрать преподавателя")
+        }
+//        ExposedTypedDropdownMenuWithChips(
+//            modifier = Modifier.width(300.dp),
+//            title = "Преподаватель",
+//            isTitleChangeable = false,
+//            stateHolder = supervisorStateHolder,
+//            itemsState = supervisors,
+//            dropdownItems = supervisorDropDownItems.value,
+//            toShortName = String::toShortName
+//        ) {
+//            updatedSupervisors = it
+//        }
         EditableDescriptionField(title = "Цель проекта", content = goal ?: "") {
             goal = it
         }
@@ -172,7 +205,7 @@ fun ProjectDetailsScreen(
                     productResult = productResult,
                     studyResult = studyResult,
                     department = project.department,
-                    supervisors = realmListOf(*updatedSupervisors.toTypedArray()),
+                    supervisors = realmListOf(*supervisors.toTypedArray()),
                     projectSpecialties = realmListOf(*(updatedDistributeSpecialties + updatedParticipationSpecialties).toTypedArray())
                 )
 
@@ -189,7 +222,7 @@ fun ProjectDetailsScreen(
                 viewModel.syncProject(project.id) {
                     val newProject = viewModel.getProjectById(project.id)!!
                     title = newProject.name
-                    updatedSupervisors = newProject.supervisors.toList()
+                    supervisors = mutableStateListOf(*newProject.supervisors.toTypedArray())
                     goal = newProject.goal
                     customer = newProject.customer
                     description = newProject.description
@@ -206,4 +239,20 @@ fun ProjectDetailsScreen(
         }
         Spacer(modifier = Modifier.size(12.dp))
     }
+
+    SupervisorSearchDialog(
+        visible = showSupervisorSearch,
+        supervisors = supervisorSearchItems.value,
+        searchString = viewModel.lastSearchSupervisorString.collectAsState().value,
+        onDataChanges = { searchString ->
+            viewModel.lastSearchSupervisorString.value = searchString
+        },
+        onSupervisorClicked = { supervisor ->
+            supervisors.add(supervisor)
+        },
+        onDismissRequest = {
+            viewModel.lastSearchSupervisorString.value = ""
+            showSupervisorSearch = false
+        }
+    )
 }
