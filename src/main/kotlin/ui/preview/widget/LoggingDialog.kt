@@ -17,13 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import common.compose.VisibleDialog
 import common.compose.rememberForeverLazyListState
-import common.theme.BlueMainDark
-import common.theme.BlueMainLight
-import common.theme.GrayLight
-import domain.model.Log
-import domain.model.LoggingEntity
-import domain.model.Project
-import domain.model.Student
+import common.theme.*
+import domain.model.*
 
 private const val KEY = "LOGGING"
 
@@ -139,7 +134,15 @@ private fun LoggingDialogItem(
 ) {
     Row(
         modifier = Modifier
-            .padding(4.dp),
+            .background(
+                when (log.type!!.logTypeEnum) {
+                    LogType.SAVE -> Green60
+                    LogType.REMOVE -> Red60
+                    LogType.CHANGE -> Orange60
+                }
+            )
+            .padding(4.dp)
+        ,
     ) {
         Text(
             text = log.dateTime,

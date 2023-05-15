@@ -2,6 +2,7 @@ package domain.model
 
 import domain.model.base.Entity
 import io.realm.kotlin.types.RealmObject
+import io.realm.kotlin.types.annotations.Ignore
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlin.math.log
 
@@ -18,11 +19,11 @@ open class LogTypeRealm(
 
     constructor() : this(0, "")
 
-//    var logType: LogType
-//        get() = LogType.values().first { it.name == _logType }
-//        set(value) {
-//            _logType = value.name
-//        }
+    var logTypeEnum: LogType
+        get() = LogType.values().first { it.name == logType }
+        set(value) {
+            logType = value.name
+        }
 
     override fun members(): List<Any?> {
         return listOf(id, logType)
