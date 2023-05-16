@@ -37,7 +37,6 @@ import ui.common.BaseGodViewModel
 import ui.filter.FilterEntity
 import ui.filter.FilterNode
 import ui.filter.FilterType
-import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PROJECT_PARTICIPATION"
 
@@ -115,6 +114,7 @@ fun ChooseParticipationTable(
     modifier: Modifier = Modifier,
     filterNode: FilterNode,
     viewModel: BaseGodViewModel,
+    onItemSelected: (List<Student>, Boolean) -> Unit
 ) {
     val filterStack by remember {
         mutableStateOf(ArrayDeque<FilterNode>().apply {
@@ -162,6 +162,8 @@ fun ChooseParticipationTable(
                     )
                     currentFilterTitle = filterStack.last().type.title
                 }
+
+                onItemSelected(selectedStudents, false)
             }
         )
 
@@ -211,9 +213,9 @@ fun ChooseParticipationTable(
                             } else {
                                 selectedStudents.add(student)
                             }
-
-                            println(selectedStudents)
                         }
+
+                        onItemSelected(selectedStudents, item is Student)
                     }
                 )
                 Divider()

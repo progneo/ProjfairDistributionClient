@@ -121,6 +121,7 @@ fun ParticipationTable(
     modifier: Modifier = Modifier,
     participations: List<Participation>,
     viewModel: BaseGodViewModel,
+    onStudentSelected: (List<Student>) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -136,6 +137,10 @@ fun ParticipationTable(
 
         val scrollState = rememberForeverLazyListState(KEY)
         val coroutineScope = rememberCoroutineScope()
+
+        var selectedStudents by remember {
+            mutableStateOf<MutableList<Student>>(mutableListOf())
+        }
 
         LazyColumn(
             state = scrollState,
@@ -158,7 +163,13 @@ fun ParticipationTable(
                     participation = participation,
                     student = viewModel.getStudentById(participation.studentId),
                     onStudentClicked = { student ->
-                        println(student)
+                        if (selectedStudents.contains(student)) {
+                            selectedStudents.remove(student)
+                        } else {
+                            selectedStudents.add(student)
+                        }
+
+                        onStudentSelected(selectedStudents)
                     }
                 )
                 Divider()

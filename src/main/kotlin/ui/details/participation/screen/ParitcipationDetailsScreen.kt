@@ -3,8 +3,12 @@ package ui.details.participation.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,6 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.compose.BackButton
 import common.theme.BlueMainLight
+import common.theme.GrayLight
+import compose.icons.Octicons
+import compose.icons.octicons.ArrowDownRight24
+import compose.icons.octicons.ArrowSwitch24
 import domain.model.Project
 import navigation.NavController
 import ui.common.BaseGodViewModel
@@ -27,6 +35,34 @@ fun ParticipationDetailsScreen(
     project: Project,
     viewModel: BaseGodViewModel,
 ) {
+    var isLeftTransferEnabled by remember {
+        mutableStateOf(false)
+    }
+
+    var isRightTransferEnabled by remember {
+        mutableStateOf(false)
+    }
+
+    var isBothTransferEnabled by remember {
+        mutableStateOf(false)
+    }
+
+    var isLeftOutTransferEnabled by remember {
+        mutableStateOf(false)
+    }
+
+    var areStudentsOnRightSide by remember {
+        mutableStateOf(false)
+    }
+
+    var isLeftItemSelected by remember {
+        mutableStateOf(false)
+    }
+
+    var isRightItemSelected by remember {
+        mutableStateOf(false)
+    }
+
     Column {
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -66,15 +102,79 @@ fun ParticipationDetailsScreen(
             ParticipationTable(
                 modifier = Modifier.fillMaxWidth(0.475f).padding(24.dp),
                 participations = viewModel.getParticipationByProject(project.id),
-                viewModel = viewModel
+                viewModel = viewModel,
+                onStudentSelected = { selectedStudents ->
+                    isLeftItemSelected = selectedStudents.isNotEmpty()
+                    isLeftTransferEnabled = isLeftItemSelected && areStudentsOnRightSide
+                    isLeftOutTransferEnabled = isLeftItemSelected
+                    isBothTransferEnabled = isLeftItemSelected && isRightItemSelected
+                }
             )
             Column(
-                modifier = Modifier.fillMaxWidth(2f/24).fillMaxHeight(),
+                modifier = Modifier.fillMaxWidth(2f / 24).fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Button({}) { Text("name") }
-                Button({}) { Text("name") }
+                Button(
+                    enabled = isLeftTransferEnabled,
+                    onClick = {
+
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = if (isLeftTransferEnabled) BlueMainLight else GrayLight,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                }
+                Button(
+                    enabled = isRightTransferEnabled,
+                    onClick = {
+
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = if (isRightTransferEnabled) BlueMainLight else GrayLight,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowLeft,
+                        contentDescription = null
+                    )
+                }
+                Button(
+                    enabled = isBothTransferEnabled,
+                    onClick = {
+
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = if (isBothTransferEnabled) BlueMainLight else GrayLight,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Octicons.ArrowSwitch24,
+                        contentDescription = null
+                    )
+                }
+                Button(
+                    enabled = isLeftOutTransferEnabled,
+                    onClick = {
+
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = if (isLeftOutTransferEnabled) BlueMainLight else GrayLight,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(
+                        imageVector = Octicons.ArrowDownRight24,
+                        contentDescription = null
+                    )
+                }
             }
             ChooseParticipationTable(
                 modifier = Modifier.padding(24.dp),
@@ -84,7 +184,13 @@ fun ParticipationDetailsScreen(
                     selectedValue = null,
                     next = FilterType.DEPARTMENT
                 ),
-                viewModel = viewModel
+                viewModel = viewModel,
+                onItemSelected = { selectedStudents, areStudentsOnRight ->
+                    isRightItemSelected = selectedStudents.isNotEmpty()
+                    isRightTransferEnabled = areStudentsOnRight && isRightItemSelected
+                    areStudentsOnRightSide = areStudentsOnRight
+                    isBothTransferEnabled = isLeftItemSelected && isRightItemSelected
+                }
             )
         }
     }
