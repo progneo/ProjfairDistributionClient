@@ -14,15 +14,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import common.compose.rememberForeverLazyListState
 import common.theme.BlueMainLight
+import common.theme.BlueMainLight25
 import common.theme.GrayLight
+import common.theme.WhiteDark
 import domain.model.Participation
 import domain.model.Student
 import kotlinx.coroutines.launch
@@ -36,9 +38,24 @@ fun ParticipationTableItem(
     modifier: Modifier = Modifier,
     participation: Participation,
     student: Student?,
+    onStudentClicked: (Student) -> Unit,
 ) {
+    var isSelected by remember {
+        mutableStateOf(false)
+    }
+
     Row(
         modifier = modifier
+            .clickable {
+                if (student != null) {
+                    onStudentClicked(student)
+                    isSelected = !isSelected
+                }
+            }
+            .background(
+                if (isSelected) BlueMainLight25
+                else Color.Transparent
+            )
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
@@ -137,12 +154,12 @@ fun ParticipationTable(
             items(participations) { participation ->
                 ParticipationTableItem(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-
-                        },
+                        .fillMaxWidth(),
                     participation = participation,
-                    student = viewModel.getStudentById(participation.studentId)
+                    student = viewModel.getStudentById(participation.studentId),
+                    onStudentClicked = { student ->
+                        println(student)
+                    }
                 )
                 Divider()
             }

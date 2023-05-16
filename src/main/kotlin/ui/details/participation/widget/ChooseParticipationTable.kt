@@ -16,6 +16,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,10 +26,12 @@ import androidx.compose.ui.unit.dp
 import common.compose.rememberForeverLazyListState
 import common.theme.BlueMainDark
 import common.theme.BlueMainLight
+import common.theme.BlueMainLight25
 import common.theme.GrayLight
 import domain.model.Department
 import domain.model.Institute
 import domain.model.Project
+import domain.model.Student
 import kotlinx.coroutines.launch
 import ui.common.BaseGodViewModel
 import ui.filter.FilterEntity
@@ -42,13 +45,26 @@ private const val KEY = "PROJECT_PARTICIPATION"
 fun ChooseParticipationTableItem(
     modifier: Modifier = Modifier,
     item: FilterEntity,
-    onClicked: (FilterEntity) -> Unit
+    onClicked: (FilterEntity) -> Unit,
 ) {
+    var isSelected by remember {
+        mutableStateOf(false)
+    }
+
     Row(
         modifier = modifier
             .clickable {
                 onClicked(item)
+                if (item is Student) {
+                    isSelected = !isSelected
+                }
             }
+            .background(
+                if (item is Student) {
+                    if (isSelected) BlueMainLight25
+                    else Color.Transparent
+                } else Color.Transparent
+            )
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
@@ -65,7 +81,7 @@ fun ChooseParticipationTableItem(
 fun ChooseParticipationTableHead(
     modifier: Modifier = Modifier,
     currentText: String,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -100,9 +116,11 @@ fun ChooseParticipationTable(
     filterNode: FilterNode,
     viewModel: BaseGodViewModel,
 ) {
-    val filterStack by remember { mutableStateOf(ArrayDeque<FilterNode>().apply {
-        add(filterNode)
-    }) }
+    val filterStack by remember {
+        mutableStateOf(ArrayDeque<FilterNode>().apply {
+            add(filterNode)
+        })
+    }
 
     var currentItems by remember { mutableStateOf(viewModel.getValuesByType(filterStack.last().type)) }
     var currentFilterTitle by remember { mutableStateOf(filterNode.type.title) }
@@ -116,6 +134,10 @@ fun ChooseParticipationTable(
         FilterType.PROJECT,
         FilterType.STUDENT,
     )
+
+    val selectedStudents by rememberSaveable {
+        mutableStateOf<MutableList<Student>>(mutableListOf())
+    }
 
     Column(
         modifier = modifier
@@ -169,9 +191,9 @@ fun ChooseParticipationTable(
                                 prev = currentFilterNode.type,
                                 type = currentFilterNode.next,
                                 selectedValue = clickedFilter,
-                                next = if (filterStack.size+1 == filterTypeOrder.size) null
+                                next = if (filterStack.size + 1 == filterTypeOrder.size) null
                                 else {
-                                    filterTypeOrder[filterStack.size+1]
+                                    filterTypeOrder[filterStack.size + 1]
                                 }
                             )
                             filterStack.addLast(newFilterNode)
@@ -182,6 +204,15 @@ fun ChooseParticipationTable(
                                 project = clickedFilter as? Project
                             )
                             currentFilterTitle = filterStack.last().type.title
+                        } else {
+                            val student = item as Student
+                            if (selectedStudents.contains(student)) {
+                                selectedStudents.remove(student)
+                            } else {
+                                selectedStudents.add(student)
+                            }
+
+                            println(selectedStudents)
                         }
                     }
                 )

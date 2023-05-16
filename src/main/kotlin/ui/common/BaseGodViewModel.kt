@@ -55,6 +55,9 @@ open class BaseGodViewModel(
     val filteredDepartments = MutableStateFlow<List<Department>>(emptyList())
     val institutes = MutableStateFlow<List<Institute>>(emptyList())
 
+    private val _institutesWithProjects = MutableStateFlow<List<Institute>>(emptyList())
+    private val _departmentsWithProjects = MutableStateFlow<List<Department>>(emptyList())
+
     private val _filteredProjectsByDepartments = MutableStateFlow<List<Project>>(emptyList())
     val filteredProjects = MutableStateFlow<List<Project>>(emptyList())
     val filteredSupervisors = MutableStateFlow<List<Supervisor>>(emptyList())
@@ -125,6 +128,8 @@ open class BaseGodViewModel(
             getProjectsUseCase().collect {
                 _projects.value = it.list.sortedWith(compareBy { project -> project.name })
                 filterProjects(projectFilterConfiguration.value)
+                fillDepartmentsWithProjects()
+                fillInstitutesWithProjects()
             }
         }
     }
@@ -154,6 +159,11 @@ open class BaseGodViewModel(
         }
     }
 
+    private fun fillDepartmentsWithProjects() {
+        val projDepartments = _projects.value.mapNotNull { it.department }.map { it.id }
+        _departmentsWithProjects.value = _departments.value.filter { projDepartments.contains(it.id) }
+    }
+
     private fun getInstitutes() {
         coroutineScope.launch {
             getInstitutesUseCase().collect {
@@ -161,6 +171,11 @@ open class BaseGodViewModel(
                 institutes.value = listOf(Institute.Base) + it.list
             }
         }
+    }
+
+    private fun fillInstitutesWithProjects() {
+        val projInstitutes = _departmentsWithProjects.value.mapNotNull { it.institute }.map { it.id }
+        _institutesWithProjects.value = _institutes.value.filter { projInstitutes.contains(it.id) }
     }
 
     private fun getSpecialties() {
@@ -371,12 +386,12 @@ open class BaseGodViewModel(
     ): List<FilterEntity> {
         return when (filterType) {
             FilterType.INSTITUTE -> {
-                _institutes.value
+                _institutesWithProjects.value
             }
 
             FilterType.DEPARTMENT -> {
                 require(institute != null)
-                _departments.value.filter { it.institute == institute }
+                _departmentsWithProjects.value.filter { it.institute == institute }
             }
 
             FilterType.PROJECT -> {

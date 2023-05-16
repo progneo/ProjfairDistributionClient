@@ -137,17 +137,6 @@ fun ProjectDetailsScreen(
         ) {
             Text("Выбрать преподавателя")
         }
-//        ExposedTypedDropdownMenuWithChips(
-//            modifier = Modifier.width(300.dp),
-//            title = "Преподаватель",
-//            isTitleChangeable = false,
-//            stateHolder = supervisorStateHolder,
-//            itemsState = supervisors,
-//            dropdownItems = supervisorDropDownItems.value,
-//            toShortName = String::toShortName
-//        ) {
-//            updatedSupervisors = it
-//        }
         EditableDescriptionField(title = "Цель проекта", content = goal ?: "") {
             goal = it
         }
