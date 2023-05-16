@@ -9,7 +9,7 @@ class ProjectDao @Inject constructor(
     realm: Realm
 ): Dao<Project>(realm) {
 
-    suspend fun update(item: Project) {
-        updateItem<Project>(item)
+    suspend fun update(item: Project): Project {
+        return updateItem<Project>(item)
     }
 }

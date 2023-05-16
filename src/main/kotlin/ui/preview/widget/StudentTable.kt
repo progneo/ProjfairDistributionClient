@@ -130,7 +130,7 @@ fun StudentTable(
     specialtySelected: Boolean,
     navController: NavController,
     onStudentClicked: (Student) -> List<Participation>,
-    onProjectLinkClicked: (Int) -> Project?,
+    onProjectLinkClicked: (Int) -> Unit,
     onSpecialtyClicked: () -> Unit,
 ) {
     Column(
@@ -213,14 +213,7 @@ fun StudentTable(
                 showPopUp = false
             },
             onProjectLinkClicked = { projectId ->
-                val project = onProjectLinkClicked(projectId)
-
-                if (project != null) {
-                    val bundle = Bundle().apply {
-                        put("project", project)
-                    }
-                    navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle)
-                }
+                onProjectLinkClicked(projectId)
             }
         )
     }

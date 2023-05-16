@@ -32,8 +32,7 @@ class ProjectRepositoryImpl @Inject constructor(
         return projectDao.getAll()
     }
 
-    override suspend fun updateProject(project: Project) {
-        projectDao.update(project)
+    override suspend fun updateProject(project: Project): Project {
         loggingRepository.saveLog(
             log = Log(
                 id = UUID.randomUUID().toString(),
@@ -43,16 +42,12 @@ class ProjectRepositoryImpl @Inject constructor(
             logType = LogType.CHANGE,
             logSource = LogSource.USER
         )
+        return projectDao.update(project)
     }
 
-    override suspend fun syncProjectById(id: Int): Boolean {
-        return try {
-            val project = projectFairApi.getProjectById(id)
-            updateProject(projectResponseToProject(project))
-            true
-        } catch (e: Exception) {
-            false
-        }
+    override suspend fun syncProjectById(id: Int): Project {
+        val project = projectFairApi.getProjectById(id)
+        return updateProject(projectResponseToProject(project))
     }
 
     override suspend fun insertProject(project: Project) {

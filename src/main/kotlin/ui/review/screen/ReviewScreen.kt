@@ -13,7 +13,9 @@ import common.compose.BaseButton
 import common.compose.RadioButtonGroupRow
 import common.compose.Title
 import kotlinx.coroutines.launch
+import navigation.Bundle
 import navigation.NavController
+import navigation.ScreenRoute
 import ui.details.project.widget.EditableSearchField
 import ui.distribution_algorithm.common.toAlgorithmModel
 import ui.filter.FilterConfigurationBlock
@@ -173,7 +175,14 @@ fun ReviewScreen(
                         reviewViewModel.getParticipationByStudent(student.id)
                     },
                     onProjectLinkClicked = { projectId ->
-                        reviewViewModel.getProjectById(projectId)
+                        val project = reviewViewModel.getProjectById(projectId)
+
+                        if (project != null) {
+                            val bundle = Bundle().apply {
+                                put("project", project)
+                            }
+                            navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle, reviewViewModel)
+                        }
                     },
                     onSpecialtyClicked = {
                         specialtySelected.value = !specialtySelected.value

@@ -50,6 +50,10 @@ fun ChooseParticipationTableItem(
         mutableStateOf(false)
     }
 
+    if (item !is Student) {
+        isSelected = false
+    }
+
     Row(
         modifier = modifier
             .clickable {
@@ -208,7 +212,7 @@ fun ChooseParticipationTable(
                             currentFilterTitle = filterStack.last().type.title
                         } else {
                             val student = item as Student
-                            if (selectedStudents.contains(student)) {
+                            if (selectedStudents.map { it.id }.contains(student.id)) {
                                 selectedStudents.remove(student)
                             } else {
                                 selectedStudents.add(student)

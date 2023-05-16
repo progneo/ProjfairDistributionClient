@@ -55,12 +55,12 @@ fun StudentParticipationsDialog(
                 Spacer(Modifier.size(8.dp))
                 Column(
                     modifier = Modifier
+                        .size(300.dp, 150.dp)
                         .border(2.dp, BlueMainDark, RoundedCornerShape(10.dp))
                 ) {
                     StudentParticipationDialogHeader()
                     LazyColumn(
                         modifier = Modifier
-                            .size(300.dp, 150.dp)
                             .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)),
                     ) {
                         items(items) { studPart ->
@@ -125,6 +125,7 @@ private fun StudentParticipationDialogItem(
 ) {
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .clickable {
                 onProjectLinkClicked(studPart.projectId)
             }

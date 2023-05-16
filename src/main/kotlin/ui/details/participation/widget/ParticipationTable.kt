@@ -163,7 +163,7 @@ fun ParticipationTable(
                     participation = participation,
                     student = viewModel.getStudentById(participation.studentId),
                     onStudentClicked = { student ->
-                        if (selectedStudents.contains(student)) {
+                        if (selectedStudents.map { it.id }.contains(student.id)) {
                             selectedStudents.remove(student)
                         } else {
                             selectedStudents.add(student)

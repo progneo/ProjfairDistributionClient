@@ -16,9 +16,10 @@ class NavController(
     fun navigate(
         route: ScreenRoute,
         bundle: Bundle? = null,
-        baseGodViewModel: BaseGodViewModel? = null
+        baseGodViewModel: BaseGodViewModel? = null,
+        addToBackStack: Boolean = true
     ) {
-        if (route != currentScreen.value.sharedScreen.screenRoute) {
+        if (route != currentScreen.value.sharedScreen.screenRoute && addToBackStack) {
             if (backStackScreens.contains(currentScreen.value) && currentScreen.value != startDestination) {
                 backStackScreens.remove(currentScreen.value)
             }
@@ -34,7 +35,14 @@ class NavController(
                 bundle,
                 baseGodViewModel
             )
+        } else {
+            currentScreen.value = Screen(
+                SharedScreen.findByRoute(route),
+                bundle,
+                baseGodViewModel
+            )
         }
+        println(backStackScreens.map { it.sharedScreen })
     }
 
     fun navigateBack() {

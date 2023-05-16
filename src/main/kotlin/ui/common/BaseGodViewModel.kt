@@ -262,10 +262,10 @@ open class BaseGodViewModel(
         return _projects.value.find { proj -> proj.id == projectId }
     }
 
-    fun syncProject(id: Int, onDataAction: () -> Unit) {
+    fun syncProject(id: Int, onDataAction: (Project) -> Unit) {
         coroutineScope.launch {
             syncProjectUseCase(id).collect {
-                onDataAction()
+                onDataAction(it)
             }
         }
     }

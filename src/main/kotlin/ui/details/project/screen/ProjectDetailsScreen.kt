@@ -22,10 +22,14 @@ import domain.model.ProjectSpecialty
 import domain.model.Supervisor
 import io.realm.kotlin.ext.realmListOf
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import navigation.Bundle
 import navigation.NavController
 import navigation.ScreenRoute
+import navigation.SharedScreen
 import ui.common.BaseGodViewModel
 import ui.details.project.widget.*
 import ui.preview.viewmodel.PreviewViewModel
@@ -38,42 +42,25 @@ fun ProjectDetailsScreen(
     project: Project,
 ) {
     //new project parameters
-    var title by rememberSaveable {
-        mutableStateOf(project.name)
-    }
-
-    var supervisors = rememberSaveable {
+    var title = project.name
+    val supervisors = rememberSaveable {
         mutableStateListOf(*project.supervisors.toTypedArray())
     }
-    var goal by remember {
-        mutableStateOf(project.goal)
-    }
-    var customer by remember {
-        mutableStateOf(project.customer)
-    }
-    var description by remember {
-        mutableStateOf(project.description)
-    }
-    var productResult by remember {
-        mutableStateOf(project.productResult)
-    }
-    var studyResult by remember {
-        mutableStateOf(project.studyResult)
-    }
-    var updatedDistributeSpecialties by remember {
-        mutableStateOf(
-            project.projectSpecialties.filter { ps ->
-                ps.priority == null || ps.priority == 1
-            }
-        )
-    }
-    var updatedParticipationSpecialties by remember {
-        mutableStateOf(
-            project.projectSpecialties.filter { ps ->
-                ps.priority == null || ps.priority == 2
-            }
-        )
-    }
+    var goal = project.goal
+    var customer = project.customer
+    var description = project.description
+    var productResult = project.productResult
+    var studyResult = project.studyResult
+    var distributeSpecialties =
+        mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
+            ps.priority == null || ps.priority == 1
+        }.toTypedArray())
+
+    var participationSpecialties =
+        mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
+            ps.priority == null || ps.priority == 2
+        }.toTypedArray())
+
 
     var showSupervisorSearch by remember { mutableStateOf(false) }
     val supervisorSearchItems = viewModel.searchSupervisors.collectAsState()
@@ -85,22 +72,11 @@ fun ProjectDetailsScreen(
     }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.verticalScroll(ScrollState(0))
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.verticalScroll(ScrollState(0))
     ) {
         val distributeSpecialtyStateHolder = rememberExposedMenuStateHolder()
         val participationSpecialtyStateHolder = rememberExposedMenuStateHolder()
-
-        val distributeSpecialties = rememberSaveable {
-            mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
-                ps.priority == null || ps.priority == 1
-            }.toTypedArray())
-        }
-
-        val participationSpecialties = rememberSaveable {
-            mutableStateListOf<ProjectSpecialty>(*project.projectSpecialties.filter { ps ->
-                ps.priority == null || ps.priority == 2
-            }.toTypedArray())
-        }
 
         Row(modifier = Modifier.padding(16.dp)) {
             BackButton(navController = navController)
@@ -164,7 +140,7 @@ fun ProjectDetailsScreen(
             dropdownItems = viewModel.specialties.value,
             priority = 1,
             onDataChange = {
-                updatedDistributeSpecialties = it
+                distributeSpecialties = mutableStateListOf(*it.toTypedArray())
             })
         SpecialtyPicker(modifier = Modifier.width(200.dp),
             title = "Специальности для заявок",
@@ -173,7 +149,7 @@ fun ProjectDetailsScreen(
             dropdownItems = viewModel.specialties.value,
             priority = 2,
             onDataChange = {
-                updatedParticipationSpecialties = it
+                participationSpecialties = mutableStateListOf(*it.toTypedArray())
             })
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -195,7 +171,7 @@ fun ProjectDetailsScreen(
                     studyResult = studyResult,
                     department = project.department,
                     supervisors = realmListOf(*supervisors.toTypedArray()),
-                    projectSpecialties = realmListOf(*(updatedDistributeSpecialties + updatedParticipationSpecialties).toTypedArray())
+                    projectSpecialties = realmListOf(*(distributeSpecialties + participationSpecialties).toTypedArray())
                 )
 
                 viewModel.updateProject(projectToUpdate)
@@ -209,19 +185,12 @@ fun ProjectDetailsScreen(
                 icon = Icons.Default.Refresh
             ) {
                 viewModel.syncProject(project.id) {
-                    val newProject = viewModel.getProjectById(project.id)!!
-                    title = newProject.name
-                    supervisors = mutableStateListOf(*newProject.supervisors.toTypedArray())
-                    goal = newProject.goal
-                    customer = newProject.customer
-                    description = newProject.description
-                    productResult = newProject.productResult
-                    studyResult = newProject.studyResult
-                    updatedDistributeSpecialties = newProject.projectSpecialties.filter { ps ->
-                        ps.priority == null || ps.priority == 1
-                    }
-                    updatedParticipationSpecialties = newProject.projectSpecialties.filter { ps ->
-                        ps.priority == null || ps.priority == 2
+                    runBlocking {
+                        navController.navigate(route = ScreenRoute.LOADING, addToBackStack = false)
+                        delay(200)
+                        val bundle = Bundle()
+                        bundle.put("project", it)
+                        navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle, viewModel, false)
                     }
                 }
             }

@@ -42,9 +42,9 @@ abstract class Dao<T : Entity>(val realm: Realm) {
 
     protected suspend inline fun <reified R : Entity> updateItem(
         item: Project,
-    ) {
+    ): Project {
         realm.writeBlocking {
-            val project: Project? = this.query<Project>("id == $0", item.id).first().find()
+            val project: Project = this.query<Project>("id == $0", item.id).find().first()
             val supervisors = realmListOf<Supervisor>()
             val projectSpecialties = realmListOf<ProjectSpecialty>()
 
@@ -72,20 +72,22 @@ abstract class Dao<T : Entity>(val realm: Realm) {
 
             val realmDepartment = realm.query<Department>("id = ${item.department!!.id}").find().first()
 
-            project?.name = item.name
-            project?.places = item.places
-            project?.freePlaces = item.freePlaces
-            project?.goal = item.goal
-            project?.difficulty = item.difficulty
-            project?.dateStart = item.dateStart
-            project?.dateEnd = item.dateEnd
-            project?.customer = item.customer
-            project?.productResult = item.productResult
-            project?.studyResult = item.studyResult
-            project?.department = findLatest(realmDepartment)
-            project?.supervisors = supervisors
-            project?.projectSpecialties = projectSpecialties
+            project.name = item.name
+            project.places = item.places
+            project.freePlaces = item.freePlaces
+            project.goal = item.goal
+            project.difficulty = item.difficulty
+            project.dateStart = item.dateStart
+            project.dateEnd = item.dateEnd
+            project.customer = item.customer
+            project.productResult = item.productResult
+            project.studyResult = item.studyResult
+            project.department = findLatest(realmDepartment)
+            project.supervisors = supervisors
+            project.projectSpecialties = projectSpecialties
         }
+
+        return realm.query<Project>("id == ${item.id}").find().first()
     }
 
     suspend inline fun <reified R : Entity> delete(item: T) {

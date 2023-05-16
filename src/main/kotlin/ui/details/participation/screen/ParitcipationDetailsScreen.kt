@@ -190,6 +190,8 @@ fun ParticipationDetailsScreen(
                     isRightTransferEnabled = areStudentsOnRight && isRightItemSelected
                     areStudentsOnRightSide = areStudentsOnRight
                     isBothTransferEnabled = isLeftItemSelected && isRightItemSelected
+                    isLeftTransferEnabled = isLeftItemSelected && areStudentsOnRightSide
+                    println(selectedStudents)
                 }
             )
         }

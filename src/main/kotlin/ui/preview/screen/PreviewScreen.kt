@@ -17,7 +17,9 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ClipboardList
 import kotlinx.coroutines.launch
+import navigation.Bundle
 import navigation.NavController
+import navigation.ScreenRoute
 import ui.details.project.widget.EditableSearchField
 import ui.filter.FilterConfigurationBlock
 import ui.preview.viewmodel.PreviewViewModel
@@ -184,7 +186,14 @@ fun PreviewScreen(
                         previewViewModel.getParticipationByStudent(student.id)
                     },
                     onProjectLinkClicked = { projectId ->
-                        previewViewModel.getProjectById(projectId)
+                        val project = previewViewModel.getProjectById(projectId)
+
+                        if (project != null) {
+                            val bundle = Bundle().apply {
+                                put("project", project)
+                            }
+                            navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle, previewViewModel)
+                        }
                     },
                     onSpecialtyClicked = {
                         specialtySelected.value = !specialtySelected.value

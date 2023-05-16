@@ -18,6 +18,7 @@ enum class ScreenRoute {
     PROJECT_DETAILS,
     PARTICIPATION_DETAILS,
     REVIEW,
+    LOADING
 }
 
 sealed class SharedScreen(
@@ -68,6 +69,13 @@ sealed class SharedScreen(
         icon = Icons.Filled.Done
     )
 
+    object LoadingScreen : SharedScreen(
+        screenRoute = ScreenRoute.LOADING,
+        parentScreenRoute = ScreenRoute.LOADING,
+        title = "",
+        icon = Icons.Filled.Refresh
+    )
+
     companion object {
         fun findByRoute(route: ScreenRoute): SharedScreen {
             return when (route) {
@@ -77,6 +85,7 @@ sealed class SharedScreen(
                 ScreenRoute.PROJECT_DETAILS -> ProjectDetailsScreen
                 ScreenRoute.PARTICIPATION_DETAILS -> ParticipationDetailsScreen
                 ScreenRoute.REVIEW -> ReviewScreen
+                ScreenRoute.LOADING -> LoadingScreen
             }
         }
     }

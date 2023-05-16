@@ -6,6 +6,7 @@ import di.BaseComponent
 import ui.details.participation.di.ParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
+import ui.loading.di.LoadingComponent
 import ui.preview.di.PreviewComponent
 import ui.review.di.ReviewComponent
 import ui.uploaddata.di.UploadDataComponent
@@ -60,7 +61,6 @@ fun CustomNavigationHost(
             if (component == null) {
                 component = ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
             }
-            //components[SharedScreen.ParticipationDetailsScreen.screenRoute] = component!!
             component!!.render()
         }
 
@@ -72,6 +72,10 @@ fun CustomNavigationHost(
             }
             components[SharedScreen.ReviewScreen.screenRoute] = component!!
             component!!.render()
+        }
+
+        composable(SharedScreen.LoadingScreen.screenRoute) {
+            LoadingComponent().render()
         }
     }.build()
 }
