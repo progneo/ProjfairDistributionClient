@@ -392,6 +392,7 @@ open class BaseGodViewModel(
         department: Department? = null,
         project: Project? = null,
         requiredParticipation: List<Participation>? = null,
+        outStudents: List<Student>? = null,
     ): List<FilterEntity> {
         return when (filterType) {
             FilterType.INSTITUTE -> {
@@ -412,13 +413,14 @@ open class BaseGodViewModel(
 
             FilterType.STUDENT -> {
                 require(project != null && requiredParticipation != null)
-                val studentsParticipations = requiredParticipation.filter { part ->
-                    part.projectId == project.id
-                }.sortedBy { part ->
-                    part.priority
-                }.map { part ->
-                    part.studentId
-                }.sorted()
+                val studentsParticipations =
+                    requiredParticipation.filter { part ->
+                        part.projectId == project.id
+                    }.sortedBy { part ->
+                        part.priority
+                    }.map { part ->
+                        part.studentId
+                    }.sorted()
 
                 if (studentsParticipations.isEmpty()) return emptyList()
 
@@ -433,7 +435,12 @@ open class BaseGodViewModel(
                     }
                 }
 
-                resultStudents
+                resultStudents.sortedBy { stud -> stud.name }
+            }
+
+            FilterType.OUT_STUDENTS -> {
+                require(outStudents != null)
+                outStudents
             }
         }
     }

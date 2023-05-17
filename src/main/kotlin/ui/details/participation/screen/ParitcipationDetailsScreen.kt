@@ -62,6 +62,10 @@ fun ParticipationDetailsScreen(
         mutableStateOf(false)
     }
 
+    var areOutStudentsOnRightSide by remember {
+        mutableStateOf(false)
+    }
+
     var isLeftItemSelected by remember {
         mutableStateOf(false)
     }
@@ -80,8 +84,8 @@ fun ParticipationDetailsScreen(
     fun updateActionsAvailability() {
         isLeftItemSelected = selectedProjectStudents.value.isNotEmpty()
         isRightItemSelected = selectedChooseStudents.value.isNotEmpty()
-        isLeftTransferEnabled = isLeftItemSelected && areStudentsOnRightSide
-        isRightTransferEnabled = areStudentsOnRightSide && isRightItemSelected
+        isLeftTransferEnabled = isLeftItemSelected && (areStudentsOnRightSide || areOutStudentsOnRightSide)
+        isRightTransferEnabled = isRightItemSelected && (areStudentsOnRightSide || areOutStudentsOnRightSide)
         isLeftOutTransferEnabled = isLeftItemSelected
         isBothTransferEnabled = isLeftItemSelected && isRightItemSelected
     }
@@ -138,11 +142,14 @@ fun ParticipationDetailsScreen(
                 Button(
                     enabled = isLeftTransferEnabled,
                     onClick = {
-                        if (participationDetailsViewModel.currentProject != null) {
-                            val newParts = mutableListOf<Participation>()
-                            val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
-                            val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
-                            val selectedStudentIds = selectedProjectStudents.value.map { it.id }
+                        val newParts = mutableListOf<Participation>()
+                        val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
+                        val selectedStudentIds = selectedProjectStudents.value.map { it.id }
+                        pp.removeIf { part ->
+                            part.studentId in selectedStudentIds
+                        }
+
+                        if (areStudentsOnRightSide) {
                             selectedProjectStudents.value.forEach { student ->
                                 newParts.add(
                                     Participation(
@@ -154,19 +161,19 @@ fun ParticipationDetailsScreen(
                                     )
                                 )
                             }
-                            rp.removeIf { part ->
-                                part.studentId in selectedStudentIds
-                            }
-                            pp.removeIf { part ->
-                                part.studentId in selectedStudentIds
-                            }
+                            val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
                             rp.addAll(newParts)
-                            participationDetailsViewModel.setProjectStudents(pp)
                             participationDetailsViewModel.setRequiredParticipation(rp)
-                            participationDetailsViewModel.clearSelectedProjectStudents()
 
-                            updateActionsAvailability()
+                        } else if (areOutStudentsOnRightSide) {
+                            val out = participationDetailsViewModel.outStudents.value.toMutableList()
+                            out.addAll(selectedProjectStudents.value)
+                            participationDetailsViewModel.setOutStudents(out)
                         }
+
+                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.clearSelectedProjectStudents()
+                        updateActionsAvailability()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = if (isLeftTransferEnabled) BlueMainLight else GrayLight,
@@ -181,32 +188,39 @@ fun ParticipationDetailsScreen(
                 Button(
                     enabled = isRightTransferEnabled,
                     onClick = {
-                        if (participationDetailsViewModel.currentProject != null) {
-                            val newParts = mutableListOf<Participation>()
-                            val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
-                            val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
-                            val selectedStudentIds = selectedChooseStudents.value.map { it.id }
-                            selectedChooseStudents.value.forEach { student ->
-                                newParts.add(
-                                    Participation(
-                                        id = 0,
-                                        studentId = student.id,
-                                        studentNumz = student.numz,
-                                        projectId = project.id,
-                                        priority = 1
-                                    )
+                        val newParts = mutableListOf<Participation>()
+                        val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
+                        val selectedStudentIds = selectedChooseStudents.value.map { it.id }
+                        selectedChooseStudents.value.forEach { student ->
+                            newParts.add(
+                                Participation(
+                                    id = 0,
+                                    studentId = student.id,
+                                    studentNumz = student.numz,
+                                    projectId = project.id,
+                                    priority = 1
                                 )
-                            }
+                            )
+                        }
+                        pp.addAll(newParts)
+
+                        if (areStudentsOnRightSide) {
+                            val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
                             rp.removeIf { part ->
                                 part.studentId in selectedStudentIds
                             }
-                            pp.addAll(newParts)
-                            participationDetailsViewModel.setProjectStudents(pp)
                             participationDetailsViewModel.setRequiredParticipation(rp)
-                            participationDetailsViewModel.clearSelectedChooseStudents()
-
-                            updateActionsAvailability()
+                        } else if (areOutStudentsOnRightSide) {
+                            val out = participationDetailsViewModel.outStudents.value.toMutableList()
+                            out.removeIf { stud ->
+                                stud.id in selectedStudentIds
+                            }
+                            participationDetailsViewModel.setOutStudents(out)
                         }
+
+                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.clearSelectedChooseStudents()
+                        updateActionsAvailability()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = if (isRightTransferEnabled) BlueMainLight else GrayLight,
@@ -221,13 +235,29 @@ fun ParticipationDetailsScreen(
                 Button(
                     enabled = isBothTransferEnabled,
                     onClick = {
-                        if (participationDetailsViewModel.currentProject != null) {
-                            val newProjectParts = mutableListOf<Participation>()
+                        val newProjectParts = mutableListOf<Participation>()
+                        val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
+                        val selectedProjectStudentIds = selectedProjectStudents.value.map { it.id }
+                        val selectedChooseStudentIds = selectedChooseStudents.value.map { it.id }
+                        selectedChooseStudents.value.forEach { student ->
+                            newProjectParts.add(
+                                Participation(
+                                    id = 0,
+                                    studentId = student.id,
+                                    studentNumz = student.numz,
+                                    projectId = project.id,
+                                    priority = 1
+                                )
+                            )
+                        }
+                        pp.removeIf { part ->
+                            part.studentId in selectedProjectStudentIds
+                        }
+                        pp.addAll(newProjectParts)
+
+                        if (areStudentsOnRightSide) {
                             val newChooseParts = mutableListOf<Participation>()
-                            val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
                             val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
-                            val selectedProjectStudentIds = selectedProjectStudents.value.map { it.id }
-                            val selectedChooseStudentIds = selectedChooseStudents.value.map { it.id }
                             selectedProjectStudents.value.forEach { student ->
                                 newChooseParts.add(
                                     Participation(
@@ -239,32 +269,22 @@ fun ParticipationDetailsScreen(
                                     )
                                 )
                             }
-                            selectedChooseStudents.value.forEach { student ->
-                                newProjectParts.add(
-                                    Participation(
-                                        id = 0,
-                                        studentId = student.id,
-                                        studentNumz = student.numz,
-                                        projectId = project.id,
-                                        priority = 1
-                                    )
-                                )
-                            }
-                            pp.removeIf { part ->
-                                part.studentId in selectedProjectStudentIds
-                            }
                             rp.removeIf { part ->
                                 part.studentId in selectedChooseStudentIds
                             }
-                            pp.addAll(newProjectParts)
                             rp.addAll(newChooseParts)
-                            participationDetailsViewModel.setProjectStudents(pp)
                             participationDetailsViewModel.setRequiredParticipation(rp)
-                            participationDetailsViewModel.clearSelectedProjectStudents()
-                            participationDetailsViewModel.clearSelectedChooseStudents()
-
-                            updateActionsAvailability()
+                        } else if (areOutStudentsOnRightSide) {
+                            val out = participationDetailsViewModel.outStudents.value.toMutableList()
+                            out.addAll(selectedProjectStudents.value)
+                            out.removeIf { it.id in selectedChooseStudentIds }
+                            participationDetailsViewModel.setOutStudents(out)
                         }
+
+                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.clearSelectedProjectStudents()
+                        participationDetailsViewModel.clearSelectedChooseStudents()
+                        updateActionsAvailability()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = if (isBothTransferEnabled) BlueMainLight else GrayLight,
@@ -279,7 +299,23 @@ fun ParticipationDetailsScreen(
                 Button(
                     enabled = isLeftOutTransferEnabled,
                     onClick = {
+                        val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
+                        val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
+                        val out = participationDetailsViewModel.outStudents.value.toMutableList()
+                        val selectedStudentIds = selectedProjectStudents.value.map { it.id }
+                        rp.removeIf { part ->
+                            part.studentId in selectedStudentIds
+                        }
+                        pp.removeIf { part ->
+                            part.studentId in selectedStudentIds
+                        }
+                        out.addAll(selectedProjectStudents.value)
+                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.setRequiredParticipation(rp)
+                        participationDetailsViewModel.setOutStudents(out)
+                        participationDetailsViewModel.clearSelectedProjectStudents()
 
+                        updateActionsAvailability()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = if (isLeftOutTransferEnabled) BlueMainLight else GrayLight,
@@ -303,8 +339,9 @@ fun ParticipationDetailsScreen(
                 viewModel = viewModel,
                 requiredParticipation = requiredParticipation.value,
                 participationDetailsViewModel = participationDetailsViewModel,
-                onNodeOpened = { areStudentsOnRight ->
+                onNodeOpened = { areStudentsOnRight, areOuStudentsOnRight ->
                     areStudentsOnRightSide = areStudentsOnRight
+                    areOutStudentsOnRightSide = areOuStudentsOnRight
                     updateActionsAvailability()
                 },
                 onItemSelected = {

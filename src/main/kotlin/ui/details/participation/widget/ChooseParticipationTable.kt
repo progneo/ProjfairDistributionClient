@@ -82,31 +82,53 @@ fun ChooseParticipationTableItem(
 fun ChooseParticipationTableHead(
     modifier: Modifier = Modifier,
     currentText: String,
+    showBackButton: Boolean,
+    showOutStudentsButton: Boolean,
     onBackClicked: () -> Unit,
+    onShowOutStudentsClicked: () -> Unit,
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
             .background(GrayLight)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Button(
-            onClick = { onBackClicked() },
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+        Row(
+            modifier = Modifier.align(Alignment.CenterVertically)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = null,
-                tint = BlueMainDark
+            if (showBackButton) {
+                Button(
+                    onClick = { onBackClicked() },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        tint = BlueMainDark
+                    )
+                }
+                Spacer(Modifier.size(16.dp))
+            }
+            Text(
+                text = currentText,
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .align(Alignment.CenterVertically)
             )
         }
-        Spacer(Modifier.size(16.dp))
-        Text(
-            text = currentText,
-            modifier = Modifier
-                .wrapContentWidth()
-                .align(Alignment.CenterVertically)
-        )
+        if (showOutStudentsButton) {
+            Row(
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Button(
+                    onClick = onShowOutStudentsClicked,
+                    colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White)
+                ) {
+                    Text("Студенты без заявок")
+                }
+            }
+        }
     }
     Divider(thickness = 2.dp)
 }
@@ -117,9 +139,9 @@ fun ChooseParticipationTable(
     filterNode: FilterNode,
     viewModel: BaseGodViewModel,
     requiredParticipation: List<Participation>,
-    onNodeOpened: (Boolean) -> Unit,
+    onNodeOpened: (Boolean, Boolean) -> Unit,
     participationDetailsViewModel: ParticipationDetailsViewModel,
-    onItemSelected: () -> Unit
+    onItemSelected: () -> Unit,
 ) {
     val filterStack by remember {
         mutableStateOf(ArrayDeque<FilterNode>().apply {
@@ -130,13 +152,32 @@ fun ChooseParticipationTable(
     var currentItems by remember { mutableStateOf(viewModel.getValuesByType(filterStack.last().type)) }
     var currentFilterTitle by remember { mutableStateOf(filterNode.type.title) }
 
+    var showBackButton by remember {
+        mutableStateOf(false)
+    }
+
+    var showOutStudentsButton by remember {
+        mutableStateOf(true)
+    }
+
     rememberCoroutineScope().launch {
         participationDetailsViewModel.requiredParticipation.collect {
-            if (filterStack.last().type == FilterType.STUDENT) {
-                currentItems =  viewModel.getValuesByType(
+            if (filterStack.last().type == FilterType.STUDENT && filterStack.last().type != FilterType.OUT_STUDENTS) {
+                currentItems = viewModel.getValuesByType(
                     filterType = FilterType.STUDENT,
                     project = filterStack.last().selectedValue as? Project,
                     requiredParticipation = it
+                )
+            }
+        }
+    }
+
+    rememberCoroutineScope().launch {
+        participationDetailsViewModel.outStudents.collect {
+            if (filterStack.last().type == FilterType.OUT_STUDENTS) {
+                currentItems = viewModel.getValuesByType(
+                    filterType = FilterType.OUT_STUDENTS,
+                    outStudents = it
                 )
             }
         }
@@ -163,8 +204,26 @@ fun ChooseParticipationTable(
         ChooseParticipationTableHead(
             modifier = Modifier.fillMaxWidth(),
             currentText = currentFilterTitle,
+            showBackButton = showBackButton,
+            showOutStudentsButton = showOutStudentsButton,
+            onShowOutStudentsClicked = {
+                showOutStudentsButton = false
+                val currentFilterNode = filterStack.last()
+                val newFilterNode = FilterNode(
+                    prev = currentFilterNode.type,
+                    type = FilterType.OUT_STUDENTS,
+                    selectedValue = null,
+                    next = null
+                )
+                filterStack.add(newFilterNode)
+                currentItems = viewModel.getValuesByType(
+                    filterType = filterStack.last().type,
+                    outStudents = participationDetailsViewModel.outStudents.value
+                )
+                currentFilterTitle = filterStack.last().type.title
+            },
             onBackClicked = {
-                if (filterStack.last().selectedValue != null) {
+                if (filterStack.last().selectedValue != null || filterStack.last().type == FilterType.OUT_STUDENTS) {
                     filterStack.removeLast()
                     val filterValue = filterStack.last().selectedValue
                     currentItems = viewModel.getValuesByType(
@@ -176,6 +235,7 @@ fun ChooseParticipationTable(
                     currentFilterTitle = filterStack.last().type.title
                 }
 
+                showOutStudentsButton = true
                 onItemSelected()
             }
         )
@@ -195,8 +255,9 @@ fun ChooseParticipationTable(
 
             ) {
             items(currentItems) { item ->
-                onNodeOpened(item is Student)
+                onNodeOpened(filterStack.last().type == FilterType.STUDENT, filterStack.last().type == FilterType.OUT_STUDENTS)
                 participationDetailsViewModel.currentProject = filterStack.last().selectedValue as? Project
+                showBackButton = filterStack.last().selectedValue != null || filterStack.last().type == FilterType.OUT_STUDENTS
                 ChooseParticipationTableItem(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -225,7 +286,8 @@ fun ChooseParticipationTable(
                             currentFilterTitle = filterStack.last().type.title
                         } else {
                             val student = item as Student
-                            if (participationDetailsViewModel.selectedChooseStudents.value.map { it.id }.contains(student.id)) {
+                            if (participationDetailsViewModel.selectedChooseStudents.value.map { it.id }
+                                    .contains(student.id)) {
                                 println("${participationDetailsViewModel.selectedChooseStudents.value.map { it.id }} contains ${student.id}")
                                 participationDetailsViewModel.selectedChooseStudents.value.remove(student)
                             } else {
