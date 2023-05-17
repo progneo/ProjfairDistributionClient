@@ -42,7 +42,6 @@ class NavController(
                 baseGodViewModel
             )
         }
-        println(backStackScreens.map { it.sharedScreen })
     }
 
     fun navigateBack() {

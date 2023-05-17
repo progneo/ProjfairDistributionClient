@@ -1,5 +1,6 @@
 package ui.details.participation.widget
 
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,8 +29,11 @@ import common.theme.GrayLight
 import common.theme.WhiteDark
 import domain.model.Participation
 import domain.model.Student
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ui.common.BaseGodViewModel
+import ui.details.participation.viewmodel.ParticipationDetailsViewModel
+import ui.details.project.di.ProjectDetailsComponent
 import ui.preview.viewmodel.PreviewViewModel
 
 private const val KEY = "PROJECT_PARTICIPATION"
@@ -38,11 +43,14 @@ fun ParticipationTableItem(
     modifier: Modifier = Modifier,
     participation: Participation,
     student: Student?,
+    participationDetailsViewModel: ParticipationDetailsViewModel,
     onStudentClicked: (Student) -> Unit,
 ) {
     var isSelected by remember {
         mutableStateOf(false)
     }
+
+    if (participationDetailsViewModel.selectedProjectStudents.value.isEmpty()) isSelected = false
 
     Row(
         modifier = modifier
@@ -119,9 +127,9 @@ fun ParticipationTableHead(
 @Composable
 fun ParticipationTable(
     modifier: Modifier = Modifier,
-    participations: List<Participation>,
     viewModel: BaseGodViewModel,
-    onStudentSelected: (List<Student>) -> Unit
+    participationDetailsViewModel: ParticipationDetailsViewModel,
+    onStudentSelected: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -138,9 +146,7 @@ fun ParticipationTable(
         val scrollState = rememberForeverLazyListState(KEY)
         val coroutineScope = rememberCoroutineScope()
 
-        var selectedStudents by remember {
-            mutableStateOf<MutableList<Student>>(mutableListOf())
-        }
+        val participations = participationDetailsViewModel.projectParticipation.collectAsState()
 
         LazyColumn(
             state = scrollState,
@@ -156,20 +162,24 @@ fun ParticipationTable(
                 ),
 
             ) {
-            items(participations) { participation ->
+            items(participations.value) { participation ->
                 ParticipationTableItem(
                     modifier = Modifier
                         .fillMaxWidth(),
                     participation = participation,
                     student = viewModel.getStudentById(participation.studentId),
+                    participationDetailsViewModel = participationDetailsViewModel,
                     onStudentClicked = { student ->
-                        if (selectedStudents.map { it.id }.contains(student.id)) {
-                            selectedStudents.remove(student)
+                        if (participationDetailsViewModel.selectedProjectStudents.value
+                                .map { it.id }.contains(student.id)
+                        ) {
+                            println("${participationDetailsViewModel.selectedProjectStudents.value.map { it.id }} contains ${student.id}")
+                            participationDetailsViewModel.selectedProjectStudents.value.remove(student)
                         } else {
-                            selectedStudents.add(student)
+                            participationDetailsViewModel.selectedProjectStudents.value.add(student)
                         }
 
-                        onStudentSelected(selectedStudents)
+                        onStudentSelected()
                     }
                 )
                 Divider()

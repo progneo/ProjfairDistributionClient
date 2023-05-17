@@ -214,6 +214,14 @@ open class BaseGodViewModel(
         }
     }
 
+    fun getAllParticipation(): List<Participation> {
+        return _participations.value
+    }
+
+    fun updateParticipation(participation: Participation) {
+
+    }
+
     private fun getSupervisors() {
         coroutineScope.launch {
             getSupervisorsUseCase().collect {
@@ -383,6 +391,7 @@ open class BaseGodViewModel(
         institute: Institute? = null,
         department: Department? = null,
         project: Project? = null,
+        requiredParitcipation: List<Participation>? = null,
     ): List<FilterEntity> {
         return when (filterType) {
             FilterType.INSTITUTE -> {
@@ -402,9 +411,11 @@ open class BaseGodViewModel(
             }
 
             FilterType.STUDENT -> {
-                require(project != null)
-                val studentsParticipations = _participations.value.filter { part ->
+                require(project != null && requiredParitcipation != null)
+                val studentsParticipations = requiredParitcipation.filter { part ->
                     part.projectId == project.id
+                }.sortedBy { part ->
+                    part.priority
                 }.map { part ->
                     part.studentId
                 }.sorted()

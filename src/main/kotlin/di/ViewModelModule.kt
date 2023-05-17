@@ -18,6 +18,7 @@ import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import domain.usecase.uploaddata.RebaseDataUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
+import ui.details.participation.viewmodel.ParticipationDetailsViewModel
 import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
 import ui.preview.viewmodel.PreviewViewModel
 import ui.review.viewmodel.ReviewViewModel
@@ -121,5 +122,11 @@ interface ViewModelModule {
                 saveGeneratedDistributionUseCase = saveGeneratedDistributionUseCase
             )
         }
+
+//        @AppScope
+//        @Provides
+//        fun provideParticipationDetailsViewModel(): ParticipationDetailsViewModel {
+//            return ParticipationDetailsViewModel()
+//        }
     }
 }

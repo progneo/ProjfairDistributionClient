@@ -6,6 +6,7 @@ import di.BaseComponent
 import domain.model.Project
 import navigation.NavController
 import ui.details.participation.screen.ParticipationDetailsScreen
+import ui.details.participation.viewmodel.ParticipationDetailsViewModel
 import ui.preview.viewmodel.PreviewViewModel
 import javax.inject.Inject
 
@@ -13,6 +14,9 @@ class ParticipationDetailsComponent(
     appComponent: AppComponent,
     private val navController: NavController
 ): BaseComponent {
+
+    @Inject
+    lateinit var participationDetailsViewModel: ParticipationDetailsViewModel
 
     val project = navController.currentScreen.value.bundle!!.getAny("project") as Project
 
@@ -23,6 +27,6 @@ class ParticipationDetailsComponent(
     @Composable
     override fun render() {
         val viewModel = navController.currentScreen.value.baseGodViewModel!!
-        ParticipationDetailsScreen(navController, project, viewModel)
+        ParticipationDetailsScreen(navController, project, viewModel, participationDetailsViewModel)
     }
 }
