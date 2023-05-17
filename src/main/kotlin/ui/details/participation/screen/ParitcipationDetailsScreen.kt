@@ -221,7 +221,50 @@ fun ParticipationDetailsScreen(
                 Button(
                     enabled = isBothTransferEnabled,
                     onClick = {
+                        if (participationDetailsViewModel.currentProject != null) {
+                            val newProjectParts = mutableListOf<Participation>()
+                            val newChooseParts = mutableListOf<Participation>()
+                            val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
+                            val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
+                            val selectedProjectStudentIds = selectedProjectStudents.value.map { it.id }
+                            val selectedChooseStudentIds = selectedChooseStudents.value.map { it.id }
+                            selectedProjectStudents.value.forEach { student ->
+                                newChooseParts.add(
+                                    Participation(
+                                        id = 0,
+                                        studentId = student.id,
+                                        studentNumz = student.numz,
+                                        projectId = participationDetailsViewModel.currentProject!!.id,
+                                        priority = 1
+                                    )
+                                )
+                            }
+                            selectedChooseStudents.value.forEach { student ->
+                                newProjectParts.add(
+                                    Participation(
+                                        id = 0,
+                                        studentId = student.id,
+                                        studentNumz = student.numz,
+                                        projectId = project.id,
+                                        priority = 1
+                                    )
+                                )
+                            }
+                            pp.removeIf { part ->
+                                part.studentId in selectedProjectStudentIds
+                            }
+                            rp.removeIf { part ->
+                                part.studentId in selectedChooseStudentIds
+                            }
+                            pp.addAll(newProjectParts)
+                            rp.addAll(newChooseParts)
+                            participationDetailsViewModel.setProjectStudents(pp)
+                            participationDetailsViewModel.setRequiredParticipation(rp)
+                            participationDetailsViewModel.clearSelectedProjectStudents()
+                            participationDetailsViewModel.clearSelectedChooseStudents()
 
+                            updateActionsAvailability()
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = if (isBothTransferEnabled) BlueMainLight else GrayLight,
