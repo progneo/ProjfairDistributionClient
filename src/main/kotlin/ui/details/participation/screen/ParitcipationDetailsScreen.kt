@@ -77,6 +77,15 @@ fun ParticipationDetailsScreen(
     val selectedProjectStudents = participationDetailsViewModel.selectedProjectStudents.collectAsState()
     val selectedChooseStudents = participationDetailsViewModel.selectedChooseStudents.collectAsState()
 
+    fun updateActionsAvailability() {
+        isLeftItemSelected = selectedProjectStudents.value.isNotEmpty()
+        isRightItemSelected = selectedChooseStudents.value.isNotEmpty()
+        isLeftTransferEnabled = isLeftItemSelected && areStudentsOnRightSide
+        isRightTransferEnabled = areStudentsOnRightSide && isRightItemSelected
+        isLeftOutTransferEnabled = isLeftItemSelected
+        isBothTransferEnabled = isLeftItemSelected && isRightItemSelected
+    }
+
     Column {
         Box(
             modifier = Modifier.fillMaxWidth(),
@@ -118,10 +127,7 @@ fun ParticipationDetailsScreen(
                 viewModel = viewModel,
                 participationDetailsViewModel = participationDetailsViewModel,
                 onStudentSelected = {
-                    isLeftItemSelected = selectedProjectStudents.value.isNotEmpty()
-                    isLeftTransferEnabled = isLeftItemSelected && areStudentsOnRightSide
-                    isLeftOutTransferEnabled = isLeftItemSelected
-                    isBothTransferEnabled = isLeftItemSelected && isRightItemSelected
+                    updateActionsAvailability()
                 }
             )
             Column(
@@ -155,10 +161,11 @@ fun ParticipationDetailsScreen(
                                 part.studentId in selectedStudentIds
                             }
                             rp.addAll(newParts)
-                            println(rp.map { it.id })
                             participationDetailsViewModel.setProjectStudents(pp)
                             participationDetailsViewModel.setRequiredParticipation(rp)
                             participationDetailsViewModel.clearSelectedProjectStudents()
+
+                            updateActionsAvailability()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -174,7 +181,32 @@ fun ParticipationDetailsScreen(
                 Button(
                     enabled = isRightTransferEnabled,
                     onClick = {
+                        if (participationDetailsViewModel.currentProject != null) {
+                            val newParts = mutableListOf<Participation>()
+                            val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
+                            val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
+                            val selectedStudentIds = selectedChooseStudents.value.map { it.id }
+                            selectedChooseStudents.value.forEach { student ->
+                                newParts.add(
+                                    Participation(
+                                        id = 0,
+                                        studentId = student.id,
+                                        studentNumz = student.numz,
+                                        projectId = project.id,
+                                        priority = 1
+                                    )
+                                )
+                            }
+                            rp.removeIf { part ->
+                                part.studentId in selectedStudentIds
+                            }
+                            pp.addAll(newParts)
+                            participationDetailsViewModel.setProjectStudents(pp)
+                            participationDetailsViewModel.setRequiredParticipation(rp)
+                            participationDetailsViewModel.clearSelectedChooseStudents()
 
+                            updateActionsAvailability()
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = if (isRightTransferEnabled) BlueMainLight else GrayLight,
@@ -230,13 +262,10 @@ fun ParticipationDetailsScreen(
                 participationDetailsViewModel = participationDetailsViewModel,
                 onNodeOpened = { areStudentsOnRight ->
                     areStudentsOnRightSide = areStudentsOnRight
-                    isLeftTransferEnabled = isLeftItemSelected && areStudentsOnRightSide
+                    updateActionsAvailability()
                 },
                 onItemSelected = {
-                    isRightItemSelected = selectedChooseStudents.value.isNotEmpty()
-                    isRightTransferEnabled = areStudentsOnRightSide && isRightItemSelected
-                    isBothTransferEnabled = isLeftItemSelected && isRightItemSelected
-                    isLeftTransferEnabled = isLeftItemSelected && areStudentsOnRightSide
+                    updateActionsAvailability()
                 }
             )
         }

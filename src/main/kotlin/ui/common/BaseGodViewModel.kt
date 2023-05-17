@@ -391,7 +391,7 @@ open class BaseGodViewModel(
         institute: Institute? = null,
         department: Department? = null,
         project: Project? = null,
-        requiredParitcipation: List<Participation>? = null,
+        requiredParticipation: List<Participation>? = null,
     ): List<FilterEntity> {
         return when (filterType) {
             FilterType.INSTITUTE -> {
@@ -411,8 +411,8 @@ open class BaseGodViewModel(
             }
 
             FilterType.STUDENT -> {
-                require(project != null && requiredParitcipation != null)
-                val studentsParticipations = requiredParitcipation.filter { part ->
+                require(project != null && requiredParticipation != null)
+                val studentsParticipations = requiredParticipation.filter { part ->
                     part.projectId == project.id
                 }.sortedBy { part ->
                     part.priority

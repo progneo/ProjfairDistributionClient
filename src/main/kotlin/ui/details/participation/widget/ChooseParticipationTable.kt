@@ -16,8 +16,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,13 +41,14 @@ private const val KEY = "PROJECT_PARTICIPATION"
 fun ChooseParticipationTableItem(
     modifier: Modifier = Modifier,
     item: FilterEntity,
+    participationDetailsViewModel: ParticipationDetailsViewModel,
     onClicked: (FilterEntity) -> Unit,
 ) {
     var isSelected by remember {
         mutableStateOf(false)
     }
 
-    if (item !is Student) {
+    if (item !is Student || participationDetailsViewModel.selectedChooseStudents.value.isEmpty()) {
         isSelected = false
     }
 
@@ -131,6 +130,18 @@ fun ChooseParticipationTable(
     var currentItems by remember { mutableStateOf(viewModel.getValuesByType(filterStack.last().type)) }
     var currentFilterTitle by remember { mutableStateOf(filterNode.type.title) }
 
+    rememberCoroutineScope().launch {
+        participationDetailsViewModel.requiredParticipation.collect {
+            if (filterStack.last().type == FilterType.STUDENT) {
+                currentItems =  viewModel.getValuesByType(
+                    filterType = FilterType.STUDENT,
+                    project = filterStack.last().selectedValue as? Project,
+                    requiredParticipation = it
+                )
+            }
+        }
+    }
+
     val scrollState = rememberForeverLazyListState(KEY)
     val coroutineScope = rememberCoroutineScope()
 
@@ -185,10 +196,12 @@ fun ChooseParticipationTable(
             ) {
             items(currentItems) { item ->
                 onNodeOpened(item is Student)
+                participationDetailsViewModel.currentProject = filterStack.last().selectedValue as? Project
                 ChooseParticipationTableItem(
                     modifier = Modifier
                         .fillMaxWidth(),
                     item = item,
+                    participationDetailsViewModel = participationDetailsViewModel,
                     onClicked = { clickedFilter ->
                         val currentFilterNode = filterStack.last()
                         if (currentFilterNode.next != null) {
@@ -207,10 +220,9 @@ fun ChooseParticipationTable(
                                 institute = clickedFilter as? Institute,
                                 department = clickedFilter as? Department,
                                 project = clickedFilter as? Project,
-                                requiredParitcipation = requiredParticipation
+                                requiredParticipation = requiredParticipation
                             )
                             currentFilterTitle = filterStack.last().type.title
-                            participationDetailsViewModel.currentProject = clickedFilter as? Project
                         } else {
                             val student = item as Student
                             if (participationDetailsViewModel.selectedChooseStudents.value.map { it.id }.contains(student.id)) {
