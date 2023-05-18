@@ -19,17 +19,11 @@ import javax.inject.Inject
 class ParticipationDetailsViewModel @Inject constructor(
     private val getParticipationsUseCase: GetParticipationsUseCase,
     private val getStudentsUseCase: GetStudentsUseCase
-) : BaseViewModel<UploadDataContract.Intent, UploadDataContract.ScreenState>() {
+) : BaseViewModel() {
 
     companion object {
         var projectId: Int? = null
     }
-
-    override fun createInitialState(): UploadDataContract.ScreenState {
-        return UploadDataContract.ScreenState.Idle
-    }
-
-    override fun handleIntent(intent: UploadDataContract.Intent) {}
 
     val selectedProjectStudents = MutableStateFlow<MutableList<Student>>(mutableListOf())
     val selectedChooseStudents = MutableStateFlow<MutableList<Student>>(mutableListOf())

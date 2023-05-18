@@ -1,17 +1,14 @@
 package domain.usecase.uploaddata
 
-import base.mvi.DataState
 import domain.repository.UploadDataRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import ui.uploaddata.viewmodel.UploadDataViewModel
 import javax.inject.Inject
 
-class SyncDataUseCase @Inject constructor(
+class CancelOperationsUseCase @Inject constructor(
     private val uploadDataRepository: UploadDataRepository
 ) {
 
     suspend operator fun invoke() {
-        uploadDataRepository.syncData()
+        uploadDataRepository.stopOperations()
     }
 }
-

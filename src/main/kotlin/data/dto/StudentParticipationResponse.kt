@@ -1,6 +1,6 @@
 package data.dto
 
-data class StudentçParticipationResponse(
+data class StudentParticipationResponse(
     var fio: String,
     val numz: String
 )

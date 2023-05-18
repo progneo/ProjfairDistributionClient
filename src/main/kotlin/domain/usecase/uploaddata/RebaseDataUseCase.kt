@@ -12,16 +12,9 @@ class RebaseDataUseCase @Inject constructor(
     private val removeGeneratedDistributionUseCase: RemoveGeneratedDistributionUseCase
 ) {
 
-    operator fun invoke(): Flow<DataState<Boolean>> = flow {
-        emit(DataState.Loading)
-        try {
-            val response = uploadDataRepository.rebaseData()
-            removeGeneratedDistributionUseCase()
-            emit(DataState.Success(response))
-        } catch (e: Exception) {
-            println(e)
-            emit(DataState.Error(e))
-        }
+    suspend operator fun invoke() {
+        uploadDataRepository.rebaseData()
+        removeGeneratedDistributionUseCase()
     }
 }
 

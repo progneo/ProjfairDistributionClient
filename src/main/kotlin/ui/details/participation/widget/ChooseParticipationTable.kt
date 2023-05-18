@@ -66,7 +66,8 @@ fun ChooseParticipationTableItem(
                     else Color.Transparent
                 } else Color.Transparent
             )
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = item.name,
@@ -75,6 +76,9 @@ fun ChooseParticipationTableItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+        if (item is Student) {
+            Text(text = item.group)
+        }
     }
 }
 

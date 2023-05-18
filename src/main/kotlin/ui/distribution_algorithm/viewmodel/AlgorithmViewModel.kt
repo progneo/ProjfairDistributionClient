@@ -21,7 +21,7 @@ class AlgorithmViewModel @Inject constructor(
     private val getParticipationsUseCase: GetParticipationsUseCase,
     private val getInstitutesUseCase: GetInstitutesUseCase,
     private val saveGeneratedDistributionUseCase: SaveGeneratedDistributionUseCase
-): BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
+): BaseViewModel() {
 
     val students = MutableStateFlow<List<AlgorithmStudent>>(emptyList())
     val projects = MutableStateFlow<List<AlgorithmProject>>(emptyList())
@@ -119,13 +119,5 @@ class AlgorithmViewModel @Inject constructor(
 
     fun saveStudentsByProjects(generatedDistribution: GeneratedDistribution) {
         saveGeneratedDistributionUseCase(generatedDistribution)
-    }
-
-    override fun createInitialState(): PreviewContract.ScreenState {
-        return PreviewContract.ScreenState.Idle
-    }
-
-    override fun handleIntent(intent: PreviewContract.Intent) {
-
     }
 }

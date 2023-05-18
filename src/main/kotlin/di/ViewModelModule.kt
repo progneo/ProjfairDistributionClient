@@ -29,19 +29,19 @@ interface ViewModelModule {
 
     companion object {
 
-        @AppScope
-        @Provides
-        fun provideUploadDataViewModel(
-            syncDataUseCase: SyncDataUseCase,
-            rebaseDataUseCase: RebaseDataUseCase,
-            downloadProgressInteractor: DownloadProgressInteractor,
-        ): UploadDataViewModel {
-            return UploadDataViewModel(
-                syncDataUseCase = syncDataUseCase,
-                rebaseDataUseCase = rebaseDataUseCase,
-                downloadProgressInteractor = downloadProgressInteractor
-            )
-        }
+//        @AppScope
+//        @Provides
+//        fun provideUploadDataViewModel(
+//            syncDataUseCase: SyncDataUseCase,
+//            rebaseDataUseCase: RebaseDataUseCase,
+//            downloadProgressInteractor: DownloadProgressInteractor,
+//        ): UploadDataViewModel {
+//            return UploadDataViewModel(
+//                syncDataUseCase = syncDataUseCase,
+//                rebaseDataUseCase = rebaseDataUseCase,
+//                downloadProgressInteractor = downloadProgressInteractor
+//            )
+//        }
 
         @AppScope
         @Provides

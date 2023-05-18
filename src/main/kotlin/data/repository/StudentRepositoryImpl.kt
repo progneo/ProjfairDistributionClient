@@ -78,6 +78,7 @@ class StudentRepositoryImpl @Inject constructor(
 
             deleteAllStudents()
             students.forEach { studentResponse ->
+                println(current)
                 val newStudent = studentResponseToStudent(studentResponse)
                 insertStudent(newStudent)
                 downloadFlow.value = ++current / overall
@@ -104,8 +105,6 @@ class StudentRepositoryImpl @Inject constructor(
             var current = 0f
             val overall = students.size
 
-            println("BEFORE = $oldMap")
-
             students.forEach { studentResponse ->
                 if (studentResponse.specialty == null) return@forEach
                 val newStudent = studentResponseToStudent(studentResponse)
@@ -117,8 +116,6 @@ class StudentRepositoryImpl @Inject constructor(
                 }
                 downloadFlow.value = ++current / overall
             }
-
-            println("BETWEEN")
 
             oldMap.filter { !it.value.isAlive }.forEach {
                 deleteStudent(it.value.student)

@@ -9,6 +9,7 @@ interface UploadDataRepository {
     val institutesDownloadFlow: MutableStateFlow<Float>
     val departmentsDownloadFlow: MutableStateFlow<Float>
     val supervisorsDownloadFlow: MutableStateFlow<Float>
-    suspend fun syncData(): Boolean
-    suspend fun rebaseData(): Boolean
+    suspend fun syncData()
+    suspend fun rebaseData()
+    fun stopOperations()
 }

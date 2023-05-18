@@ -1,9 +1,9 @@
 package data.repository
 
 import domain.repository.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class UploadDataRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
@@ -13,7 +13,7 @@ class UploadDataRepositoryImpl @Inject constructor(
     private val instituteRepository: InstituteRepository,
     private val departmentRepository: DepartmentRepository,
     private val supervisorRepository: SupervisorRepository,
-    private val loggingRepository: LoggingRepository
+    private val loggingRepository: LoggingRepository,
 ) : UploadDataRepository {
 
     override val studentsDownloadFlow = studentRepository.downloadFlow
@@ -23,40 +23,38 @@ class UploadDataRepositoryImpl @Inject constructor(
     override val departmentsDownloadFlow = departmentRepository.downloadFlow
     override val supervisorsDownloadFlow = supervisorRepository.downloadFlow
 
-    override suspend fun syncData(): Boolean {
-        return withContext(ioDispatcher) {
-            try {
-                studentRepository.syncStudents()
-                projectRepository.syncProjects()
-                participationRepository.syncParticipations()
-                instituteRepository.uploadInstitutes()
-                departmentRepository.uploadDepartments()
-                supervisorRepository.uploadSupervisors()
+    val coroutineScope = CoroutineScope(ioDispatcher)
 
-                true
-            } catch (e: Exception) {
-                println(e)
-                false
-            }
+    override suspend fun syncData() {
+        coroutineScope.launch {
+            studentRepository.syncStudents()
+            projectRepository.syncProjects()
+            participationRepository.syncParticipations()
+            instituteRepository.uploadInstitutes()
+            departmentRepository.uploadDepartments()
+            supervisorRepository.uploadSupervisors()
         }
     }
 
-    override suspend fun rebaseData(): Boolean {
-        return withContext(ioDispatcher) {
-            try {
-                loggingRepository.deleteAll()
-                studentRepository.rebaseStudents()
-                projectRepository.rebaseProjects()
-                participationRepository.rebaseParticipations()
-                instituteRepository.uploadInstitutes()
-                departmentRepository.uploadDepartments()
-                supervisorRepository.uploadSupervisors()
-
-                true
-            } catch (e: Exception) {
-                println(e)
-                false
-            }
+    override suspend fun rebaseData() {
+        coroutineScope.launch {
+            loggingRepository.deleteAll()
+            studentRepository.rebaseStudents()
+            projectRepository.rebaseProjects()
+            participationRepository.rebaseParticipations()
+            instituteRepository.uploadInstitutes()
+            departmentRepository.uploadDepartments()
+            supervisorRepository.uploadSupervisors()
         }
+    }
+
+    override fun stopOperations() {
+        coroutineScope.coroutineContext.cancelChildren()
+        studentRepository.downloadFlow.value = 0f
+        projectRepository.downloadFlow.value = 0f
+        participationRepository.downloadFlow.value = 0f
+        instituteRepository.downloadFlow.value = 0f
+        departmentRepository.downloadFlow.value = 0f
+        supervisorRepository.downloadFlow.value = 0f
     }
 }

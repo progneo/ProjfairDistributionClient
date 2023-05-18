@@ -35,13 +35,7 @@ open class BaseGodViewModel(
     private val syncProjectUseCase: SyncProjectUseCase,
     private val getLogsUseCase: GetLogsUseCase,
     private val saveLogUseCase: SaveLogUseCase,
-) : BaseViewModel<PreviewContract.Intent, PreviewContract.ScreenState>() {
-
-    override fun createInitialState(): PreviewContract.ScreenState {
-        return PreviewContract.ScreenState.Idle
-    }
-
-    override fun handleIntent(intent: PreviewContract.Intent) {}
+) : BaseViewModel() {
 
     private val _students = MutableStateFlow<List<Student>>(emptyList())
     private val _projects = MutableStateFlow<List<Project>>(emptyList())
