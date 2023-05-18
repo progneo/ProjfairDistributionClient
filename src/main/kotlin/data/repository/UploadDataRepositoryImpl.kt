@@ -45,12 +45,12 @@ class UploadDataRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) {
             try {
                 loggingRepository.deleteAll()
-                //studentRepository.rebaseStudents()
+                studentRepository.rebaseStudents()
                 projectRepository.rebaseProjects()
-                //participationRepository.rebaseParticipations()
-                //instituteRepository.uploadInstitutes()
-                //departmentRepository.uploadDepartments()
-                //supervisorRepository.uploadSupervisors()
+                participationRepository.rebaseParticipations()
+                instituteRepository.uploadInstitutes()
+                departmentRepository.uploadDepartments()
+                supervisorRepository.uploadSupervisors()
 
                 true
             } catch (e: Exception) {

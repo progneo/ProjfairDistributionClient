@@ -115,8 +115,8 @@ open class BaseGodViewModel(
 
     private fun getStudents() {
         coroutineScope.launch {
-            getStudentsUseCase().collect {
-                _students.value = it.list
+            getStudentsUseCase().collect { studs ->
+                _students.value = studs.list
             }
         }
     }
@@ -416,9 +416,11 @@ open class BaseGodViewModel(
                 val studentsParticipations =
                     requiredParticipation.filter { part ->
                         part.projectId == project.id
-                    }.sortedBy { part ->
+                    }.sortedWith(compareBy({ part ->
                         part.priority
-                    }.map { part ->
+                    }, { part ->
+                        part.studentName
+                    })).map { part ->
                         part.studentId
                     }.sorted()
 

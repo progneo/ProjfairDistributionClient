@@ -81,11 +81,11 @@ class ParticipationDetailsViewModel @Inject constructor(
     }
 
     fun setProjectStudents(participation: List<Participation>) {
-        projectParticipation.value = participation.sortedBy { it.priority }.toMutableList()
+        projectParticipation.value = participation.sortedWith(compareBy({ it.priority }, { it.studentName })).toMutableList()
     }
 
     fun setRequiredParticipation(participation: List<Participation>) {
-        requiredParticipation.value = participation.sortedBy { it.priority }.toMutableList()
+        requiredParticipation.value = participation.sortedWith(compareBy({ it.priority }, { it.studentName })).toMutableList()
     }
 
     fun setOutStudents(students: List<Student>) {

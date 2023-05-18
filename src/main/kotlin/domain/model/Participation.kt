@@ -8,11 +8,12 @@ open class Participation(
     @PrimaryKey override var id: Int,
     var studentId: Int,
     var studentNumz: Int,
+    var studentName: String,
     var projectId: Int,
     var priority: Int,
 ) : RealmObject, LoggingEntity() {
 
-    constructor() : this(0, 0, 0, 0, 0)
+    constructor() : this(0, 0, 0, "", 0, 0)
 
     override fun members(): List<Any?> {
         return listOf(id, studentId, projectId, priority)

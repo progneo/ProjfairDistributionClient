@@ -156,6 +156,7 @@ fun ParticipationDetailsScreen(
                                         id = 0,
                                         studentId = student.id,
                                         studentNumz = student.numz,
+                                        studentName = student.name,
                                         projectId = participationDetailsViewModel.currentProject!!.id,
                                         priority = 1
                                     )
@@ -197,6 +198,7 @@ fun ParticipationDetailsScreen(
                                     id = 0,
                                     studentId = student.id,
                                     studentNumz = student.numz,
+                                    studentName = student.name,
                                     projectId = project.id,
                                     priority = 1
                                 )
@@ -245,6 +247,7 @@ fun ParticipationDetailsScreen(
                                     id = 0,
                                     studentId = student.id,
                                     studentNumz = student.numz,
+                                    studentName = student.name,
                                     projectId = project.id,
                                     priority = 1
                                 )
@@ -264,6 +267,7 @@ fun ParticipationDetailsScreen(
                                         id = 0,
                                         studentId = student.id,
                                         studentNumz = student.numz,
+                                        studentName = student.name,
                                         projectId = participationDetailsViewModel.currentProject!!.id,
                                         priority = 1
                                     )
