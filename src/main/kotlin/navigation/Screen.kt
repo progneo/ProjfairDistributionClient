@@ -3,6 +3,13 @@ package navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import compose.icons.EvaIcons
+import compose.icons.Octicons
+import compose.icons.evaicons.Fill
+import compose.icons.evaicons.Outline
+import compose.icons.evaicons.fill.Download
+import compose.icons.evaicons.outline.Cube
+import compose.icons.octicons.DesktopDownload24
 import ui.common.BaseGodViewModel
 
 data class Screen(
@@ -30,15 +37,15 @@ sealed class SharedScreen(
     object UploadScreen : SharedScreen(
         screenRoute = ScreenRoute.UPLOAD,
         parentScreenRoute = ScreenRoute.UPLOAD,
-        title = "Загрузить данные",
-        icon = Icons.Filled.Add
+        title = "Загрузка",
+        icon = EvaIcons.Fill.Download
     )
 
     object AlgorithmScreen : SharedScreen(
         screenRoute = ScreenRoute.ALGORITHM,
         parentScreenRoute = ScreenRoute.ALGORITHM,
-        title = "Алгоритм",
-        icon = Icons.Filled.Info
+        title = "Распределение",
+        icon = EvaIcons.Outline.Cube
     )
 
     object PreviewScreen : SharedScreen(
@@ -65,14 +72,14 @@ sealed class SharedScreen(
     object ReviewScreen : SharedScreen(
         screenRoute = ScreenRoute.REVIEW,
         parentScreenRoute = ScreenRoute.REVIEW,
-        title = "Заявки на проект",
+        title = "Итоги",
         icon = Icons.Filled.Done
     )
 
     object LoadingScreen : SharedScreen(
         screenRoute = ScreenRoute.LOADING,
         parentScreenRoute = ScreenRoute.LOADING,
-        title = "",
+        title = "Загрузка",
         icon = Icons.Filled.Refresh
     )
 

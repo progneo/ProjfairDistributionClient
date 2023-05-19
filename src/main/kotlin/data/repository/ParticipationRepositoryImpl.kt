@@ -34,18 +34,20 @@ class ParticipationRepositoryImpl @Inject constructor(
         //participationDao.update(participation)
     }
 
-    override suspend fun insertParticipation(participation: Participation) {
+    override suspend fun insertParticipation(participation: Participation, byRebase: Boolean) {
         withContext(ioDispatcher) {
             participationDao.insert(participation)
-            loggingRepository.saveLog(
-                log = Log(
-                    id = UUID.randomUUID().toString(),
-                    dateTime = getCurrentDateTime(),
-                    participation = participation,
-                ),
-                logType = LogType.SAVE,
-                logSource = LogSource.SERVER
-            )
+            if (!byRebase) {
+                loggingRepository.saveLog(
+                    log = Log(
+                        id = UUID.randomUUID().toString(),
+                        dateTime = getCurrentDateTime(),
+                        participation = participation,
+                    ),
+                    logType = LogType.SAVE,
+                    logSource = LogSource.SERVER
+                )
+            }
         }
     }
 
@@ -93,7 +95,7 @@ class ParticipationRepositoryImpl @Inject constructor(
                 val newParticipation = participationResponseToParticipation(it)
                 val oldParticipation = oldMap[newParticipation.id]
                 if (oldParticipation == null) {
-                    insertParticipation(newParticipation)
+                    insertParticipation(newParticipation, false)
                 } else {
                     oldMap[newParticipation.id]!!.isAlive = true
                 }
@@ -115,7 +117,7 @@ class ParticipationRepositoryImpl @Inject constructor(
             deleteAllParticipations()
             participations.forEach {
                 val newParticipation = participationResponseToParticipation(it)
-                insertParticipation(newParticipation)
+                insertParticipation(newParticipation, true)
                 downloadFlow.value = ++current / overall
             }
         }

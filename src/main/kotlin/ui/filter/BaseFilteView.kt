@@ -12,6 +12,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.compose.VisibleDialog
@@ -29,6 +30,7 @@ fun FilterDialog(
     onDismissRequest: () -> Unit,
 ) {
     VisibleDialog(
+        modifier = Modifier.size(600.dp, Dp.Unspecified),
         visible = visible,
         mainPart = {
             Column {

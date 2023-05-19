@@ -39,18 +39,20 @@ class StudentRepositoryImpl @Inject constructor(
         //studentDao.update(student)
     }
 
-    override suspend fun insertStudent(student: Student) {
+    override suspend fun insertStudent(student: Student, byRebase: Boolean) {
         withContext(ioDispatcher) {
             studentDao.insert(student)
-            loggingRepository.saveLog(
-                log = Log(
-                    id = UUID.randomUUID().toString(),
-                    dateTime = getCurrentDateTime(),
-                    student = student
-                ),
-                logType = LogType.SAVE,
-                logSource = LogSource.SERVER
-            )
+            if (!byRebase) {
+                loggingRepository.saveLog(
+                    log = Log(
+                        id = UUID.randomUUID().toString(),
+                        dateTime = getCurrentDateTime(),
+                        student = student
+                    ),
+                    logType = LogType.SAVE,
+                    logSource = LogSource.SERVER
+                )
+            }
         }
     }
 
@@ -78,9 +80,8 @@ class StudentRepositoryImpl @Inject constructor(
 
             deleteAllStudents()
             students.forEach { studentResponse ->
-                println(current)
                 val newStudent = studentResponseToStudent(studentResponse)
-                insertStudent(newStudent)
+                insertStudent(newStudent, true)
                 downloadFlow.value = ++current / overall
             }
         }
@@ -110,7 +111,7 @@ class StudentRepositoryImpl @Inject constructor(
                 val newStudent = studentResponseToStudent(studentResponse)
                 val oldStudent = oldMap[newStudent.numz]
                 if (oldStudent == null) {
-                    insertStudent(newStudent)
+                    insertStudent(newStudent, false)
                 } else {
                     oldMap[newStudent.numz]!!.isAlive = true
                 }

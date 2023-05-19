@@ -105,6 +105,7 @@ private fun <T : FilterEntity> ProjectFilterDropdownItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
+            modifier = Modifier.weight(2f),
             text = filterType.title,
             fontSize = 16.sp,
             color = Color.Black
@@ -112,7 +113,8 @@ private fun <T : FilterEntity> ProjectFilterDropdownItem(
         Spacer(Modifier.size(16.dp))
         ExposedFilterDropdownMenu<T>(
             modifier = Modifier
-                .size(width = 400.dp, height = Dp.Unspecified),
+                .weight(8f),
+                //.size(width = 400.dp, height = Dp.Unspecified),
             title = selectedValue.name,
             isTitleChangeable = true,
             stateHolder = stateHolder,

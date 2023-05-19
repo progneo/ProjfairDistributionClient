@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -8,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
@@ -60,7 +60,9 @@ fun App() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 NavigationRail(
-                    modifier = Modifier.fillMaxHeight().shadow(2.dp)
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .shadow(2.dp)
                 ) {
                     navBarScreens.forEach {
                         NavigationRailItem(
@@ -77,7 +79,6 @@ fun App() {
                                     text = it.sharedScreen.title!!,
                                     color = BlueMainLight,
                                     modifier = Modifier
-                                        .padding(top = 4.dp)
                                 )
                             },
                             alwaysShowLabel = false,

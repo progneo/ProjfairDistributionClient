@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.darkrockstudios.libraries.mpfilepicker.DirectoryPicker
@@ -46,7 +47,7 @@ fun DataActionsDialog(
             var showDirPicker by remember { mutableStateOf(false) }
 
             Column(
-                modifier = Modifier.size(width = 400.dp, height = 600.dp)
+                modifier = Modifier.size(width = 400.dp, height = Dp.Unspecified)
             ) {
                 Text(
                     text = "Действия с данными",
@@ -175,7 +176,13 @@ fun DataActionsDialog(
             }
         },
         buttonsPart = {
-
+            Button(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                onClick = onDismissRequest,
+                colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainDark, contentColor = Color.White)
+            ) {
+                Text(text = "Закрыть")
+            }
         },
         onDismissRequest = onDismissRequest
     )

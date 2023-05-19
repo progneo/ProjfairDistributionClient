@@ -107,7 +107,10 @@ fun UploadDataScreen(
         }
 
         Column(
-            modifier = Modifier.size(width = 800.dp, height = Dp.Unspecified).padding(64.dp)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(width = 800.dp, height = Dp.Unspecified)
+                .padding(64.dp)
         ) {
             downloadProgressMap.forEach { (key, value) ->
                 Row(

@@ -9,7 +9,7 @@ interface StudentRepository {
     val downloadFlow: MutableStateFlow<Float>
     fun getStudents(): Flow<ResultsChange<Student>>
     suspend fun updateStudent(student: Student)
-    suspend fun insertStudent(student: Student)
+    suspend fun insertStudent(student: Student, byRebase: Boolean)
     suspend fun insertStudent(students: List<Student>)
     suspend fun deleteStudent(student: Student)
     suspend fun deleteAllStudents()

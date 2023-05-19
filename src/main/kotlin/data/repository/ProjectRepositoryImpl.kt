@@ -50,18 +50,20 @@ class ProjectRepositoryImpl @Inject constructor(
         return updateProject(projectResponseToProject(project))
     }
 
-    override suspend fun insertProject(project: Project) {
+    override suspend fun insertProject(project: Project, byRebase: Boolean) {
         withContext(ioDispatcher) {
             projectDao.insert(project)
-            loggingRepository.saveLog(
-                log = Log(
-                    id = UUID.randomUUID().toString(),
-                    dateTime = getCurrentDateTime(),
-                    project = project,
-                ),
-                logType = LogType.SAVE,
-                logSource = LogSource.SERVER
-            )
+            if (!byRebase) {
+                loggingRepository.saveLog(
+                    log = Log(
+                        id = UUID.randomUUID().toString(),
+                        dateTime = getCurrentDateTime(),
+                        project = project,
+                    ),
+                    logType = LogType.SAVE,
+                    logSource = LogSource.SERVER
+                )
+            }
         }
     }
 
@@ -110,7 +112,7 @@ class ProjectRepositoryImpl @Inject constructor(
                 val newProject = projectResponseToProject(it)
                 val oldProject = oldMap[newProject.id]
                 if (oldProject == null) {
-                    insertProject(newProject)
+                    insertProject(newProject, false)
                 } else {
                     oldMap[newProject.id]!!.isAlive = true
                 }
@@ -132,7 +134,7 @@ class ProjectRepositoryImpl @Inject constructor(
             deleteAllProjects()
             projects.forEach {
                 val newProject = projectResponseToProject(it)
-                insertProject(newProject)
+                insertProject(newProject, true)
                 downloadFlow.value = ++current / overall
             }
         }
