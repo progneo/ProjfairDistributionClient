@@ -36,7 +36,7 @@ fun LaunchButton(
         )
     ) {
         Text(
-            text = "Запустить алгоритм",
+            text = "Запустить распределение",
             color = Color.White,
             fontSize = 30.sp,
             modifier = Modifier.padding(8.dp)

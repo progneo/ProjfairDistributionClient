@@ -138,7 +138,7 @@ fun UploadDataScreen(
                     Spacer(Modifier.size(32.dp))
                     UpdateDataButton(
                         modifier = Modifier.weight(if (key.isMutable) 4f else 8f),
-                        title = "Сбросить и загрузить",
+                        title = "Перезаписать данные",
                         icon = Icons.Rounded.Clear,
                         contentPadding = PaddingValues(4.dp),
                         onClick = {

@@ -50,14 +50,9 @@ class InstituteRepositoryImpl @Inject constructor(
 
     override suspend fun uploadInstitutes() {
         withContext(ioDispatcher) {
-            val institutes = projectFairApi.getInstitutes()
-            var current = 0f
-            val overall = institutes.size
-
-            institutes.forEach {
-                insertInstitute(instituteResponseToInstitute(it))
-                downloadFlow.value = ++current / overall
-            }
+            val institutes = projectFairApi.getInstitutes().map { instituteResponseToInstitute(it) }
+            insertInstitute(institutes)
+            downloadFlow.value = 1f
         }
     }
 }

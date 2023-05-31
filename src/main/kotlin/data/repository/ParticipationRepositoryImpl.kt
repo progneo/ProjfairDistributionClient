@@ -111,15 +111,10 @@ class ParticipationRepositoryImpl @Inject constructor(
     override suspend fun rebaseParticipations() {
         withContext(ioDispatcher) {
             val participations = ordinaryProjectFairApi.getParticipations().data
-            var current = 0f
-            val overall = participations.size
-
             deleteAllParticipations()
-            participations.forEach {
-                val newParticipation = participationResponseToParticipation(it)
-                insertParticipation(newParticipation, true)
-                downloadFlow.value = ++current / overall
-            }
+            val newParticipations = participations.map { participationResponseToParticipation(it) }
+            insertParticipation(newParticipations)
+            downloadFlow.value = 1f
         }
     }
 }

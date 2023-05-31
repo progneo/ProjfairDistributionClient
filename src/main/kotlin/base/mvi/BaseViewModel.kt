@@ -11,6 +11,5 @@ import ru.student.distribution.core.base.mvi.UiIntent
 import ru.student.distribution.core.base.mvi.UiState
 
 abstract class BaseViewModel {
-
     protected val coroutineScope = CoroutineScope(Dispatchers.IO)
 }

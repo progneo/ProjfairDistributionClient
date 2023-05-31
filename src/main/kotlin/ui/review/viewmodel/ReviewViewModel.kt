@@ -49,13 +49,6 @@ class ReviewViewModel @Inject constructor(
     var reviewTabPage = mutableStateOf(PreviewTabPage.Students)
 
     fun getGeneratedDistribution(): GeneratedDistribution {
-        //return getGeneratedDistributionUseCase()
-        return GeneratedDistribution(
-            id = 0,
-            results = DistributionResults(
-                allParticipation = emptyList(),
-                institutesResults = emptyList()
-            )
-        )
+        return getGeneratedDistributionUseCase()
     }
 }

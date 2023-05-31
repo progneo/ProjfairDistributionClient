@@ -63,6 +63,7 @@ fun SupervisorSearchDialog(
                     LazyColumn(
                         state = scrollState,
                         modifier = Modifier
+                            .fillMaxWidth()
                             .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)),
                     ) {
                         items(supervisors) { supervisor ->

@@ -20,7 +20,8 @@ annotation class AppScope
         DatabaseModule::class,
         NetworkModule::class,
         InteractorModule::class,
-        ViewModelModule::class
+        ViewModelModule::class,
+        DaoModule::class
     ]
 )]
 interface AppComponent {

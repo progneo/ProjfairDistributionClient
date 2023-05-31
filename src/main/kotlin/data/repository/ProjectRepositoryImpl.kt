@@ -5,12 +5,14 @@ import common.date.getCurrentDateTime
 import data.local.dao.ProjectDao
 import data.mapper.projectResponseToProject
 import data.remote.api.OrdinaryProjectFairApi
+import di.Preview
 import domain.model.*
 import domain.repository.LoggingRepository
 import domain.repository.ProjectRepository
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.types.RealmAny
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -126,17 +128,12 @@ class ProjectRepositoryImpl @Inject constructor(
     }
 
     override suspend fun rebaseProjects() {
-        withContext(ioDispatcher) {
+        withContext(Dispatchers.Default) {
             val projects = projectFairApi.getProjects().data
-            var current = 0f
-            val overall = projects.size
-
             deleteAllProjects()
-            projects.forEach {
-                val newProject = projectResponseToProject(it)
-                insertProject(newProject, true)
-                downloadFlow.value = ++current / overall
-            }
+            val newProjects = projects.map { projectResponseToProject(it) }
+            insertProject(newProjects)
+            downloadFlow.value = 1f
         }
     }
 }

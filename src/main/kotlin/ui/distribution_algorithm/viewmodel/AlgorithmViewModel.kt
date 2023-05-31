@@ -3,6 +3,7 @@ package ui.distribution_algorithm.viewmodel
 import base.mvi.BaseViewModel
 import domain.model.CleanProject
 import domain.model.CleanProjectSpecialty
+import domain.model.Department
 import domain.model.GeneratedDistribution
 import domain.usecase.file.SaveGeneratedDistributionUseCase
 import domain.usecase.institute.GetInstitutesUseCase
@@ -48,6 +49,7 @@ class AlgorithmViewModel @Inject constructor(
             getProjectsUseCase().collect {
                 val temp = mutableListOf<CleanProject>()
                 it.list.forEach { project ->
+                    println(project)
                     val projectCopy = CleanProject(
                         id = project.id,
                         name = project.name,
@@ -61,7 +63,7 @@ class AlgorithmViewModel @Inject constructor(
                         customer = project.customer,
                         productResult = project.productResult,
                         studyResult = project.studyResult,
-                        department = project.department!!,
+                        department = project.department ?: Department(id = -1, name = "-1", institute = null),
                         supervisors = project.supervisors.toList(),
                         projectSpecialties = project.projectSpecialties.map { oldPsp ->
                             CleanProjectSpecialty(

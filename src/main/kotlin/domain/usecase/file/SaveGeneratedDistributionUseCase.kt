@@ -8,7 +8,8 @@ import javax.inject.Inject
 class SaveGeneratedDistributionUseCase @Inject constructor() {
 
     operator fun invoke(generatedDistribution: GeneratedDistribution) {
-        val path = "/generated_distributions/${generatedDistribution.id}.json"
+        val path = "${System.getProperty("user.dir")}/generated_distributions/${generatedDistribution.id}.json"
+        File("${System.getProperty("user.dir")}/generated_distributions/").mkdir()
         File(path).createNewFile()
         ExportDataToJson.exportGeneratedDistribution(
             filePath = path,

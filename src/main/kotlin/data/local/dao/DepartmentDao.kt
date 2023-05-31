@@ -1,12 +1,14 @@
 package data.local.dao
 
 import data.local.dao.base.Dao
+import di.Preview
 import domain.model.Department
 import io.realm.kotlin.Realm
 import javax.inject.Inject
+import javax.inject.Named
 
 class DepartmentDao @Inject constructor(
-    realm: Realm
+    @Preview realm: Realm
 ): Dao<Department>(realm) {
 
 //    override suspend fun insert(item: Department) {

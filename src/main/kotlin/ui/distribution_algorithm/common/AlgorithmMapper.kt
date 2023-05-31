@@ -18,7 +18,8 @@ fun Student.toAlgorithmModel(): AlgorithmStudent {
         groupFamily = this.group.substring(0, group.indexOfFirst { it == '-' }),
         fullGroupName = this.group,
         specialty = this.specialty!!.toAlgorithmModel(),
-        course = 1
+        course = 1,
+        numz = this.numz
     )
 }
 
@@ -33,7 +34,11 @@ fun CleanProject.toAlgorithmModel(): AlgorithmProject {
         difficulty = this.difficulty,
         customer = this.customer,
         supervisors = this.supervisors.map { it.toAlgorithmModel() },
-        department = this.supervisors.first().department!!.toAlgorithmModel(),
+        department = try {
+            this.supervisors.first().department!!.toAlgorithmModel()
+        } catch (e: Exception) {
+            AlgorithmDepartment(-1, "-1", AlgorithmInstitute(-1, "-1"))
+        },
         projectSpecialties = this.projectSpecialties.map { it.toAlgorithmModel() }
     )
 }

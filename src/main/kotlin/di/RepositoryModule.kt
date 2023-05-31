@@ -55,7 +55,7 @@ interface RepositoryModule {
         @Provides
         fun provideStudentRepository(
             ioDispatcher: CoroutineDispatcher,
-            studentDao: StudentDao,
+            @Preview studentDao: StudentDao,
             projectFairApi: OrdinaryProjectFairApi,
             loggingRepository: LoggingRepository
         ): StudentRepository {
@@ -71,7 +71,7 @@ interface RepositoryModule {
         @Provides
         fun provideProjectRepository(
             ioDispatcher: CoroutineDispatcher,
-            projectDao: ProjectDao,
+            @Preview projectDao: ProjectDao,
             projectFairApi: OrdinaryProjectFairApi,
             loggingRepository: LoggingRepository
         ): ProjectRepository {

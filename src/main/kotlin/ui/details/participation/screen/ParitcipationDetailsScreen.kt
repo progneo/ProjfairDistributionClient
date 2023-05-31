@@ -120,7 +120,7 @@ fun ParticipationDetailsScreen(
                 colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White),
             ) {
                 Text(
-                    text = "Изменить",
+                    text = "Сохранить",
                     fontSize = 18.sp
                 )
             }

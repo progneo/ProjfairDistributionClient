@@ -52,14 +52,9 @@ class DepartmentRepositoryImpl @Inject constructor(
 
     override suspend fun uploadDepartments() {
         withContext(ioDispatcher) {
-            val departments = adminProjectFairApi.getDepartments()
-            var current = 0f
-            val overall = departments.size
-
-            departments.forEach {
-                insertDepartment(departmentResponseToDepartment(it)!!)
-                downloadFlow.value = ++current / overall
-            }
+            val departments = adminProjectFairApi.getDepartments().map { departmentResponseToDepartment(it)!! }
+            insertDepartment(departments)
+            downloadFlow.value = 1f
         }
     }
 }

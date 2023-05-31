@@ -13,8 +13,10 @@ import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ui.filter.FilterEntity
 import ui.filter.FilterType
 import ui.preview.contract.PreviewContract
@@ -22,6 +24,7 @@ import ui.preview.widget.StudentsTabPage
 import ui.preview.widget.filter.InstituteFilterConfiguration
 import ui.preview.widget.filter.ProjectFilterApplier
 import ui.preview.widget.filter.StudentFilterApplier
+import java.io.File
 
 open class BaseGodViewModel(
     private val getStudentsUseCase: GetStudentsUseCase,
@@ -124,6 +127,18 @@ open class BaseGodViewModel(
                 filterProjects(projectFilterConfiguration.value)
                 fillDepartmentsWithProjects()
                 fillInstitutesWithProjects()
+
+//                withContext(Dispatchers.Default) {
+//                    File("E:/BULLSHIT/output.txt").createNewFile()
+//
+//                    File("E:/BULLSHIT/output.txt").printWriter().use { out ->
+//                        it.list.forEach { proj ->
+//                            if (proj.department == null) {
+//                                out.println("projId = ${proj.id}, projName = \"${proj.name.take(30)}...\", supervisors = ${proj.supervisors}")
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
     }

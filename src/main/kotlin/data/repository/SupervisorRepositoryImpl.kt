@@ -52,22 +52,9 @@ class SupervisorRepositoryImpl @Inject constructor(
     override suspend fun uploadSupervisors() {
         withContext(ioDispatcher) {
             val supervisors = projectFairApi.getSupervisors()
-            val oldSupervisors = supervisorDao.getAll<Supervisor>().first().list
-            val oldMap = mutableMapOf<Int, Supervisor>()
-            oldSupervisors.forEach {
-                oldMap[it.id] = it
-            }
-            var current = 0f
-            val overall = supervisors.size
-
-            supervisors.forEach { supervisorDetailsResponse ->
-                val newSupervisor = supervisorDetailsResponseToSupervisor(supervisorDetailsResponse)
-                val oldSupervisor = oldMap[newSupervisor.id]
-                if (oldSupervisor == null || oldSupervisor != newSupervisor) {
-                    insertSupervisor(newSupervisor)
-                }
-                downloadFlow.value = ++current / overall
-            }
+            val newSupervisors = supervisors.map { supervisorDetailsResponseToSupervisor(it) }
+            insertSupervisor(newSupervisors)
+            downloadFlow.value = 1f
         }
     }
 }

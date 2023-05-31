@@ -5,6 +5,7 @@ import common.student.canParticipate
 import data.local.dao.StudentDao
 import data.mapper.studentResponseToStudent
 import data.remote.api.OrdinaryProjectFairApi
+import di.Preview
 import domain.model.Log
 import domain.model.LogSource
 import domain.model.LogType
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class StudentRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    private val studentDao: StudentDao,
+    @Preview private val studentDao: StudentDao,
     private val projectFairApi: OrdinaryProjectFairApi,
     private val loggingRepository: LoggingRepository
 ) : StudentRepository {
@@ -75,15 +76,11 @@ class StudentRepositoryImpl @Inject constructor(
             val students = projectFairApi.getCandidates().filter {
                 it.specialty != null && it.canParticipate()
             }
-            var current = 0f
-            val overall = students.size
 
             deleteAllStudents()
-            students.forEach { studentResponse ->
-                val newStudent = studentResponseToStudent(studentResponse)
-                insertStudent(newStudent, true)
-                downloadFlow.value = ++current / overall
-            }
+            val newStudents = students.map { studentResponseToStudent(it) }
+            insertStudent(newStudents)
+            downloadFlow.value = 1f
         }
     }
 

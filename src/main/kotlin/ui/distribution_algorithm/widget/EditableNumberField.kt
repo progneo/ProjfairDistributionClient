@@ -30,7 +30,7 @@ fun EditableNumberField(
         modifier = modifier
     ) {
         BasicTextField(
-            value = editableNumber.toString(),
+            value = if (editableNumber == 0) "" else editableNumber.toString(),
             onValueChange = {
                 if (it.isEmpty() || it.length in (1..maxNumberCount) && it.last() in stringPool) {
                     onDataChanged(it)

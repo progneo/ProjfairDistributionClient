@@ -19,7 +19,7 @@ fun projectResponseToProject(project: ProjectResponse): Project {
         productResult = project.productResult,
         studyResult = project.studyResult,
         supervisors = realmListOf(*project.supervisors.map { supervisorResponseToSupervisor(it) }.toTypedArray()),
-        department = departmentResponseToDepartment(
+        department = departmentResponseToDepartment(project.department) ?: departmentResponseToDepartment(
             try {
                 project.supervisors[0].supervisor.department
             } catch (e: IndexOutOfBoundsException) {

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.compose.VisibleDialog
@@ -39,7 +40,9 @@ fun StudentParticipationsDialog(
         onDismissRequest = {
             onDismissRequest()
         }, mainPart = {
-            Column {
+            Column(
+                modifier = Modifier.size(450.dp, 200.dp)
+            ) {
                 Text(
                     text = title,
                     fontSize = 20.sp,
@@ -55,7 +58,7 @@ fun StudentParticipationsDialog(
                 Spacer(Modifier.size(8.dp))
                 Column(
                     modifier = Modifier
-                        .size(300.dp, 150.dp)
+                        .fillMaxHeight()
                         .border(2.dp, BlueMainDark, RoundedCornerShape(10.dp))
                 ) {
                     StudentParticipationDialogHeader()

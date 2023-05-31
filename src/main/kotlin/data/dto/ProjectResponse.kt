@@ -9,6 +9,7 @@ data class ProjectResponse(
     val goal: String?,
     val difficulty: Int,
     val description: String?,
+    val department: DepartmentResponse?,
     @SerializedName("date_start") val dateStart: String,
     @SerializedName("date_end") val dateEnd: String,
     val customer: String?,

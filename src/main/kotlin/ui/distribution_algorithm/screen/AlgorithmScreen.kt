@@ -13,7 +13,12 @@ import androidx.compose.ui.unit.dp
 import common.compose.BorderedTitledComposable
 import common.theme.BlueMainLight
 import common.theme.WhiteDark
+import domain.model.GeneratedDistribution
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import navigation.NavController
+import ru.student.distribution.domain.distribution.DistributionLauncher
+import ru.student.distribution.domain.distribution.DistributionRule
 import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
 import ui.distribution_algorithm.widget.AlgorithmDialog
 import ui.distribution_algorithm.widget.EditableNumberField
@@ -24,7 +29,7 @@ fun AlgorithmScreen(
     navController: NavController,
     algorithmViewModel: AlgorithmViewModel,
 ) {
-    var showDialog by remember {
+    var showLoading by remember {
         mutableStateOf(false)
     }
 
@@ -118,12 +123,7 @@ fun AlgorithmScreen(
                             editableNumber = upperBoundary,
                             maxNumberCount = 2,
                             onDataChanged = {
-                                val res = it.toIntOrNull() ?: 0
-                                upperBoundary = if (res < lowerBoundary) {
-                                    lowerBoundary
-                                } else {
-                                    res
-                                }
+                                upperBoundary = it.toIntOrNull() ?: 0
                             }
                         )
                     }
@@ -138,13 +138,7 @@ fun AlgorithmScreen(
                             maxNumberCount = 2,
                             editableNumber = lowerBoundary,
                             onDataChanged = {
-                                val res = it.toIntOrNull() ?: 0
-                                lowerBoundary = if (res > upperBoundary) {
-                                    upperBoundary
-                                }
-                                else {
-                                    res
-                                }
+                                lowerBoundary = it.toIntOrNull() ?: 0
                             }
                         )
                     }
@@ -155,17 +149,7 @@ fun AlgorithmScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 enabled = upperBoundary != 0 && lowerBoundary != 0
             ) {
-//            val distributionResults = DistributionLauncher(
-//                students = algorithmViewModel.students.toMutableList(),
-//                projects = algorithmViewModel.projects.toMutableList(),
-//                participations = algorithmViewModel.participations.toMutableList(),
-//                institutes = algorithmViewModel.institutes.toMutableList(),
-//                distributionRule = DistributionRule(
-//                    maxPlaces = 15,
-//                    minPlaces = 9
-//                ),
-//                specialInstitute = algorithmViewModel.institutes.find { it.id == 0 }!!
-//            ).launch()
+
 
 //            distributionResults.institutesResults.forEach { instituteResults ->
 //                ExportDataToExcel.writeProjectsWithStudents(
@@ -179,29 +163,36 @@ fun AlgorithmScreen(
 //                )
 //            }
 
-//            algorithmViewModel.saveStudentsByProjects(
-//                GeneratedDistribution(
-//                    id = 0,
-//                    results = distributionResults
-//                )
-//            )
+                coroutineScope.launch(Dispatchers.Default) {
+                    showLoading = true
+                    val distributionResults = DistributionLauncher(
+                        students = algorithmViewModel.students.value.toMutableList(),
+                        projects = algorithmViewModel.projects.value.toMutableList(),
+                        participations = algorithmViewModel.participations.value.toMutableList(),
+                        institutes = algorithmViewModel.institutes.value.toMutableList(),
+                        distributionRule = DistributionRule(
+                            maxPlaces = 15,
+                            minPlaces = 9
+                        ),
+                        specialInstitute = algorithmViewModel.institutes.value.find { it.id == 0 }!!
+                    ).launch()
+                    algorithmViewModel.saveStudentsByProjects(
+                        GeneratedDistribution(
+                            id = 0,
+                            results = distributionResults
+                        )
+                    )
+                    showLoading = false
+                }
             }
         }
 
         AlgorithmDialog(
-            visible = showDialog,
+            visible = showLoading,
             modifier = Modifier.align(Alignment.Center),
             onDismissRequest = {
-                showDialog = false
+                showLoading = false
             }
         )
     }
-}
-
-fun test(): Int {
-    var counter = 0
-    while (counter < 1_000_000_0) {
-        println(counter++)
-    }
-    return counter
 }

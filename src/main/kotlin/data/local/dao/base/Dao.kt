@@ -24,23 +24,25 @@ abstract class Dao<T : Entity>(val realm: Realm) {
         return realm.query(R::class).asFlow()
     }
 
-    suspend fun insert(item: T) {
+    fun insert(item: T) {
         realm.writeBlocking {
             copyToRealm(item, UpdatePolicy.ALL)
         }
     }
 
-    suspend fun insert(items: List<T>) {
-        items.forEach {
-            insert(it)
+    fun insert(items: List<T>) {
+        realm.writeBlocking {
+            items.forEach {
+                copyToRealm(it, UpdatePolicy.ALL)
+            }
         }
     }
 
-    suspend inline fun <reified R : Entity> getById(id: Int): R {
+    inline fun <reified R : Entity> getById(id: Int): R {
         return realm.query<R>("id", id).find().first()
     }
 
-    protected suspend inline fun <reified R : Entity> updateItem(
+    protected inline fun <reified R : Entity> updateItem(
         item: Project,
     ): Project {
         realm.writeBlocking {
@@ -90,13 +92,13 @@ abstract class Dao<T : Entity>(val realm: Realm) {
         return realm.query<Project>("id == ${item.id}").find().first()
     }
 
-    suspend inline fun <reified R : Entity> delete(item: T) {
+    inline fun <reified R : Entity> delete(item: T) {
         realm.writeBlocking {
             delete(this.query(R::class, "id == ${item.id}").find().first())
         }
     }
 
-    suspend inline fun <reified R : Entity> deleteAll() {
+    inline fun <reified R : Entity> deleteAll() {
         realm.writeBlocking {
             delete(this.query(R::class))
         }
