@@ -23,7 +23,8 @@ enum class ScreenRoute {
     ALGORITHM,
     PREVIEW,
     PROJECT_DETAILS,
-    PARTICIPATION_DETAILS,
+    PARTICIPATION_DETAILS_PREVIEW,
+    PARTICIPATION_DETAILS_REVIEW,
     REVIEW,
     LOADING
 }
@@ -62,8 +63,15 @@ sealed class SharedScreen(
         icon = Icons.Filled.Settings
     )
 
-    object ParticipationDetailsScreen : SharedScreen(
-        screenRoute = ScreenRoute.PARTICIPATION_DETAILS,
+    object PreviewParticipationDetailsScreen : SharedScreen(
+        screenRoute = ScreenRoute.PARTICIPATION_DETAILS_PREVIEW,
+        parentScreenRoute = ScreenRoute.PROJECT_DETAILS,
+        title = "Заявки на проект",
+        icon = Icons.Filled.Settings
+    )
+
+    object ReviewParticipationDetailsScreen : SharedScreen(
+        screenRoute = ScreenRoute.PARTICIPATION_DETAILS_REVIEW,
         parentScreenRoute = ScreenRoute.PROJECT_DETAILS,
         title = "Заявки на проект",
         icon = Icons.Filled.Settings
@@ -90,7 +98,8 @@ sealed class SharedScreen(
                 ScreenRoute.ALGORITHM -> AlgorithmScreen
                 ScreenRoute.PREVIEW -> PreviewScreen
                 ScreenRoute.PROJECT_DETAILS -> ProjectDetailsScreen
-                ScreenRoute.PARTICIPATION_DETAILS -> ParticipationDetailsScreen
+                ScreenRoute.PARTICIPATION_DETAILS_PREVIEW -> PreviewParticipationDetailsScreen
+                ScreenRoute.PARTICIPATION_DETAILS_REVIEW -> ReviewParticipationDetailsScreen
                 ScreenRoute.REVIEW -> ReviewScreen
                 ScreenRoute.LOADING -> LoadingScreen
             }

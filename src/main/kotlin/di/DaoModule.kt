@@ -2,10 +2,7 @@ package di
 
 import dagger.Module
 import dagger.Provides
-import data.local.dao.PreviewProjectDao
-import data.local.dao.PreviewStudentDao
-import data.local.dao.ProjectDao
-import data.local.dao.StudentDao
+import data.local.dao.*
 import domain.model.*
 import domain.model.base.Entity
 import domain.model.base.StringIdEntity
@@ -27,11 +24,25 @@ interface DaoModule {
             return PreviewProjectDao(realm)
         }
 
+        @Review
+        @AppScope
+        @Provides
+        fun provideProjectReviewDao(@Preview realm: Realm): ProjectDao {
+            return ReviewProjectDao(realm)
+        }
+
         @Preview
         @AppScope
         @Provides
         fun provideStudentPreviewDao(@Preview realm: Realm): StudentDao {
             return PreviewStudentDao(realm)
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideStudentReviewDao(@Preview realm: Realm): StudentDao {
+            return ReviewStudentDao(realm)
         }
     }
 }

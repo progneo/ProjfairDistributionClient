@@ -1,12 +1,23 @@
 package di
 
 import dagger.Module
+import dagger.Provides
+import domain.repository.*
+import domain.usecase.institute.GetInstitutesUseCase
+import domain.usecase.participation.GetParticipationsUseCase
+import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.specialty.GetSpecialtiesUseCase
+import domain.usecase.student.GetStudentsUseCase
+import domain.usecase.student.RebaseStudentsUseCase
+import domain.usecase.student.SyncStudentsUseCase
+import domain.usecase.supervisor.GetSupervisorsUseCase
+import domain.usecase.uploaddata.SyncDataUseCase
 
 @Module
 interface UseCaseModule {
 
-//    companion object {
-//
+    companion object {
+
 //        @AppScope
 //        @Provides
 //        fun provideSyncDataUseCase(uploadDataRepository: UploadDataRepository): SyncDataUseCase {
@@ -31,13 +42,59 @@ interface UseCaseModule {
 //            )
 //        }
 //
-//        @AppScope
-//        @Provides
-//        fun provideGetStudentsUseCase(studentRepository: StudentRepository): GetStudentsUseCase {
-//            return GetStudentsUseCase(
-//                studentRepository = studentRepository
-//            )
-//        }
+        @Preview
+        @AppScope
+        @Provides
+        fun provideGetPreviewStudentsUseCase(@Preview studentRepository: StudentRepository): GetStudentsUseCase {
+            return GetStudentsUseCase(
+                studentRepository = studentRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideGetReviewStudentsUseCase(@Review studentRepository: StudentRepository): GetStudentsUseCase {
+            return GetStudentsUseCase(
+                studentRepository = studentRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideRebasePreviewStudentsUseCase(@Preview studentRepository: StudentRepository): RebaseStudentsUseCase {
+            return RebaseStudentsUseCase(
+                studentRepository = studentRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideRebaseReviewStudentsUseCase(@Review studentRepository: StudentRepository): RebaseStudentsUseCase {
+            return RebaseStudentsUseCase(
+                studentRepository = studentRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideSyncPreviewStudentsUseCase(@Preview studentRepository: StudentRepository): SyncStudentsUseCase {
+            return SyncStudentsUseCase(
+                studentRepository = studentRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideSyncReviewStudentsUseCase(@Review studentRepository: StudentRepository): SyncStudentsUseCase {
+            return SyncStudentsUseCase(
+                studentRepository = studentRepository
+            )
+        }
 //
 //        @AppScope
 //        @Provides
@@ -78,5 +135,5 @@ interface UseCaseModule {
 //                supervisorRepository = supervisorRepository
 //            )
 //        }
-//    }
+    }
 }

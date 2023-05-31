@@ -1,7 +1,8 @@
 package di
 
 import dagger.Component
-import ui.details.participation.di.ParticipationDetailsComponent
+import ui.details.participation.di.PreviewParticipationDetailsComponent
+import ui.details.participation.di.ReviewParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.preview.di.PreviewComponent
@@ -35,7 +36,8 @@ interface AppComponent {
     fun inject(uploadDataComponent: UploadDataComponent)
     fun inject(previewComponent: PreviewComponent)
     fun inject(projectDetailsComponent: ProjectDetailsComponent)
-    fun inject(participationDetailsComponent: ParticipationDetailsComponent)
+    fun inject(previewParticipationDetailsComponent: PreviewParticipationDetailsComponent)
+    fun inject(reviewParticipationDetailsComponent: ReviewParticipationDetailsComponent)
     fun inject(algorithmComponent: AlgorithmComponent)
     fun inject(reviewComponent: ReviewComponent)
 }

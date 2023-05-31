@@ -1,6 +1,7 @@
 package ui.preview.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
+import di.Preview
 import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.logging.GetLogsUseCase
@@ -13,11 +14,12 @@ import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import ui.common.BaseGodViewModel
+import ui.common.BaseGodViewModelType
 import ui.preview.widget.PreviewTabPage
 import javax.inject.Inject
 
 class PreviewViewModel @Inject constructor(
-    private val getStudentsUseCase: GetStudentsUseCase,
+    @Preview private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val updateProjectUseCase: UpdateProjectUseCase,
     private val getParticipationsUseCase: GetParticipationsUseCase,
@@ -45,5 +47,9 @@ class PreviewViewModel @Inject constructor(
 
     init {
         println("INIT PREVIEW")
+    }
+
+    override fun getType(): BaseGodViewModelType {
+        return BaseGodViewModelType.PREVIEW
     }
 }

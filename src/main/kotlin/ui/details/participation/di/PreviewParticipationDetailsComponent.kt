@@ -3,18 +3,19 @@ package ui.details.participation.di
 import androidx.compose.runtime.Composable
 import di.AppComponent
 import di.BaseComponent
+import di.Preview
 import domain.model.Project
 import navigation.NavController
 import ui.details.participation.screen.ParticipationDetailsScreen
 import ui.details.participation.viewmodel.ParticipationDetailsViewModel
-import ui.preview.viewmodel.PreviewViewModel
 import javax.inject.Inject
 
-class ParticipationDetailsComponent(
+class PreviewParticipationDetailsComponent(
     appComponent: AppComponent,
     private val navController: NavController
 ): BaseComponent {
 
+    @Preview
     @Inject
     lateinit var participationDetailsViewModel: ParticipationDetailsViewModel
 

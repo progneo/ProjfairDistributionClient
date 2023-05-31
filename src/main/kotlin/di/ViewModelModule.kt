@@ -46,7 +46,7 @@ interface ViewModelModule {
         @AppScope
         @Provides
         fun providePreviewViewModel(
-            getStudentsUseCase: GetStudentsUseCase,
+            @Preview getStudentsUseCase: GetStudentsUseCase,
             getProjectsUseCase: GetProjectsUseCase,
             updateProjectUseCase: UpdateProjectUseCase,
             getParticipationsUseCase: GetParticipationsUseCase,
@@ -76,7 +76,7 @@ interface ViewModelModule {
         @AppScope
         @Provides
         fun provideReviewViewModel(
-            getStudentsUseCase: GetStudentsUseCase,
+            @Review getStudentsUseCase: GetStudentsUseCase,
             getProjectsUseCase: GetProjectsUseCase,
             updateProjectUseCase: UpdateProjectUseCase,
             getParticipationsUseCase: GetParticipationsUseCase,
@@ -108,7 +108,7 @@ interface ViewModelModule {
         @AppScope
         @Provides
         fun provideAlgorithmViewModel(
-            getStudentsUseCase: GetStudentsUseCase,
+            @Preview getStudentsUseCase: GetStudentsUseCase,
             getProjectsUseCase: GetProjectsUseCase,
             getParticipationsUseCase: GetParticipationsUseCase,
             getInstitutesUseCase: GetInstitutesUseCase,
@@ -123,10 +123,28 @@ interface ViewModelModule {
             )
         }
 
-//        @AppScope
-//        @Provides
-//        fun provideParticipationDetailsViewModel(): ParticipationDetailsViewModel {
-//            return ParticipationDetailsViewModel()
-//        }
+        @Preview
+        @Provides
+        fun providePreviewParticipationDetailsViewModel(
+            getParticipationsUseCase: GetParticipationsUseCase,
+            @Preview getStudentsUseCase: GetStudentsUseCase
+        ): ParticipationDetailsViewModel {
+            return ParticipationDetailsViewModel(
+                getParticipationsUseCase = getParticipationsUseCase,
+                getStudentsUseCase = getStudentsUseCase
+            )
+        }
+
+        @Review
+        @Provides
+        fun provideReviewParticipationDetailsViewModel(
+            getParticipationsUseCase: GetParticipationsUseCase,
+            @Review getStudentsUseCase: GetStudentsUseCase
+        ): ParticipationDetailsViewModel {
+            return ParticipationDetailsViewModel(
+                getParticipationsUseCase = getParticipationsUseCase,
+                getStudentsUseCase = getStudentsUseCase
+            )
+        }
     }
 }

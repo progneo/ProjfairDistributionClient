@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class StudentRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    @Preview private val studentDao: StudentDao,
+    private val studentDao: StudentDao,
     private val projectFairApi: OrdinaryProjectFairApi,
     private val loggingRepository: LoggingRepository
 ) : StudentRepository {

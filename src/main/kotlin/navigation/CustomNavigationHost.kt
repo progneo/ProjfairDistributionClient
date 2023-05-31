@@ -3,7 +3,8 @@ package navigation
 import androidx.compose.runtime.Composable
 import di.AppComponent
 import di.BaseComponent
-import ui.details.participation.di.ParticipationDetailsComponent
+import ui.details.participation.di.PreviewParticipationDetailsComponent
+import ui.details.participation.di.ReviewParticipationDetailsComponent
 import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.loading.di.LoadingComponent
@@ -56,10 +57,18 @@ fun CustomNavigationHost(
             component!!.render()
         }
 
-        composable(SharedScreen.ParticipationDetailsScreen.screenRoute) {
-            var component = components[SharedScreen.ParticipationDetailsScreen.screenRoute]
+        composable(SharedScreen.PreviewParticipationDetailsScreen.screenRoute) {
+            var component = components[SharedScreen.PreviewParticipationDetailsScreen.screenRoute]
             if (component == null) {
-                component = ParticipationDetailsComponent(navController = navController, appComponent = appComponent)
+                component = PreviewParticipationDetailsComponent(navController = navController, appComponent = appComponent)
+            }
+            component!!.render()
+        }
+
+        composable(SharedScreen.ReviewParticipationDetailsScreen.screenRoute) {
+            var component = components[SharedScreen.ReviewParticipationDetailsScreen.screenRoute]
+            if (component == null) {
+                component = ReviewParticipationDetailsComponent(navController = navController, appComponent = appComponent)
             }
             component!!.render()
         }

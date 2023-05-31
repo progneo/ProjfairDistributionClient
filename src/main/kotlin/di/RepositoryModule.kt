@@ -31,7 +31,7 @@ interface RepositoryModule {
         @Provides
         fun provideUploadDataRepository(
             ioDispatcher: CoroutineDispatcher,
-            studentRepository: StudentRepository,
+            @Preview studentRepository: StudentRepository,
             projectRepository: ProjectRepository,
             participationRepository: ParticipationRepository,
             instituteRepository: InstituteRepository,
@@ -51,11 +51,29 @@ interface RepositoryModule {
             )
         }
 
+        @Preview
         @AppScope
         @Provides
-        fun provideStudentRepository(
+        fun provideStudentPreviewRepository(
             ioDispatcher: CoroutineDispatcher,
             @Preview studentDao: StudentDao,
+            projectFairApi: OrdinaryProjectFairApi,
+            loggingRepository: LoggingRepository
+        ): StudentRepository {
+            return StudentRepositoryImpl(
+                ioDispatcher = ioDispatcher,
+                studentDao = studentDao,
+                projectFairApi = projectFairApi,
+                loggingRepository = loggingRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideStudentReviewRepository(
+            ioDispatcher: CoroutineDispatcher,
+            @Review studentDao: StudentDao,
             projectFairApi: OrdinaryProjectFairApi,
             loggingRepository: LoggingRepository
         ): StudentRepository {

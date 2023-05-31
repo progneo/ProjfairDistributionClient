@@ -31,6 +31,7 @@ import navigation.NavController
 import navigation.ScreenRoute
 import navigation.SharedScreen
 import ui.common.BaseGodViewModel
+import ui.common.BaseGodViewModelType
 import ui.details.project.widget.*
 import ui.preview.viewmodel.PreviewViewModel
 import ui.preview.widget.SupervisorSearchDialog
@@ -179,7 +180,18 @@ fun ProjectDetailsScreen(
             ShowParticipationButton {
                 val bundle = Bundle()
                 bundle.put("project", project)
-                navController.navigate(ScreenRoute.PARTICIPATION_DETAILS, bundle, viewModel)
+                val screenRoute = when (viewModel.getType()) {
+                    BaseGodViewModelType.PREVIEW -> {
+                        ScreenRoute.PARTICIPATION_DETAILS_PREVIEW
+                    }
+                    BaseGodViewModelType.REVIEW  -> {
+                        ScreenRoute.PARTICIPATION_DETAILS_REVIEW
+                    }
+                    BaseGodViewModelType.NONE -> {
+                        ScreenRoute.PARTICIPATION_DETAILS_PREVIEW
+                    }
+                }
+                navController.navigate(screenRoute, bundle, viewModel)
             }
             BaseButton(
                 icon = Icons.Default.Refresh

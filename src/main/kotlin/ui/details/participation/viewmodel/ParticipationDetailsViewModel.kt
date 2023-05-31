@@ -1,6 +1,7 @@
 package ui.details.participation.viewmodel
 
 import base.mvi.BaseViewModel
+import di.Preview
 import domain.interactor.DownloadProgressInteractor
 import domain.model.Participation
 import domain.model.Project

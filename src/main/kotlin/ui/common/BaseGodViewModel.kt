@@ -26,6 +26,12 @@ import ui.preview.widget.filter.ProjectFilterApplier
 import ui.preview.widget.filter.StudentFilterApplier
 import java.io.File
 
+enum class BaseGodViewModelType {
+    PREVIEW,
+    REVIEW,
+    NONE
+}
+
 open class BaseGodViewModel(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
@@ -92,6 +98,10 @@ open class BaseGodViewModel(
         getSpecialties()
         getSupervisors()
         getLogs()
+    }
+
+    open fun getType(): BaseGodViewModelType {
+        return BaseGodViewModelType.NONE
     }
 
     fun getFilteredStudents(studentsTabPage: StudentsTabPage): StateFlow<List<Student>> {

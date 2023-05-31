@@ -1,6 +1,7 @@
 package ui.uploaddata.viewmodel
 
 import base.mvi.BaseViewModel
+import di.Preview
 import domain.interactor.DownloadProgressInteractor
 import domain.usecase.department.UploadDepartmentsUseCase
 import domain.usecase.institute.UploadInstitutesUseCase
@@ -23,8 +24,8 @@ import javax.inject.Inject
 class UploadDataViewModel @Inject constructor(
     private val syncDataUseCase: SyncDataUseCase,
     private val rebaseDataUseCase: RebaseDataUseCase,
-    private val syncStudentsUseCase: SyncStudentsUseCase,
-    private val rebaseStudentsUseCase: RebaseStudentsUseCase,
+    @Preview private val syncStudentsUseCase: SyncStudentsUseCase,
+    @Preview private val rebaseStudentsUseCase: RebaseStudentsUseCase,
     private val syncProjectsUseCase: SyncProjectsUseCase,
     private val rebaseProjectsUseCase: RebaseProjectsUseCase,
     private val syncParticipationUseCase: SyncParticipationUseCase,

@@ -16,6 +16,7 @@ import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import ru.student.distribution.model.DistributionResults
 import ui.common.BaseGodViewModel
+import ui.common.BaseGodViewModelType
 import ui.preview.widget.PreviewTabPage
 import javax.inject.Inject
 
@@ -50,5 +51,9 @@ class ReviewViewModel @Inject constructor(
 
     fun getGeneratedDistribution(): GeneratedDistribution {
         return getGeneratedDistributionUseCase()
+    }
+
+    override fun getType(): BaseGodViewModelType {
+        return BaseGodViewModelType.REVIEW
     }
 }
