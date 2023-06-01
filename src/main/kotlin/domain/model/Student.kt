@@ -9,14 +9,15 @@ open class Student(
     var numz: Int,
     override var name: String,
     var group: String,
+    var course: Int,
     var shouldDistribute: Boolean,
     var specialty: Specialty? = null
 ) : LoggingEntity(), RealmObject, FilterEntity {
 
-    constructor() : this(0, 0, "", "", true, null)
+    constructor() : this(0, 0, "", "", 0, true, null)
 
     override fun members(): List<Any?> {
-        return listOf(id, numz, name, group, shouldDistribute, specialty)
+        return listOf(id, numz, name, group, course, shouldDistribute, specialty)
     }
 
     override fun toLog(): String {
@@ -28,6 +29,7 @@ open class Student(
                 "id=$id," +
                 "numz=$numz," +
                 "group=$group," +
+                "course=$course" +
                 "specialty=$specialty" +
                 "}"
     }

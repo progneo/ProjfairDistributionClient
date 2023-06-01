@@ -1,16 +1,20 @@
 package ui.distribution_algorithm.viewmodel
 
 import base.mvi.BaseViewModel
-import domain.model.CleanProject
-import domain.model.CleanProjectSpecialty
-import domain.model.Department
-import domain.model.GeneratedDistribution
+import domain.model.*
 import domain.usecase.institute.GetInstitutesUseCase
+import domain.usecase.participation.DeleteAllParticipationsUseCase
 import domain.usecase.participation.GetParticipationsUseCase
+import domain.usecase.participation.InsertParticipationsUseCase
+import domain.usecase.project.DeleteAllProjectsUseCase
 import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.project.InsertProjectsUseCase
+import domain.usecase.student.DeleteAllStudentsUseCase
 import domain.usecase.student.GetStudentsUseCase
+import domain.usecase.student.InsertStudentUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import ru.student.distribution.model.DistributionResults
 import ui.distribution_algorithm.common.*
 import javax.inject.Inject
 
@@ -19,12 +23,20 @@ class AlgorithmViewModel(
     private val getProjectsUseCase: GetProjectsUseCase,
     private val getParticipationsUseCase: GetParticipationsUseCase,
     private val getInstitutesUseCase: GetInstitutesUseCase,
+    private val insertStudentUseCase: InsertStudentUseCase,
+    private val insertProjectsUseCase: InsertProjectsUseCase,
+    private val insertParticipationsUseCase: InsertParticipationsUseCase,
+    private val deleteAllStudentsUseCase: DeleteAllStudentsUseCase,
+    private val deleteAllProjectsUseCase: DeleteAllProjectsUseCase,
+    private val deleteAllParticipationsUseCase: DeleteAllParticipationsUseCase
 ): BaseViewModel() {
 
     val students = MutableStateFlow<List<AlgorithmStudent>>(emptyList())
     val projects = MutableStateFlow<List<AlgorithmProject>>(emptyList())
     val participations = MutableStateFlow<List<AlgorithmParticipation>>(emptyList())
     val institutes = MutableStateFlow<List<AlgorithmInstitute>>(emptyList())
+
+    var distributionResults: DistributionResults? = null
 
     init {
         getStudents()
@@ -46,7 +58,6 @@ class AlgorithmViewModel(
             getProjectsUseCase().collect {
                 val temp = mutableListOf<CleanProject>()
                 it.list.forEach { project ->
-                    println(project)
                     val projectCopy = CleanProject(
                         id = project.id,
                         name = project.name,
@@ -60,7 +71,7 @@ class AlgorithmViewModel(
                         customer = project.customer,
                         productResult = project.productResult,
                         studyResult = project.studyResult,
-                        department = project.department ?: Department(id = -1, name = "-1", institute = null),
+                        department = project.department ?: Department(id = -1, name = "-1", institute = Institute(-1, "-1")),
                         supervisors = project.supervisors.toList(),
                         projectSpecialties = project.projectSpecialties.map { oldPsp ->
                             CleanProjectSpecialty(
@@ -74,24 +85,37 @@ class AlgorithmViewModel(
                     val projectsSpecialties = projectCopy.projectSpecialties
                     val newProjectSpecialties = mutableListOf<CleanProjectSpecialty>()
 
-                    projectsSpecialties.forEach { psp ->
+                    projectsSpecialties.forEach psp@ { psp ->
                         if (psp.course == null) {
                             val isNormal = psp.specialty.name.endsWith("б")
                             val count = if (isNormal) 2 else 3
                             (3 until (count+3)).forEach { number ->
-                                newProjectSpecialties.add(
-                                    psp.apply {
-                                        course = number
+                                if (psp.priority == null) {
+                                    (1..2).forEach { pr ->
+                                        newProjectSpecialties.add(
+                                            psp.copy(
+                                                course = number,
+                                                priority = pr
+                                            )
+                                        )
                                     }
-                                )
+                                } else {
+                                    newProjectSpecialties.add(
+                                        psp.copy(
+                                            course = number
+                                        )
+                                    )
+                                }
                             }
+                        } else {
+                            newProjectSpecialties.add(psp)
                         }
                     }
 
                     temp.add(
-                        projectCopy.apply {
+                        projectCopy.copy(
                             projectSpecialties = newProjectSpecialties
-                        }
+                        )
                     )
                 }
                 projects.value = temp.map { p -> p.toAlgorithmModel() }
@@ -113,5 +137,32 @@ class AlgorithmViewModel(
                 participations.value = it.list.map { p -> p.toAlgorithmModel() }
             }
         }
+    }
+
+    private fun insertStudents() {
+        coroutineScope.launch {
+            deleteAllStudentsUseCase()
+            insertStudentUseCase(students.value.map { it.fromAlgorithmModel() })
+        }
+    }
+
+    private fun insertProjects() {
+        coroutineScope.launch {
+            deleteAllProjectsUseCase()
+            insertProjectsUseCase(projects.value.map { it.fromAlgorithmModel() })
+        }
+    }
+
+    private fun insertParticipation(participation: List<AlgorithmParticipation>) {
+        coroutineScope.launch {
+            deleteAllParticipationsUseCase()
+            insertParticipationsUseCase(participation.map { it.fromAlgorithmModel() })
+        }
+    }
+
+    fun insertNewParticipation(participation: List<AlgorithmParticipation>) {
+        insertStudents()
+        insertProjects()
+        insertParticipation(participation)
     }
 }

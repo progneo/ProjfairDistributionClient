@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-    implementation("com.google.code.gson:gson:2.10")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
@@ -40,7 +40,7 @@ dependencies {
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 
     //implementation("com.github.mal1s:algorithm-student-distribution:2.0.0")
-    implementation("ru.student.distribution:student-distribution-algorithm:1.1.9")
+    //implementation("ru.student.distribution:student-distribution-algorithm:1.1.13")
 
     implementation("io.realm.kotlin:library-sync:1.8.0")
     implementation("io.realm.kotlin:library-base:1.8.0")
@@ -54,6 +54,12 @@ dependencies {
     implementation("com.darkrockstudios:mpfilepicker:1.1.0")
 
     implementation("com.fasterxml.jackson.core:jackson-core:2.15.0")
+
+    implementation("org.apache.poi:poi-ooxml:5.2.2")
+    implementation("org.apache.commons:commons-csv:1.10.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.grapecity.documents:gcexcel:6.0.4")
+    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.8.0")
 }
 
 kapt {

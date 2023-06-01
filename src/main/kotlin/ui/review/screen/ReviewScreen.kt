@@ -18,6 +18,7 @@ import navigation.NavController
 import navigation.ScreenRoute
 import ui.details.project.widget.EditableSearchField
 import ui.distribution_algorithm.common.toAlgorithmModel
+import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
 import ui.filter.FilterConfigurationBlock
 import ui.preview.widget.*
 import ui.preview.widget.filter.ProjectFilterDialog
@@ -27,7 +28,8 @@ import ui.review.widget.DataActionsDialog
 @Composable
 fun ReviewScreen(
     navController: NavController,
-    reviewViewModel: ReviewViewModel
+    reviewViewModel: ReviewViewModel,
+    algorithmViewModel: AlgorithmViewModel
 ) {
     reviewViewModel.filterDepartments(null)
 
@@ -234,7 +236,7 @@ fun ReviewScreen(
         DataActionsDialog(
             visible = showDataActions,
             students = reviewViewModel.getAllStudents().map { it.toAlgorithmModel() },
-            distributionResults = null,
+            distributionResults = algorithmViewModel.distributionResults,
             onDismissRequest = {
                 showDataActions = false
             }

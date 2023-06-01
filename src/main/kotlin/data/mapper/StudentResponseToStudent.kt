@@ -9,6 +9,7 @@ fun studentResponseToStudent(student: StudentResponse): Student {
         id = student.id,
         numz = id,
         name = student.fio,
+        course = student.course,
         group = student.trainingGroup,
         shouldDistribute = true,
         specialty = specialtyResponseToSpecialty(student.specialty)

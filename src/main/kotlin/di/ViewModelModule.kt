@@ -9,14 +9,10 @@ import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.institute.UploadInstitutesUseCase
 import domain.usecase.logging.GetLogsUseCase
 import domain.usecase.logging.SaveLogUseCase
-import domain.usecase.participation.GetParticipationsUseCase
-import domain.usecase.participation.RebaseParticipationUseCase
-import domain.usecase.participation.SyncParticipationUseCase
+import domain.usecase.participation.*
 import domain.usecase.project.*
 import domain.usecase.specialty.GetSpecialtiesUseCase
-import domain.usecase.student.GetStudentsUseCase
-import domain.usecase.student.RebaseStudentsUseCase
-import domain.usecase.student.SyncStudentsUseCase
+import domain.usecase.student.*
 import domain.usecase.supervisor.GetSupervisorsUseCase
 import domain.usecase.supervisor.UploadSupervisorsUseCase
 import domain.usecase.uploaddata.CancelOperationsUseCase
@@ -170,12 +166,24 @@ interface ViewModelModule {
             @Preview getProjectsUseCase: GetProjectsUseCase,
             @Preview getParticipationsUseCase: GetParticipationsUseCase,
             getInstitutesUseCase: GetInstitutesUseCase,
+            insertStudentUseCase: InsertStudentUseCase,
+            insertProjectsUseCase: InsertProjectsUseCase,
+            insertParticipationsUseCase: InsertParticipationsUseCase,
+            deleteAllStudentsUseCase: DeleteAllStudentsUseCase,
+            deleteAllProjectsUseCase: DeleteAllProjectsUseCase,
+            deleteAllParticipationsUseCase: DeleteAllParticipationsUseCase
         ): AlgorithmViewModel {
             return AlgorithmViewModel(
                 getStudentsUseCase = getStudentsUseCase,
                 getProjectsUseCase = getProjectsUseCase,
                 getParticipationsUseCase = getParticipationsUseCase,
                 getInstitutesUseCase = getInstitutesUseCase,
+                insertStudentUseCase = insertStudentUseCase,
+                insertProjectsUseCase = insertProjectsUseCase,
+                insertParticipationsUseCase = insertParticipationsUseCase,
+                deleteAllStudentsUseCase = deleteAllStudentsUseCase,
+                deleteAllProjectsUseCase = deleteAllProjectsUseCase,
+                deleteAllParticipationsUseCase = deleteAllParticipationsUseCase
             )
         }
 

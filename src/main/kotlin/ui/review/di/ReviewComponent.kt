@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import di.AppComponent
 import di.BaseComponent
 import navigation.NavController
+import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
 import ui.review.screen.ReviewScreen
 import ui.review.viewmodel.ReviewViewModel
 import javax.inject.Inject
@@ -16,12 +17,15 @@ class ReviewComponent(
     @Inject
     lateinit var reviewViewModel: ReviewViewModel
 
+    @Inject
+    lateinit var algorithmViewModel: AlgorithmViewModel
+
     init {
         appComponent.inject(this)
     }
 
     @Composable
     override fun render() {
-        ReviewScreen(navController, reviewViewModel)
+        ReviewScreen(navController, reviewViewModel, algorithmViewModel)
     }
 }

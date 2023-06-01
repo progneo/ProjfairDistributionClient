@@ -106,7 +106,7 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-                        distributionResults?.institutesResults?.forEach { instituteResult ->
+                        distributionResults?.instituteResults?.forEach { instituteResult ->
                             ExportDataToExcel.writeStudentsByProjects(
                                 students = students,
                                 projects = instituteResult.projects,
@@ -124,7 +124,7 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-                        distributionResults?.institutesResults?.forEach { instituteResult ->
+                        distributionResults?.instituteResults?.forEach { instituteResult ->
                             ExportDataToExcel.writeProjectsWithStudents(
                                 students = students,
                                 notApplied = instituteResult.notAppliedStudents,

@@ -40,7 +40,7 @@ interface DatabaseModule {
                     LogSourceRealm::class,
                     Log::class,
                 )
-            ).name("preview").build()
+            ).name("preview.realm").build()
             return Realm.open(configuration)
         }
 
@@ -67,7 +67,7 @@ interface DatabaseModule {
                     LogSourceRealm::class,
                     Log::class,
                 )
-            ).name("review").build()
+            ).name("review.realm").build()
 
             return Realm.open(configuration)
         }

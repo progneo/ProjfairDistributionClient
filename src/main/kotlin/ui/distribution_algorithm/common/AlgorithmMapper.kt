@@ -1,6 +1,8 @@
 package ui.distribution_algorithm.common
 
 import domain.model.*
+import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.types.RealmList
 
 typealias AlgorithmStudent = ru.student.distribution.model.Student
 typealias AlgorithmProject = ru.student.distribution.model.Project
@@ -18,8 +20,20 @@ fun Student.toAlgorithmModel(): AlgorithmStudent {
         groupFamily = this.group.substring(0, group.indexOfFirst { it == '-' }),
         fullGroupName = this.group,
         specialty = this.specialty!!.toAlgorithmModel(),
-        course = 1,
+        course = this.course,
         numz = this.numz
+    )
+}
+
+fun AlgorithmStudent.fromAlgorithmModel(): Student {
+    return Student(
+        id = this.id,
+        name = this.name,
+        specialty = this.specialty.fromAlgorithmModel(),
+        course = this.course,
+        numz = this.numz,
+        shouldDistribute = true,
+        group = this.fullGroupName
     )
 }
 
@@ -34,12 +48,40 @@ fun CleanProject.toAlgorithmModel(): AlgorithmProject {
         difficulty = this.difficulty,
         customer = this.customer,
         supervisors = this.supervisors.map { it.toAlgorithmModel() },
-        department = try {
-            this.supervisors.first().department!!.toAlgorithmModel()
-        } catch (e: Exception) {
-            AlgorithmDepartment(-1, "-1", AlgorithmInstitute(-1, "-1"))
-        },
-        projectSpecialties = this.projectSpecialties.map { it.toAlgorithmModel() }
+        department = this.department.toAlgorithmModel(),
+        projectSpecialties = this.projectSpecialties.filter { it.priority == 1 }.map { it.toAlgorithmModel() },
+        anotherProjectSpecialties = this.projectSpecialties.filter { it.priority != 1 }.map { it.toAlgorithmModel() },
+        goal = this.goal,
+        description = this.description,
+        dateStart = this.dateStart,
+        dateEnd = this.dateEnd,
+        productResult = this.productResult,
+        studyResult = this.studyResult
+    )
+}
+
+fun AlgorithmProject.fromAlgorithmModel(): Project {
+    return Project(
+        id = this.id,
+        name = this.title,
+        places = this.places,
+        freePlaces = this.places,
+        difficulty = this.difficulty,
+        customer = this.customer,
+        supervisors = realmListOf(*this.supervisors.map { it.fromAlgorithmModel() }.toTypedArray()),
+        department = this.department.fromAlgorithmModel(),
+        projectSpecialties = realmListOf(
+            *(
+                    this.projectSpecialties.map { it.fromAlgorithmModel() } +
+                            this.anotherProjectSpecialties.map { it.fromAlgorithmModel() }
+                    ).toTypedArray()
+        ),
+        goal = this.goal,
+        description = this.description,
+        dateStart = this.dateStart,
+        dateEnd = this.dateEnd,
+        productResult = this.productResult,
+        studyResult = this.studyResult
     )
 }
 
@@ -49,7 +91,20 @@ fun Participation.toAlgorithmModel(): AlgorithmParticipation {
         priority = this.priority,
         projectId = this.projectId,
         studentId = this.studentId,
-        stateId = 0
+        stateId = 0,
+        studentNumz = this.studentNumz,
+        studentName = this.studentName
+    )
+}
+
+fun AlgorithmParticipation.fromAlgorithmModel(): Participation {
+    return Participation(
+        id = this.id,
+        priority = this.priority,
+        projectId = this.projectId,
+        studentId = this.studentId,
+        studentNumz = this.studentNumz,
+        studentName = this.studentName
     )
 }
 
@@ -62,12 +117,30 @@ fun Specialty.toAlgorithmModel(): AlgorithmSpecialty {
     )
 }
 
+fun AlgorithmSpecialty.fromAlgorithmModel(): Specialty {
+    return Specialty(
+        id = this.id,
+        name = this.name,
+        institute = this.institute.fromAlgorithmModel(),
+        department = this.department.fromAlgorithmModel()
+    )
+}
+
 fun Supervisor.toAlgorithmModel(): AlgorithmSupervisor {
     return AlgorithmSupervisor(
         id = this.id,
         name = this.name,
         department = this.department!!.toAlgorithmModel(),
         position = ""
+    )
+}
+
+fun AlgorithmSupervisor.fromAlgorithmModel(): Supervisor {
+    return Supervisor(
+        id = this.id,
+        name = this.name,
+        department = this.department.fromAlgorithmModel(),
+        roles = realmListOf()
     )
 }
 
@@ -79,8 +152,23 @@ fun Department.toAlgorithmModel(): AlgorithmDepartment {
     )
 }
 
+fun AlgorithmDepartment.fromAlgorithmModel(): Department {
+    return Department(
+        id = this.id,
+        name = this.name,
+        institute = this.institute.fromAlgorithmModel()
+    )
+}
+
 fun Institute.toAlgorithmModel(): AlgorithmInstitute {
     return AlgorithmInstitute(
+        id = this.id,
+        name = this.name,
+    )
+}
+
+fun AlgorithmInstitute.fromAlgorithmModel(): Institute {
+    return Institute(
         id = this.id,
         name = this.name,
     )
@@ -91,6 +179,15 @@ fun CleanProjectSpecialty.toAlgorithmModel(): AlgorithmProjectSpecialty {
         id = this.id,
         course = this.course!!,
         specialty = this.specialty.toAlgorithmModel(),
-        priority = 1
+        priority = this.priority!!
+    )
+}
+
+fun AlgorithmProjectSpecialty.fromAlgorithmModel(): ProjectSpecialty {
+    return ProjectSpecialty(
+        id = this.id,
+        course = this.course,
+        specialty = this.specialty.fromAlgorithmModel(),
+        priority = this.priority
     )
 }

@@ -147,7 +147,7 @@ fun AlgorithmScreen(
             Spacer(Modifier.size(32.dp))
             LaunchButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                enabled = upperBoundary != 0 && lowerBoundary != 0
+                enabled = upperBoundary != 0 && lowerBoundary != 0 && upperBoundary >= lowerBoundary
             ) {
 
 
@@ -171,17 +171,16 @@ fun AlgorithmScreen(
                         participations = algorithmViewModel.participations.value.toMutableList(),
                         institutes = algorithmViewModel.institutes.value.toMutableList(),
                         distributionRule = DistributionRule(
-                            maxPlaces = 15,
-                            minPlaces = 9
+                            maxPlaces = upperBoundary,
+                            minPlaces = lowerBoundary
                         ),
                         specialInstitute = algorithmViewModel.institutes.value.find { it.id == 0 }!!
                     ).launch()
-//                    algorithmViewModel.saveStudentsByProjects(
-//                        GeneratedDistribution(
-//                            id = 0,
-//                            results = distributionResults
-//                        )
-//                    )
+                    distributionResults.participation.forEach {
+                        println(it)
+                    }
+                    algorithmViewModel.distributionResults = distributionResults
+                    algorithmViewModel.insertNewParticipation(distributionResults.participation)
                     showLoading = false
                 }
             }
