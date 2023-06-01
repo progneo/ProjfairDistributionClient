@@ -3,7 +3,7 @@ package domain.interactor
 import domain.repository.UploadDataRepository
 import javax.inject.Inject
 
-class DownloadProgressInteractor @Inject constructor(
+class DownloadProgressInteractor(
     uploadDataRepository: UploadDataRepository
 ) {
 

@@ -4,7 +4,7 @@ import domain.model.Project
 import domain.repository.ProjectRepository
 import javax.inject.Inject
 
-class UpdateProjectUseCase @Inject constructor(
+class UpdateProjectUseCase(
     private val projectRepository: ProjectRepository
 ) {
 

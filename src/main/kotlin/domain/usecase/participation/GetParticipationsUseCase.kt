@@ -6,7 +6,7 @@ import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetParticipationsUseCase @Inject constructor(
+class GetParticipationsUseCase(
     private val participationRepository: ParticipationRepository
 ) {
 

@@ -10,9 +10,19 @@ interface InteractorModule {
 
     companion object {
 
+        @Preview
         @AppScope
         @Provides
-        fun provideDownloadProgressInteractor(uploadDataRepository: UploadDataRepository): DownloadProgressInteractor {
+        fun providePreviewDownloadProgressInteractor(@Preview uploadDataRepository: UploadDataRepository): DownloadProgressInteractor {
+            return DownloadProgressInteractor(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideReviewDownloadProgressInteractor(@Review uploadDataRepository: UploadDataRepository): DownloadProgressInteractor {
             return DownloadProgressInteractor(
                 uploadDataRepository = uploadDataRepository
             )

@@ -1,9 +1,7 @@
 package ui.review.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
-import domain.model.GeneratedDistribution
 import domain.usecase.department.GetDepartmentsUseCase
-import domain.usecase.file.GetGeneratedDistributionUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.logging.GetLogsUseCase
 import domain.usecase.logging.SaveLogUseCase
@@ -14,13 +12,11 @@ import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
-import ru.student.distribution.model.DistributionResults
 import ui.common.BaseGodViewModel
 import ui.common.BaseGodViewModelType
 import ui.preview.widget.PreviewTabPage
-import javax.inject.Inject
 
-class ReviewViewModel @Inject constructor(
+class ReviewViewModel(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val updateProjectUseCase: UpdateProjectUseCase,
@@ -29,7 +25,6 @@ class ReviewViewModel @Inject constructor(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val getSpecialtiesUseCase: GetSpecialtiesUseCase,
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
-    private val getGeneratedDistributionUseCase: GetGeneratedDistributionUseCase,
     private val syncProjectUseCase: SyncProjectUseCase,
     private val getLogsUseCase: GetLogsUseCase,
     private val saveLogUseCase: SaveLogUseCase
@@ -48,10 +43,6 @@ class ReviewViewModel @Inject constructor(
 ) {
 
     var reviewTabPage = mutableStateOf(PreviewTabPage.Students)
-
-    fun getGeneratedDistribution(): GeneratedDistribution {
-        return getGeneratedDistributionUseCase()
-    }
 
     override fun getType(): BaseGodViewModelType {
         return BaseGodViewModelType.REVIEW

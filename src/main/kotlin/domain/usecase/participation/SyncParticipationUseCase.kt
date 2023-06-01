@@ -3,7 +3,7 @@ package domain.usecase.participation
 import domain.repository.ParticipationRepository
 import javax.inject.Inject
 
-class SyncParticipationUseCase @Inject constructor(
+class SyncParticipationUseCase(
     private val participationRepository: ParticipationRepository
 ) {
 

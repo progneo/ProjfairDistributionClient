@@ -21,11 +21,11 @@ import kotlinx.coroutines.launch
 import ui.uploaddata.contract.UploadDataContract
 import javax.inject.Inject
 
-class UploadDataViewModel @Inject constructor(
+class UploadDataViewModel(
     private val syncDataUseCase: SyncDataUseCase,
     private val rebaseDataUseCase: RebaseDataUseCase,
-    @Preview private val syncStudentsUseCase: SyncStudentsUseCase,
-    @Preview private val rebaseStudentsUseCase: RebaseStudentsUseCase,
+    private val syncStudentsUseCase: SyncStudentsUseCase,
+    private val rebaseStudentsUseCase: RebaseStudentsUseCase,
     private val syncProjectsUseCase: SyncProjectsUseCase,
     private val rebaseProjectsUseCase: RebaseProjectsUseCase,
     private val syncParticipationUseCase: SyncParticipationUseCase,

@@ -6,7 +6,7 @@ import io.realm.kotlin.notifications.ResultsChange
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetProjectsUseCase @Inject constructor(
+class GetProjectsUseCase(
     private val projectRepository: ProjectRepository
 ) {
 

@@ -5,7 +5,6 @@ import domain.model.CleanProject
 import domain.model.CleanProjectSpecialty
 import domain.model.Department
 import domain.model.GeneratedDistribution
-import domain.usecase.file.SaveGeneratedDistributionUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.project.GetProjectsUseCase
@@ -13,15 +12,13 @@ import domain.usecase.student.GetStudentsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ui.distribution_algorithm.common.*
-import ui.preview.contract.PreviewContract
 import javax.inject.Inject
 
-class AlgorithmViewModel @Inject constructor(
+class AlgorithmViewModel(
     private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val getParticipationsUseCase: GetParticipationsUseCase,
     private val getInstitutesUseCase: GetInstitutesUseCase,
-    private val saveGeneratedDistributionUseCase: SaveGeneratedDistributionUseCase
 ): BaseViewModel() {
 
     val students = MutableStateFlow<List<AlgorithmStudent>>(emptyList())
@@ -116,10 +113,5 @@ class AlgorithmViewModel @Inject constructor(
                 participations.value = it.list.map { p -> p.toAlgorithmModel() }
             }
         }
-    }
-
-
-    fun saveStudentsByProjects(generatedDistribution: GeneratedDistribution) {
-        saveGeneratedDistributionUseCase(generatedDistribution)
     }
 }

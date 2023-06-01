@@ -7,7 +7,8 @@ import ui.details.project.di.ProjectDetailsComponent
 import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.preview.di.PreviewComponent
 import ui.review.di.ReviewComponent
-import ui.uploaddata.di.UploadDataComponent
+import ui.uploaddata.di.UploadPreviewDataComponent
+import ui.uploaddata.di.UploadReviewDataComponent
 import javax.inject.Scope
 
 @Scope
@@ -33,7 +34,8 @@ interface AppComponent {
         fun create(): AppComponent
     }
 
-    fun inject(uploadDataComponent: UploadDataComponent)
+    fun inject(uploadPreviewDataComponent: UploadPreviewDataComponent)
+    fun inject(uploadReviewDataComponent: UploadReviewDataComponent)
     fun inject(previewComponent: PreviewComponent)
     fun inject(projectDetailsComponent: ProjectDetailsComponent)
     fun inject(previewParticipationDetailsComponent: PreviewParticipationDetailsComponent)

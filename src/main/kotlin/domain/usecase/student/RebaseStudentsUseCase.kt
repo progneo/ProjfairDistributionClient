@@ -5,7 +5,7 @@ import domain.repository.ProjectRepository
 import domain.repository.StudentRepository
 import javax.inject.Inject
 
-class RebaseStudentsUseCase @Inject constructor(
+class RebaseStudentsUseCase(
     private val studentRepository: StudentRepository
 ) {
 

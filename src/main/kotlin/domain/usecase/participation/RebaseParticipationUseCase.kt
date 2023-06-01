@@ -3,7 +3,7 @@ package domain.usecase.participation
 import domain.repository.ParticipationRepository
 import javax.inject.Inject
 
-class RebaseParticipationUseCase @Inject constructor(
+class RebaseParticipationUseCase(
     private val participationRepository: ParticipationRepository
 ) {
 

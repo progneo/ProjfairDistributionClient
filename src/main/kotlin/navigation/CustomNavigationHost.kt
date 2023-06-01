@@ -10,7 +10,8 @@ import ui.distribution_algorithm.di.AlgorithmComponent
 import ui.loading.di.LoadingComponent
 import ui.preview.di.PreviewComponent
 import ui.review.di.ReviewComponent
-import ui.uploaddata.di.UploadDataComponent
+import ui.uploaddata.di.UploadPreviewDataComponent
+import ui.uploaddata.di.UploadReviewDataComponent
 
 @Composable
 fun CustomNavigationHost(
@@ -20,13 +21,22 @@ fun CustomNavigationHost(
     val components = mutableMapOf<ScreenRoute, BaseComponent>()
 
     NavigationHost(navController) {
-        composable(SharedScreen.UploadScreen.screenRoute) {
-            var component = components[SharedScreen.UploadScreen.screenRoute]
+        composable(SharedScreen.UploadPreviewScreen.screenRoute) {
+            var component = components[SharedScreen.UploadPreviewScreen.screenRoute]
             if (component == null) {
-                component = UploadDataComponent(navController = navController, appComponent = appComponent)
+                component = UploadPreviewDataComponent(navController = navController, appComponent = appComponent)
             }
-            components[SharedScreen.UploadScreen.screenRoute] = component
+            components[SharedScreen.UploadPreviewScreen.screenRoute] = component
             component.render()
+        }
+
+        composable(SharedScreen.UploadReviewScreen.screenRoute) {
+            var component = components[SharedScreen.UploadReviewScreen.screenRoute]
+            if (component == null) {
+                component = UploadReviewDataComponent(navController = navController, appComponent = appComponent)
+            }
+            components[SharedScreen.UploadReviewScreen.screenRoute] = component!!
+            component!!.render()
         }
 
         composable(SharedScreen.AlgorithmScreen.screenRoute) {

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SyncDataUseCase @Inject constructor(
+class SyncDataUseCase(
     private val uploadDataRepository: UploadDataRepository
 ) {
 

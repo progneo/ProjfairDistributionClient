@@ -27,7 +27,7 @@ interface DaoModule {
         @Review
         @AppScope
         @Provides
-        fun provideProjectReviewDao(@Preview realm: Realm): ProjectDao {
+        fun provideProjectReviewDao(@Review realm: Realm): ProjectDao {
             return ReviewProjectDao(realm)
         }
 
@@ -41,8 +41,22 @@ interface DaoModule {
         @Review
         @AppScope
         @Provides
-        fun provideStudentReviewDao(@Preview realm: Realm): StudentDao {
+        fun provideStudentReviewDao(@Review realm: Realm): StudentDao {
             return ReviewStudentDao(realm)
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideParticipationPreviewDao(@Preview realm: Realm): ParticipationDao {
+            return PreviewParticipationDao(realm)
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideParticipationReviewDao(@Review realm: Realm): ParticipationDao {
+            return ReviewParticipationDao(realm)
         }
     }
 }

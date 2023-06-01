@@ -176,12 +176,12 @@ fun AlgorithmScreen(
                         ),
                         specialInstitute = algorithmViewModel.institutes.value.find { it.id == 0 }!!
                     ).launch()
-                    algorithmViewModel.saveStudentsByProjects(
-                        GeneratedDistribution(
-                            id = 0,
-                            results = distributionResults
-                        )
-                    )
+//                    algorithmViewModel.saveStudentsByProjects(
+//                        GeneratedDistribution(
+//                            id = 0,
+//                            results = distributionResults
+//                        )
+//                    )
                     showLoading = false
                 }
             }

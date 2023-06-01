@@ -42,7 +42,7 @@ fun main(args: Array<String>) = application {
 @Composable
 fun App() {
     val navBarScreens = listOf(
-        Screen(SharedScreen.UploadScreen),
+        Screen(SharedScreen.UploadPreviewScreen),
         Screen(SharedScreen.PreviewScreen),
         Screen(SharedScreen.AlgorithmScreen),
         Screen(SharedScreen.ReviewScreen),

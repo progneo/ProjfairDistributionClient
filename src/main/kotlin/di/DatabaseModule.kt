@@ -21,7 +21,7 @@ interface DatabaseModule {
         @AppScope
         @Provides
         fun providePreviewDatabase(): Realm {
-            val configuration = RealmConfiguration.create(
+            val configuration = RealmConfiguration.Builder(
                 schema = setOf(
                     Entity::class,
                     StringIdEntity::class,
@@ -40,7 +40,7 @@ interface DatabaseModule {
                     LogSourceRealm::class,
                     Log::class,
                 )
-            )
+            ).name("preview").build()
             return Realm.open(configuration)
         }
 
@@ -48,7 +48,7 @@ interface DatabaseModule {
         @AppScope
         @Provides
         fun provideReviewDatabase(): Realm {
-            val configuration = RealmConfiguration.create(
+            val configuration = RealmConfiguration.Builder(
                 schema = setOf(
                     Entity::class,
                     StringIdEntity::class,
@@ -67,7 +67,8 @@ interface DatabaseModule {
                     LogSourceRealm::class,
                     Log::class,
                 )
-            )
+            ).name("review").build()
+
             return Realm.open(configuration)
         }
     }

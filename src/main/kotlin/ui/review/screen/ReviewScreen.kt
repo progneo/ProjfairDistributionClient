@@ -234,7 +234,7 @@ fun ReviewScreen(
         DataActionsDialog(
             visible = showDataActions,
             students = reviewViewModel.getAllStudents().map { it.toAlgorithmModel() },
-            distributionResults = reviewViewModel.getGeneratedDistribution().results,
+            distributionResults = null,
             onDismissRequest = {
                 showDataActions = false
             }

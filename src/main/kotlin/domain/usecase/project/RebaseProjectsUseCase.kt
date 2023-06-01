@@ -4,7 +4,7 @@ import domain.repository.ParticipationRepository
 import domain.repository.ProjectRepository
 import javax.inject.Inject
 
-class RebaseProjectsUseCase @Inject constructor(
+class RebaseProjectsUseCase(
     private val projectRepository: ProjectRepository
 ) {
 

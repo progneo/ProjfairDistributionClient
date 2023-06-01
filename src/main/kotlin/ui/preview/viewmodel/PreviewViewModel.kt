@@ -18,7 +18,7 @@ import ui.common.BaseGodViewModelType
 import ui.preview.widget.PreviewTabPage
 import javax.inject.Inject
 
-class PreviewViewModel @Inject constructor(
+class PreviewViewModel(
     @Preview private val getStudentsUseCase: GetStudentsUseCase,
     private val getProjectsUseCase: GetProjectsUseCase,
     private val updateProjectUseCase: UpdateProjectUseCase,

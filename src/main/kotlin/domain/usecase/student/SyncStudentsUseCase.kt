@@ -5,7 +5,7 @@ import domain.repository.ProjectRepository
 import domain.repository.StudentRepository
 import javax.inject.Inject
 
-class SyncStudentsUseCase @Inject constructor(
+class SyncStudentsUseCase(
     private val studentRepository: StudentRepository
 ) {
 

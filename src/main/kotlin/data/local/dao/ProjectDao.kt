@@ -16,7 +16,7 @@ class ReviewProjectDao @Inject constructor(
 ): ProjectDao(realm)
 
 open class ProjectDao(realm: Realm): Dao<Project>(realm) {
-    suspend fun update(item: Project): Project {
+    fun update(item: Project): Project {
         return updateItem<Project>(item)
     }
 }

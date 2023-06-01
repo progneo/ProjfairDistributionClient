@@ -5,12 +5,16 @@ import dagger.Provides
 import domain.repository.*
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
-import domain.usecase.project.GetProjectsUseCase
+import domain.usecase.participation.RebaseParticipationUseCase
+import domain.usecase.participation.SyncParticipationUseCase
+import domain.usecase.project.*
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.student.RebaseStudentsUseCase
 import domain.usecase.student.SyncStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
+import domain.usecase.uploaddata.CancelOperationsUseCase
+import domain.usecase.uploaddata.RebaseDataUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
 
 @Module
@@ -18,30 +22,8 @@ interface UseCaseModule {
 
     companion object {
 
-//        @AppScope
-//        @Provides
-//        fun provideSyncDataUseCase(uploadDataRepository: UploadDataRepository): SyncDataUseCase {
-//            return SyncDataUseCase(
-//                uploadDataRepository = uploadDataRepository
-//            )
-//        }
-//
-//        @AppScope
-//        @Provides
-//        fun provideUploadExceptionalStudentsUseCase(uploadDataRepository: UploadDataRepository): UploadExceptionalStudentsUseCase {
-//            return UploadExceptionalStudentsUseCase(
-//                uploadDataRepository = uploadDataRepository
-//            )
-//        }
-//
-//        @AppScope
-//        @Provides
-//        fun provideInsertStudentUseCase(studentRepository: StudentRepository): InsertStudentUseCase {
-//            return InsertStudentUseCase(
-//                studentRepository = studentRepository
-//            )
-//        }
-//
+        //---------------------------------------------------STUDENTS
+
         @Preview
         @AppScope
         @Provides
@@ -95,45 +77,209 @@ interface UseCaseModule {
                 studentRepository = studentRepository
             )
         }
-//
-//        @AppScope
-//        @Provides
-//        fun provideGetProjectsUseCase(projectRepository: ProjectRepository): GetProjectsUseCase {
-//            return GetProjectsUseCase(
-//                projectRepository = projectRepository
-//            )
-//        }
-//
-//        @AppScope
-//        @Provides
-//        fun provideGetParticipationsUseCase(participationRepository: ParticipationRepository): GetParticipationsUseCase {
-//            return GetParticipationsUseCase(
-//                participationRepository = participationRepository
-//            )
-//        }
-//
-//        @AppScope
-//        @Provides
-//        fun provideGetInstitutesUseCase(instituteRepository: InstituteRepository): GetInstitutesUseCase {
-//            return GetInstitutesUseCase(
-//                instituteRepository = instituteRepository
-//            )
-//        }
-//
-//        @AppScope
-//        @Provides
-//        fun provideGetSpecialtiesUseCase(specialtyRepository: SpecialtyRepository): GetSpecialtiesUseCase {
-//            return GetSpecialtiesUseCase(
-//                specialtyRepository = specialtyRepository
-//            )
-//        }
-//
-//        @AppScope
-//        @Provides
-//        fun provideGetSupervisorsUseCase(supervisorRepository: SupervisorRepository): GetSupervisorsUseCase {
-//            return GetSupervisorsUseCase(
-//                supervisorRepository = supervisorRepository
-//            )
-//        }
+
+        //-------------------------------------------------------PROJECTS
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideGetPreviewProjectsUseCase(@Preview projectRepository: ProjectRepository): GetProjectsUseCase {
+            return GetProjectsUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideGetReviewProjectsUseCase(@Review projectRepository: ProjectRepository): GetProjectsUseCase {
+            return GetProjectsUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideRebasePreviewProjectsUseCase(@Preview projectRepository: ProjectRepository): RebaseProjectsUseCase {
+            return RebaseProjectsUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideRebaseReviewProjectsUseCase(@Review projectRepository: ProjectRepository): RebaseProjectsUseCase {
+            return RebaseProjectsUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideSyncPreviewProjectsUseCase(@Preview projectRepository: ProjectRepository): SyncProjectsUseCase {
+            return SyncProjectsUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideSyncReviewProjectsUseCase(@Review projectRepository: ProjectRepository): SyncProjectsUseCase {
+            return SyncProjectsUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideSyncPreviewProjectUseCase(@Preview projectRepository: ProjectRepository): SyncProjectUseCase {
+            return SyncProjectUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideSyncReviewProjectUseCase(@Review projectRepository: ProjectRepository): SyncProjectUseCase {
+            return SyncProjectUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideUpdatePreviewProjectUseCase(@Preview projectRepository: ProjectRepository): UpdateProjectUseCase {
+            return UpdateProjectUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideUpdateReviewProjectUseCase(@Review projectRepository: ProjectRepository): UpdateProjectUseCase {
+            return UpdateProjectUseCase(
+                projectRepository = projectRepository
+            )
+        }
+
+        //----------------------------------------PARTICIPATION
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideGetPreviewParticipationsUseCase(@Preview participationRepository: ParticipationRepository): GetParticipationsUseCase {
+            return GetParticipationsUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideGetReviewParticipationsUseCase(@Review participationRepository: ParticipationRepository): GetParticipationsUseCase {
+            return GetParticipationsUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideRebasePreviewParticipationsUseCase(@Preview participationRepository: ParticipationRepository): RebaseParticipationUseCase {
+            return RebaseParticipationUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideRebaseReviewParticipationsUseCase(@Review participationRepository: ParticipationRepository): RebaseParticipationUseCase {
+            return RebaseParticipationUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun provideSyncPreviewParticipationsUseCase(@Preview participationRepository: ParticipationRepository): SyncParticipationUseCase {
+            return SyncParticipationUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideSyncReviewParticipationsUseCase(@Review participationRepository: ParticipationRepository): SyncParticipationUseCase {
+            return SyncParticipationUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        //----------------------------------------UPLOAD DATA
+
+        @Preview
+        @AppScope
+        @Provides
+        fun providePreviewCancelOperationUseCase(@Preview uploadDataRepository: UploadDataRepository): CancelOperationsUseCase {
+            return CancelOperationsUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideReviewCancelOperationUseCase(@Review uploadDataRepository: UploadDataRepository): CancelOperationsUseCase {
+            return CancelOperationsUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun providePreviewRebaseDataUseCase(@Preview uploadDataRepository: UploadDataRepository): RebaseDataUseCase {
+            return RebaseDataUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideReviewRebaseDataUseCase(@Review uploadDataRepository: UploadDataRepository): RebaseDataUseCase {
+            return RebaseDataUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @Preview
+        @AppScope
+        @Provides
+        fun providePreviewSyncDataUseCase(@Preview uploadDataRepository: UploadDataRepository): SyncDataUseCase {
+            return SyncDataUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideReviewSyncDataUseCase(@Review uploadDataRepository: UploadDataRepository): SyncDataUseCase {
+            return SyncDataUseCase(
+                uploadDataRepository = uploadDataRepository
+            )
+        }
     }
 }

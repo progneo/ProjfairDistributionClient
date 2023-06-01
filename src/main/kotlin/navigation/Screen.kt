@@ -19,7 +19,8 @@ data class Screen(
 )
 
 enum class ScreenRoute {
-    UPLOAD,
+    UPLOAD_PREVIEW,
+    UPLOAD_REVIEW,
     ALGORITHM,
     PREVIEW,
     PROJECT_DETAILS,
@@ -35,9 +36,16 @@ sealed class SharedScreen(
     val title: String? = null,
     val icon: ImageVector? = null,
 ) {
-    object UploadScreen : SharedScreen(
-        screenRoute = ScreenRoute.UPLOAD,
-        parentScreenRoute = ScreenRoute.UPLOAD,
+    object UploadPreviewScreen : SharedScreen(
+        screenRoute = ScreenRoute.UPLOAD_PREVIEW,
+        parentScreenRoute = ScreenRoute.UPLOAD_PREVIEW,
+        title = "Загрузка",
+        icon = EvaIcons.Fill.Download
+    )
+
+    object UploadReviewScreen : SharedScreen(
+        screenRoute = ScreenRoute.UPLOAD_REVIEW,
+        parentScreenRoute = ScreenRoute.UPLOAD_REVIEW,
         title = "Загрузка",
         icon = EvaIcons.Fill.Download
     )
@@ -94,7 +102,8 @@ sealed class SharedScreen(
     companion object {
         fun findByRoute(route: ScreenRoute): SharedScreen {
             return when (route) {
-                ScreenRoute.UPLOAD -> UploadScreen
+                ScreenRoute.UPLOAD_PREVIEW -> UploadPreviewScreen
+                ScreenRoute.UPLOAD_REVIEW -> UploadReviewScreen
                 ScreenRoute.ALGORITHM -> AlgorithmScreen
                 ScreenRoute.PREVIEW -> PreviewScreen
                 ScreenRoute.PROJECT_DETAILS -> ProjectDetailsScreen

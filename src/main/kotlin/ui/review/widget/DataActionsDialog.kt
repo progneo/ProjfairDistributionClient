@@ -31,7 +31,7 @@ import ru.student.distribution.model.Student
 fun DataActionsDialog(
     visible: Boolean,
     students: List<Student>,
-    distributionResults: DistributionResults,
+    distributionResults: DistributionResults?,
     onDismissRequest: () -> Unit,
 ) {
     val defaultPathText = "Выберите папку для выгрузки"
@@ -106,7 +106,7 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-                        distributionResults.institutesResults.forEach { instituteResult ->
+                        distributionResults?.institutesResults?.forEach { instituteResult ->
                             ExportDataToExcel.writeStudentsByProjects(
                                 students = students,
                                 projects = instituteResult.projects,
@@ -124,7 +124,7 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-                        distributionResults.institutesResults.forEach { instituteResult ->
+                        distributionResults?.institutesResults?.forEach { instituteResult ->
                             ExportDataToExcel.writeProjectsWithStudents(
                                 students = students,
                                 notApplied = instituteResult.notAppliedStudents,

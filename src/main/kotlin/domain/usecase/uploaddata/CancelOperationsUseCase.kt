@@ -4,7 +4,7 @@ import domain.repository.UploadDataRepository
 import ui.uploaddata.viewmodel.UploadDataViewModel
 import javax.inject.Inject
 
-class CancelOperationsUseCase @Inject constructor(
+class CancelOperationsUseCase(
     private val uploadDataRepository: UploadDataRepository
 ) {
 
