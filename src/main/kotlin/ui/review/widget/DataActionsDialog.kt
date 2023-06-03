@@ -24,14 +24,18 @@ import common.compose.VisibleDialog
 import common.file.ExportDataToExcel
 import common.theme.BlueMainDark
 import common.theme.BlueMainLight
-import ru.student.distribution.model.DistributionResults
-import ru.student.distribution.model.Student
+import domain.model.DistributionResults
+import domain.model.Student
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import ui.review.viewmodel.ReviewViewModel
+import java.io.File
 
 @Composable
 fun DataActionsDialog(
     visible: Boolean,
     students: List<Student>,
-    distributionResults: DistributionResults?,
+    reviewViewModel: ReviewViewModel,
     onDismissRequest: () -> Unit,
 ) {
     val defaultPathText = "Выберите папку для выгрузки"
@@ -39,6 +43,8 @@ fun DataActionsDialog(
     val filePathText = remember {
         mutableStateOf<String?>(null)
     }
+
+    val coroutineScope = rememberCoroutineScope()
 
     VisibleDialog(
         visible = visible,
@@ -106,14 +112,26 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-                        distributionResults?.instituteResults?.forEach { instituteResult ->
-                            ExportDataToExcel.writeStudentsByProjects(
-                                students = students,
-                                projects = instituteResult.projects,
-                                participations = instituteResult.participation,
-                                institute = instituteResult.institute,
-                                filePath = filePathText.value!!
-                            )
+                        coroutineScope.launch(Dispatchers.IO) {
+                            val distributionResults = reviewViewModel.getDistributionResults()
+                            val newFilePath = "${filePathText.value!!}/Списки по институтам"
+                            File(newFilePath).mkdir()
+                            distributionResults.instituteResults.forEach { instituteResult ->
+                                if (instituteResult.projects.isEmpty()) return@forEach
+                                ExportDataToExcel.writeStudentsByProjects(
+                                    students = students,
+                                    projects = instituteResult.projects,
+                                    participations = reviewViewModel.getAllParticipation(),
+                                    institute = instituteResult.institute,
+                                    filePath = newFilePath
+                                )
+                            }
+                            File("$newFilePath/ЛИШНИЕ ПРОЕКТЫ.txt").createNewFile()
+                            File("$newFilePath/ЛИШНИЕ ПРОЕКТЫ.txt").printWriter().use { out ->
+                                distributionResults.excessProjects.forEach { proj ->
+                                    out.println(proj)
+                                }
+                            }
                         }
                     }
                 )
@@ -124,15 +142,27 @@ fun DataActionsDialog(
                     buttonTitle = "Выгрузить",
                     enabled = filePathText.value != null,
                     onClick = {
-                        distributionResults?.instituteResults?.forEach { instituteResult ->
-                            ExportDataToExcel.writeProjectsWithStudents(
-                                students = students,
-                                notApplied = instituteResult.notAppliedStudents,
-                                projects = instituteResult.projects,
-                                participations = instituteResult.participation,
-                                institute = instituteResult.institute,
-                                filePath = filePathText.value!!
-                            )
+                        coroutineScope.launch(Dispatchers.IO) {
+                            val distributionResults = reviewViewModel.getDistributionResults()
+                            val newFilePath = "${filePathText.value!!}/Списки всех студентов по проектам"
+                            File(newFilePath).mkdir()
+                            distributionResults.instituteResults.forEach { instituteResult ->
+                                if (instituteResult.projects.isEmpty()) return@forEach
+                                ExportDataToExcel.writeProjectsWithStudents(
+                                    students = students,
+                                    notApplied = instituteResult.notAppliedStudents,
+                                    projects = instituteResult.projects,
+                                    participations = instituteResult.participation,
+                                    institute = instituteResult.institute,
+                                    filePath = newFilePath
+                                )
+                            }
+                            File("$newFilePath/ЛИШНИЕ ПРОЕКТЫ.txt").createNewFile()
+                            File("$newFilePath/ЛИШНИЕ ПРОЕКТЫ.txt").printWriter().use { out ->
+                                distributionResults.excessProjects.forEach { proj ->
+                                    out.println(proj)
+                                }
+                            }
                         }
                     }
                 )

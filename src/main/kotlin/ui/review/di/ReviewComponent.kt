@@ -17,15 +17,12 @@ class ReviewComponent(
     @Inject
     lateinit var reviewViewModel: ReviewViewModel
 
-    @Inject
-    lateinit var algorithmViewModel: AlgorithmViewModel
-
     init {
         appComponent.inject(this)
     }
 
     @Composable
     override fun render() {
-        ReviewScreen(navController, reviewViewModel, algorithmViewModel)
+        ReviewScreen(navController, reviewViewModel)
     }
 }

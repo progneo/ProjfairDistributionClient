@@ -29,7 +29,6 @@ import ui.review.widget.DataActionsDialog
 fun ReviewScreen(
     navController: NavController,
     reviewViewModel: ReviewViewModel,
-    algorithmViewModel: AlgorithmViewModel
 ) {
     reviewViewModel.filterDepartments(null)
 
@@ -235,8 +234,8 @@ fun ReviewScreen(
 
         DataActionsDialog(
             visible = showDataActions,
-            students = reviewViewModel.getAllStudents().map { it.toAlgorithmModel() },
-            distributionResults = algorithmViewModel.distributionResults,
+            students = reviewViewModel.getAllStudents(),
+            reviewViewModel = reviewViewModel,
             onDismissRequest = {
                 showDataActions = false
             }

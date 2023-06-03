@@ -40,7 +40,7 @@ dependencies {
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 
     //implementation("com.github.mal1s:algorithm-student-distribution:2.0.0")
-    //implementation("ru.student.distribution:student-distribution-algorithm:1.1.13")
+    //implementation("ru.student.distribution:student-distribution-algorithm:1.1.16")
 
     implementation("io.realm.kotlin:library-sync:1.8.0")
     implementation("io.realm.kotlin:library-base:1.8.0")

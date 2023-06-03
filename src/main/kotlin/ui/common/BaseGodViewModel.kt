@@ -13,18 +13,17 @@ import domain.usecase.project.UpdateProjectUseCase
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import ui.distribution_algorithm.common.toAlgorithmModel
 import ui.filter.FilterEntity
 import ui.filter.FilterType
-import ui.preview.contract.PreviewContract
 import ui.preview.widget.StudentsTabPage
 import ui.preview.widget.filter.InstituteFilterConfiguration
 import ui.preview.widget.filter.ProjectFilterApplier
 import ui.preview.widget.filter.StudentFilterApplier
-import java.io.File
 
 enum class BaseGodViewModelType {
     PREVIEW,
@@ -464,5 +463,46 @@ open class BaseGodViewModel(
                 outStudents
             }
         }
+    }
+
+    fun getDistributionResults(): DistributionResults {
+        val instituteResults = mutableListOf<InstituteResults>()
+        val parts = _participations.value.map { it.studentId }
+        val excessProj = _projects.value.toMutableList()
+
+        _institutes.value.forEach {
+            val proj = _projects.value.filter { p ->
+                p.projectSpecialties
+                    .map { ps -> ps.specialty }
+                    .map { s -> s!!.institute }
+                    .map { i -> i!!.id }
+                    .contains(it.id)
+            }
+
+            val projId = proj.map { p -> p.id }
+
+            excessProj.removeIf { ep ->
+                projId.contains(ep.id)
+            }
+
+            instituteResults.add(
+                InstituteResults(
+                    institute = it,
+                    notAppliedStudents = _students.value.filter { stud ->
+                        stud.specialty?.institute?.id == it.id && !parts.contains(stud.id)
+                    },
+                    participation = _participations.value.filter { p ->
+                        projId.contains(p.projectId)
+                    },
+                    projects = proj
+                )
+            )
+        }
+
+        return DistributionResults(
+            participation = _participations.value,
+            instituteResults = instituteResults,
+            excessProjects = excessProj
+        )
     }
 }

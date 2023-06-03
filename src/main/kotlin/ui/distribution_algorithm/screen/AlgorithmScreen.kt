@@ -17,6 +17,7 @@ import domain.model.GeneratedDistribution
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import navigation.NavController
+import navigation.ScreenRoute
 import ru.student.distribution.domain.distribution.DistributionLauncher
 import ru.student.distribution.domain.distribution.DistributionRule
 import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
@@ -176,12 +177,10 @@ fun AlgorithmScreen(
                         ),
                         specialInstitute = algorithmViewModel.institutes.value.find { it.id == 0 }!!
                     ).launch()
-                    distributionResults.participation.forEach {
-                        println(it)
-                    }
-                    algorithmViewModel.distributionResults = distributionResults
+                    println("CRINGE NEW ${distributionResults.participation.size}")
                     algorithmViewModel.insertNewParticipation(distributionResults.participation)
                     showLoading = false
+                    navController.navigate(ScreenRoute.REVIEW)
                 }
             }
         }

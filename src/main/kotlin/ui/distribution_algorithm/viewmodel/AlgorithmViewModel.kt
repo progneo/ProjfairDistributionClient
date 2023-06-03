@@ -1,7 +1,9 @@
 package ui.distribution_algorithm.viewmodel
 
 import base.mvi.BaseViewModel
+import com.grapecity.documents.excel.drawing.b.it
 import domain.model.*
+import domain.model.Department.Base.institute
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.DeleteAllParticipationsUseCase
 import domain.usecase.participation.GetParticipationsUseCase
@@ -13,8 +15,12 @@ import domain.usecase.student.DeleteAllStudentsUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.student.InsertStudentUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.student.distribution.model.DistributionResults
+import ru.student.distribution.model.InstituteResults
+import ru.student.distribution.model.Participation
 import ui.distribution_algorithm.common.*
 import javax.inject.Inject
 
@@ -28,27 +34,28 @@ class AlgorithmViewModel(
     private val insertParticipationsUseCase: InsertParticipationsUseCase,
     private val deleteAllStudentsUseCase: DeleteAllStudentsUseCase,
     private val deleteAllProjectsUseCase: DeleteAllProjectsUseCase,
-    private val deleteAllParticipationsUseCase: DeleteAllParticipationsUseCase
-): BaseViewModel() {
+    private val deleteAllParticipationsUseCase: DeleteAllParticipationsUseCase,
+) : BaseViewModel() {
 
     val students = MutableStateFlow<List<AlgorithmStudent>>(emptyList())
     val projects = MutableStateFlow<List<AlgorithmProject>>(emptyList())
     val participations = MutableStateFlow<List<AlgorithmParticipation>>(emptyList())
     val institutes = MutableStateFlow<List<AlgorithmInstitute>>(emptyList())
 
-    var distributionResults: DistributionResults? = null
-
     init {
-        getStudents()
+        getParticipations()
         getProjects()
         getInstitutes()
-        getParticipations()
     }
 
     private fun getStudents() {
         coroutineScope.launch {
             getStudentsUseCase().collect {
+                val parts = participations.value.map { p -> p.studentId }
                 students.value = it.list.map { s -> s.toAlgorithmModel() }
+                println("CRINGE ${it.list.size} == ${students.value.size}")
+                println("SET ${participations.value.map { p -> p.studentId }.toSet().size}")
+                println("CRINGE OLD = ${participations.value.size}")
             }
         }
     }
@@ -71,7 +78,11 @@ class AlgorithmViewModel(
                         customer = project.customer,
                         productResult = project.productResult,
                         studyResult = project.studyResult,
-                        department = project.department ?: Department(id = -1, name = "-1", institute = Institute(-1, "-1")),
+                        department = project.department ?: Department(
+                            id = -1,
+                            name = "-1",
+                            institute = Institute(-1, "-1")
+                        ),
                         supervisors = project.supervisors.toList(),
                         projectSpecialties = project.projectSpecialties.map { oldPsp ->
                             CleanProjectSpecialty(
@@ -85,11 +96,11 @@ class AlgorithmViewModel(
                     val projectsSpecialties = projectCopy.projectSpecialties
                     val newProjectSpecialties = mutableListOf<CleanProjectSpecialty>()
 
-                    projectsSpecialties.forEach psp@ { psp ->
+                    projectsSpecialties.forEach psp@{ psp ->
                         if (psp.course == null) {
                             val isNormal = psp.specialty.name.endsWith("б")
                             val count = if (isNormal) 2 else 3
-                            (3 until (count+3)).forEach { number ->
+                            (3 until (count + 3)).forEach { number ->
                                 if (psp.priority == null) {
                                     (1..2).forEach { pr ->
                                         newProjectSpecialties.add(
@@ -135,6 +146,7 @@ class AlgorithmViewModel(
         coroutineScope.launch {
             getParticipationsUseCase().collect {
                 participations.value = it.list.map { p -> p.toAlgorithmModel() }
+                getStudents()
             }
         }
     }
