@@ -191,11 +191,13 @@ interface ViewModelModule {
         @Provides
         fun providePreviewParticipationDetailsViewModel(
             @Preview getParticipationsUseCase: GetParticipationsUseCase,
-            @Preview getStudentsUseCase: GetStudentsUseCase
+            @Preview getStudentsUseCase: GetStudentsUseCase,
+            @Preview updateParticipationUseCase: UpdateParticipationUseCase
         ): ParticipationDetailsViewModel {
             return ParticipationDetailsViewModel(
                 getParticipationsUseCase = getParticipationsUseCase,
-                getStudentsUseCase = getStudentsUseCase
+                getStudentsUseCase = getStudentsUseCase,
+                updateParticipationUseCase = updateParticipationUseCase
             )
         }
 
@@ -203,11 +205,13 @@ interface ViewModelModule {
         @Provides
         fun provideReviewParticipationDetailsViewModel(
             @Review getParticipationsUseCase: GetParticipationsUseCase,
-            @Review getStudentsUseCase: GetStudentsUseCase
+            @Review getStudentsUseCase: GetStudentsUseCase,
+            @Review updateParticipationUseCase: UpdateParticipationUseCase
         ): ParticipationDetailsViewModel {
             return ParticipationDetailsViewModel(
                 getParticipationsUseCase = getParticipationsUseCase,
-                getStudentsUseCase = getStudentsUseCase
+                getStudentsUseCase = getStudentsUseCase,
+                updateParticipationUseCase = updateParticipationUseCase
             )
         }
     }

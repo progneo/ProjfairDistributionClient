@@ -7,6 +7,7 @@ import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.participation.RebaseParticipationUseCase
 import domain.usecase.participation.SyncParticipationUseCase
+import domain.usecase.participation.UpdateParticipationUseCase
 import domain.usecase.project.*
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
@@ -22,7 +23,9 @@ interface UseCaseModule {
 
     companion object {
 
-        //---------------------------------------------------STUDENTS
+        // ----------------------------------------
+        //-----------------------------------------STUDENTS
+        // ----------------------------------------
 
         @Preview
         @AppScope
@@ -78,7 +81,9 @@ interface UseCaseModule {
             )
         }
 
-        //-------------------------------------------------------PROJECTS
+        // ----------------------------------------
+        //-----------------------------------------PROJECTS
+        // ----------------------------------------
 
         @Preview
         @AppScope
@@ -170,7 +175,9 @@ interface UseCaseModule {
             )
         }
 
-        //----------------------------------------PARTICIPATION
+        // ----------------------------------------
+        // ----------------------------------------PARTICIPATION
+        // ----------------------------------------
 
         @Preview
         @AppScope
@@ -226,7 +233,27 @@ interface UseCaseModule {
             )
         }
 
-        //----------------------------------------UPLOAD DATA
+        @Preview
+        @AppScope
+        @Provides
+        fun provideUpdatePreviewParticipationsUseCase(@Preview participationRepository: ParticipationRepository): UpdateParticipationUseCase {
+            return UpdateParticipationUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        @Review
+        @AppScope
+        @Provides
+        fun provideUpdateReviewParticipationsUseCase(@Review participationRepository: ParticipationRepository): UpdateParticipationUseCase {
+            return UpdateParticipationUseCase(
+                participationRepository = participationRepository
+            )
+        }
+
+        // ----------------------------------------
+        //-----------------------------------------UPLOAD DATA
+        // ----------------------------------------
 
         @Preview
         @AppScope

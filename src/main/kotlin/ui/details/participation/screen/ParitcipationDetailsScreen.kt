@@ -1,10 +1,10 @@
 package ui.details.participation.screen
 
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -24,7 +24,6 @@ import compose.icons.octicons.ArrowDownRight24
 import compose.icons.octicons.ArrowSwitch24
 import domain.model.Participation
 import domain.model.Project
-import domain.model.Student
 import navigation.NavController
 import ui.common.BaseGodViewModel
 import ui.details.participation.viewmodel.ParticipationDetailsViewModel
@@ -114,7 +113,7 @@ fun ParticipationDetailsScreen(
             }
             Button(
                 onClick = {
-
+                    participationDetailsViewModel.updateParticipation()
                 },
                 modifier = Modifier.align(Alignment.CenterEnd).padding(16.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = BlueMainLight, contentColor = Color.White),
@@ -151,16 +150,19 @@ fun ParticipationDetailsScreen(
 
                         if (areStudentsOnRightSide) {
                             selectedProjectStudents.value.forEach { student ->
-                                newParts.add(
-                                    Participation(
-                                        id = 0,
-                                        studentId = student.id,
-                                        studentNumz = student.numz,
-                                        studentName = student.name,
-                                        projectId = participationDetailsViewModel.currentProject!!.id,
-                                        priority = 1
-                                    )
+                                val foundPart = participationDetailsViewModel.projectParticipation.value.find {
+                                    it.studentId == student.id && it.projectId == project.id
+                                }!!
+
+                                val tempParticipation = Participation(
+                                    id = foundPart.id,
+                                    studentId = student.id,
+                                    studentNumz = student.numz,
+                                    studentName = student.name,
+                                    projectId = participationDetailsViewModel.currentProject!!.id,
+                                    priority = 1
                                 )
+                                newParts.add(tempParticipation)
                             }
                             val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
                             rp.addAll(newParts)
@@ -172,7 +174,7 @@ fun ParticipationDetailsScreen(
                             participationDetailsViewModel.setOutStudents(out)
                         }
 
-                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.setProjectParticipation(pp)
                         participationDetailsViewModel.clearSelectedProjectStudents()
                         updateActionsAvailability()
                     },
@@ -193,9 +195,12 @@ fun ParticipationDetailsScreen(
                         val pp = participationDetailsViewModel.projectParticipation.value.toMutableList()
                         val selectedStudentIds = selectedChooseStudents.value.map { it.id }
                         selectedChooseStudents.value.forEach { student ->
+                            val foundPart = participationDetailsViewModel.requiredParticipation.value.find {
+                                it.studentId == student.id && it.projectId == participationDetailsViewModel.currentProject?.id
+                            }
                             newParts.add(
                                 Participation(
-                                    id = 0,
+                                    id = foundPart?.id ?: 0,
                                     studentId = student.id,
                                     studentNumz = student.numz,
                                     studentName = student.name,
@@ -211,6 +216,7 @@ fun ParticipationDetailsScreen(
                             rp.removeIf { part ->
                                 part.studentId in selectedStudentIds
                             }
+                            rp.addAll(newParts)
                             participationDetailsViewModel.setRequiredParticipation(rp)
                         } else if (areOutStudentsOnRightSide) {
                             val out = participationDetailsViewModel.outStudents.value.toMutableList()
@@ -220,7 +226,7 @@ fun ParticipationDetailsScreen(
                             participationDetailsViewModel.setOutStudents(out)
                         }
 
-                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.setProjectParticipation(pp)
                         participationDetailsViewModel.clearSelectedChooseStudents()
                         updateActionsAvailability()
                     },
@@ -242,9 +248,13 @@ fun ParticipationDetailsScreen(
                         val selectedProjectStudentIds = selectedProjectStudents.value.map { it.id }
                         val selectedChooseStudentIds = selectedChooseStudents.value.map { it.id }
                         selectedChooseStudents.value.forEach { student ->
+                            val foundPart = participationDetailsViewModel.requiredParticipation.value.find {
+                                it.studentId == student.id && it.projectId == participationDetailsViewModel.currentProject?.id
+                            }
+
                             newProjectParts.add(
                                 Participation(
-                                    id = 0,
+                                    id = foundPart?.id ?: 0,
                                     studentId = student.id,
                                     studentNumz = student.numz,
                                     studentName = student.name,
@@ -262,9 +272,13 @@ fun ParticipationDetailsScreen(
                             val newChooseParts = mutableListOf<Participation>()
                             val rp = participationDetailsViewModel.requiredParticipation.value.toMutableList()
                             selectedProjectStudents.value.forEach { student ->
+                                val foundPart = participationDetailsViewModel.requiredParticipation.value.find {
+                                    it.studentId == student.id && it.projectId == project.id
+                                }
+
                                 newChooseParts.add(
                                     Participation(
-                                        id = 0,
+                                        id = foundPart?.id ?: 0,
                                         studentId = student.id,
                                         studentNumz = student.numz,
                                         studentName = student.name,
@@ -276,6 +290,7 @@ fun ParticipationDetailsScreen(
                             rp.removeIf { part ->
                                 part.studentId in selectedChooseStudentIds
                             }
+                            rp.addAll(newProjectParts)
                             rp.addAll(newChooseParts)
                             participationDetailsViewModel.setRequiredParticipation(rp)
                         } else if (areOutStudentsOnRightSide) {
@@ -285,7 +300,7 @@ fun ParticipationDetailsScreen(
                             participationDetailsViewModel.setOutStudents(out)
                         }
 
-                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.setProjectParticipation(pp)
                         participationDetailsViewModel.clearSelectedProjectStudents()
                         participationDetailsViewModel.clearSelectedChooseStudents()
                         updateActionsAvailability()
@@ -314,7 +329,7 @@ fun ParticipationDetailsScreen(
                             part.studentId in selectedStudentIds
                         }
                         out.addAll(selectedProjectStudents.value)
-                        participationDetailsViewModel.setProjectStudents(pp)
+                        participationDetailsViewModel.setProjectParticipation(pp)
                         participationDetailsViewModel.setRequiredParticipation(rp)
                         participationDetailsViewModel.setOutStudents(out)
                         participationDetailsViewModel.clearSelectedProjectStudents()
@@ -343,9 +358,9 @@ fun ParticipationDetailsScreen(
                 viewModel = viewModel,
                 requiredParticipation = requiredParticipation.value,
                 participationDetailsViewModel = participationDetailsViewModel,
-                onNodeOpened = { areStudentsOnRight, areOuStudentsOnRight ->
+                onNodeOpened = { areStudentsOnRight, areOutStudentsOnRight ->
                     areStudentsOnRightSide = areStudentsOnRight
-                    areOutStudentsOnRightSide = areOuStudentsOnRight
+                    areOutStudentsOnRightSide = areOutStudentsOnRight
                     updateActionsAvailability()
                 },
                 onItemSelected = {

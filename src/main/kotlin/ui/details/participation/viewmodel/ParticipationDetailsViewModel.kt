@@ -1,25 +1,21 @@
 package ui.details.participation.viewmodel
 
 import base.mvi.BaseViewModel
-import di.Preview
-import domain.interactor.DownloadProgressInteractor
 import domain.model.Participation
 import domain.model.Project
 import domain.model.Student
+import domain.usecase.participation.DeleteParticipationUseCase
 import domain.usecase.participation.GetParticipationsUseCase
+import domain.usecase.participation.UpdateParticipationUseCase
 import domain.usecase.student.GetStudentsUseCase
-import domain.usecase.uploaddata.RebaseDataUseCase
-import domain.usecase.uploaddata.SyncDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
-import ui.uploaddata.contract.UploadDataContract
 import javax.inject.Inject
 
 class ParticipationDetailsViewModel @Inject constructor(
     private val getParticipationsUseCase: GetParticipationsUseCase,
-    private val getStudentsUseCase: GetStudentsUseCase
+    private val getStudentsUseCase: GetStudentsUseCase,
+    private val updateParticipationUseCase: UpdateParticipationUseCase,
 ) : BaseViewModel() {
 
     companion object {
@@ -75,7 +71,7 @@ class ParticipationDetailsViewModel @Inject constructor(
         }
     }
 
-    fun setProjectStudents(participation: List<Participation>) {
+    fun setProjectParticipation(participation: List<Participation>) {
         projectParticipation.value = participation.sortedWith(compareBy({ it.priority }, { it.studentName })).toMutableList()
     }
 
@@ -93,5 +89,11 @@ class ParticipationDetailsViewModel @Inject constructor(
 
     fun clearSelectedChooseStudents() {
         selectedChooseStudents.value = mutableListOf()
+    }
+
+    fun updateParticipation() {
+        coroutineScope.launch {
+            updateParticipationUseCase(requiredParticipation.value)
+        }
     }
 }

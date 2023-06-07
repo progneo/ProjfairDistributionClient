@@ -42,59 +42,17 @@ abstract class Dao<T : Entity>(val realm: Realm) {
         return realm.query<R>("id", id).find().first()
     }
 
-    protected inline fun <reified R : Entity> updateItem(
-        item: Project,
-    ): Project {
-        realm.writeBlocking {
-            val project: Project = this.query<Project>("id == $0", item.id).find().first()
-            val supervisors = realmListOf<Supervisor>()
-            val projectSpecialties = realmListOf<ProjectSpecialty>()
-
-            item.supervisors.forEach { supervisor ->
-                val realmSupervisor = realm.query<Supervisor>("id = ${supervisor.id}").find().first()
-                supervisors.add(
-                    findLatest(realmSupervisor)!!
-                )
-            }
-
-            var lastId = this.query<ProjectSpecialty>().max<Int>("id").find()!! + 1
-
-            item.projectSpecialties.forEach { projectSpecialty ->
-                val realmSpecialty = realm.query<Specialty>("id = ${projectSpecialty.specialty!!.id}").find().first()
-                projectSpecialties.add(
-                    ProjectSpecialty(
-                        id = lastId,
-                        course = projectSpecialty.course,
-                        specialty = findLatest(realmSpecialty),
-                        priority = projectSpecialty.priority
-                    )
-                )
-                lastId++
-            }
-
-            val realmDepartment = realm.query<Department>("id = ${item.department!!.id}").find().first()
-
-            project.name = item.name
-            project.places = item.places
-            project.freePlaces = item.freePlaces
-            project.goal = item.goal
-            project.difficulty = item.difficulty
-            project.dateStart = item.dateStart
-            project.dateEnd = item.dateEnd
-            project.customer = item.customer
-            project.productResult = item.productResult
-            project.studyResult = item.studyResult
-            project.department = findLatest(realmDepartment)
-            project.supervisors = supervisors
-            project.projectSpecialties = projectSpecialties
-        }
-
-        return realm.query<Project>("id == ${item.id}").find().first()
-    }
-
     inline fun <reified R : Entity> delete(item: T) {
         realm.writeBlocking {
             delete(this.query(R::class, "id == ${item.id}").find().first())
+        }
+    }
+
+    inline fun <reified R : Entity> delete(items: List<T>) {
+        realm.writeBlocking {
+            items.forEach {
+                delete(this.query(R::class, "id == ${it.id}").find().first())
+            }
         }
     }
 

@@ -31,7 +31,11 @@ class ParticipationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateParticipation(participation: Participation) {
-        //participationDao.update(participation)
+        participationDao.update(participation)
+    }
+
+    override suspend fun updateParticipation(participation: List<Participation>) {
+        participationDao.update(participation)
     }
 
     override suspend fun insertParticipation(participation: Participation, byRebase: Boolean) {
@@ -68,6 +72,10 @@ class ParticipationRepositoryImpl @Inject constructor(
             logType = LogType.REMOVE,
             logSource = if (byServer) LogSource.SERVER else LogSource.USER
         )
+    }
+
+    override suspend fun deleteParticipation(participation: List<Participation>, byServer: Boolean) {
+        participationDao.delete<Participation>(participation)
     }
 
     override suspend fun deleteAllParticipations() {
