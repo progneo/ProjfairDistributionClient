@@ -156,8 +156,10 @@ fun ParticipationDetailsScreen(
                                     it.studentId == student.id && it.projectId == project.id
                                 }!!
 
-                                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
                                 val currentDate = sdf.format(Date())
+
+                                println(currentDate)
 
                                 val tempParticipation = Participation(
                                     id = foundPart.id,
@@ -204,8 +206,10 @@ fun ParticipationDetailsScreen(
                             val foundPart = participationDetailsViewModel.requiredParticipation.value.find {
                                 it.studentId == student.id && it.projectId == participationDetailsViewModel.currentProject?.id
                             }
-                            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
                             val currentDate = sdf.format(Date())
+                            println(currentDate)
+
                             newParts.add(
                                 Participation(
                                     id = foundPart?.id ?: 0,
@@ -261,7 +265,7 @@ fun ParticipationDetailsScreen(
                                 it.studentId == student.id && it.projectId == participationDetailsViewModel.currentProject?.id
                             }
 
-                            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
                             val currentDate = sdf.format(Date())
                             newProjectParts.add(
                                 Participation(
@@ -288,7 +292,7 @@ fun ParticipationDetailsScreen(
                                     it.studentId == student.id && it.projectId == project.id
                                 }
 
-                                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
                                 val currentDate = sdf.format(Date())
                                 newChooseParts.add(
                                     Participation(

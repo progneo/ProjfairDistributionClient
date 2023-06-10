@@ -32,6 +32,7 @@ open class ParticipationDao(
 
             participation.priority = item.priority
             participation.projectId = item.projectId
+            participation.updatedAt = item.updatedAt
         }
     }
 
@@ -40,7 +41,7 @@ open class ParticipationDao(
             items.forEach { part ->
                 if (part.id == 0) {
                     val newId = query<Participation>().max<Int>("id").find()!! + 1
-                    val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
                     val currentDate = sdf.format(Date())
                     val newPart = Participation(
                         id = newId,
@@ -57,6 +58,7 @@ open class ParticipationDao(
 
                     participation.priority = part.priority
                     participation.projectId = part.projectId
+                    participation.updatedAt = part.updatedAt
                 }
             }
         }

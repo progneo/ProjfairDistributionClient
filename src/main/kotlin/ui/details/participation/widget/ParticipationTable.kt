@@ -91,7 +91,7 @@ fun ParticipationTableItem(
         Text(
             text = participation.priority.toString(),
             modifier = Modifier
-                .weight(1f)
+                .weight(1.5f)
                 .wrapContentWidth(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -99,7 +99,7 @@ fun ParticipationTableItem(
         Text(
             text = student?.group ?: "Не найдено",
             modifier = Modifier
-                .weight(2f)
+                .weight(1.5f)
                 .wrapContentWidth(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -132,13 +132,13 @@ fun ParticipationTableHead(
         Text(
             text = "Приоритет",
             modifier = Modifier
-                .weight(1f)
+                .weight(1.5f)
                 .wrapContentWidth()
         )
         Text(
             text = "Группа",
             modifier = Modifier
-                .weight(2f)
+                .weight(1.5f)
                 .wrapContentWidth()
         )
     }
@@ -183,7 +183,7 @@ fun ParticipationTable(
                 ),
 
             ) {
-            items(participations.value) { participation ->
+            items(participations.value.sortedWith(compareBy({ it.priority }, { it.updatedAt }))) { participation ->
                 ParticipationTableItem(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -194,7 +194,6 @@ fun ParticipationTable(
                         if (participationDetailsViewModel.selectedProjectStudents.value
                                 .map { it.id }.contains(student.id)
                         ) {
-                            println("${participationDetailsViewModel.selectedProjectStudents.value.map { it.id }} contains ${student.id}")
                             participationDetailsViewModel.selectedProjectStudents.value.remove(student)
                         } else {
                             participationDetailsViewModel.selectedProjectStudents.value.add(student)
