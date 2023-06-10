@@ -177,7 +177,19 @@ fun DataActionsDialog(
                 Spacer(Modifier.size(8.dp))
                 Button(
                     onClick = {
+                        val partLastIndex = reviewViewModel.getParticipationLastIndex()
+                        val oldParts = reviewViewModel.getAllParticipation().filter {
+                            it.id <= partLastIndex
+                        }
+                        val newParts = reviewViewModel.getAllParticipation().filter {
+                            it.id > partLastIndex
+                        }
 
+                        reviewViewModel.updateOnServer(
+                            insertParticipation = newParts,
+                            updateParticipation = oldParts,
+                            updateProjects = reviewViewModel.getAllProjectsFlow().value
+                        )
                     },
                     modifier = Modifier
                         .wrapContentSize()

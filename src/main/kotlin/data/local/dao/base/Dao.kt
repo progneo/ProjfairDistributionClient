@@ -39,7 +39,7 @@ abstract class Dao<T : Entity>(val realm: Realm) {
     }
 
     inline fun <reified R : Entity> getById(id: Int): R {
-        return realm.query<R>("id", id).find().first()
+        return realm.query<R>("id == $0", id).find().first()
     }
 
     inline fun <reified R : Entity> delete(item: T) {

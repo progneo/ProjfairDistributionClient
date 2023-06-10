@@ -1,17 +1,20 @@
 package ui.review.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
+import domain.model.Participation
+import domain.model.Project
 import domain.usecase.department.GetDepartmentsUseCase
 import domain.usecase.institute.GetInstitutesUseCase
 import domain.usecase.logging.GetLogsUseCase
 import domain.usecase.logging.SaveLogUseCase
-import domain.usecase.participation.GetParticipationsUseCase
-import domain.usecase.project.GetProjectsUseCase
-import domain.usecase.project.SyncProjectUseCase
-import domain.usecase.project.UpdateProjectUseCase
+import domain.usecase.participation.*
+import domain.usecase.project.*
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ui.common.BaseGodViewModel
 import ui.common.BaseGodViewModelType
 import ui.preview.widget.PreviewTabPage
@@ -27,7 +30,11 @@ class ReviewViewModel(
     private val getSupervisorsUseCase: GetSupervisorsUseCase,
     private val syncProjectUseCase: SyncProjectUseCase,
     private val getLogsUseCase: GetLogsUseCase,
-    private val saveLogUseCase: SaveLogUseCase
+    private val saveLogUseCase: SaveLogUseCase,
+    private val insertParticipationOnServerUseCase: InsertParticipationOnServerUseCase,
+    private val updateProjectsOnServerUseCase: UpdateProjectsOnServerUseCase,
+    private val updateParticipationOnServerUseCase: UpdateParticipationOnServerUseCase,
+    private val getParticipationLastIndexUseCase: GetParticipationLastIndexUseCase
 ) : BaseGodViewModel(
     getStudentsUseCase = getStudentsUseCase,
     getProjectsUseCase = getProjectsUseCase,
@@ -46,5 +53,21 @@ class ReviewViewModel(
 
     override fun getType(): BaseGodViewModelType {
         return BaseGodViewModelType.REVIEW
+    }
+
+    fun updateOnServer(
+        insertParticipation: List<Participation> = emptyList(),
+        updateProjects: List<Project> = emptyList(),
+        updateParticipation: List<Participation> = emptyList(),
+    ) {
+        coroutineScope.launch {
+            insertParticipationOnServerUseCase(insertParticipation)
+            updateProjectsOnServerUseCase(updateProjects)
+            updateParticipationOnServerUseCase(updateParticipation)
+        }
+    }
+
+    fun getParticipationLastIndex(): Int {
+        return getParticipationLastIndexUseCase()
     }
 }

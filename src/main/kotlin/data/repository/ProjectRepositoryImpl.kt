@@ -1,30 +1,28 @@
 package data.repository
 
-//import com.grapecity.documents.excel.drawing.b.it
 import common.date.getCurrentDateTime
 import data.local.dao.ProjectDao
 import data.mapper.projectResponseToProject
+import data.remote.api.AdminProjectFairApi
 import data.remote.api.OrdinaryProjectFairApi
-import di.Preview
 import domain.model.*
 import domain.repository.LoggingRepository
 import domain.repository.ProjectRepository
 import io.realm.kotlin.notifications.ResultsChange
-import io.realm.kotlin.types.RealmAny
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import java.util.UUID
+import java.util.*
 import javax.inject.Inject
 
 class ProjectRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val projectDao: ProjectDao,
     private val projectFairApi: OrdinaryProjectFairApi,
+    private val adminProjectFairApi: AdminProjectFairApi,
     private val loggingRepository: LoggingRepository,
 ) : ProjectRepository {
 
@@ -45,6 +43,10 @@ class ProjectRepositoryImpl @Inject constructor(
             logSource = LogSource.USER
         )
         return projectDao.update(project)
+    }
+
+    override suspend fun updateProjectOnServer(projects: List<Project>) {
+        //TODO: update on server
     }
 
     override suspend fun syncProjectById(id: Int): Project {

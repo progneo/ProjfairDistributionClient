@@ -96,6 +96,8 @@ class AlgorithmViewModel(
                     val projectsSpecialties = projectCopy.projectSpecialties
                     val newProjectSpecialties = mutableListOf<CleanProjectSpecialty>()
 
+                    var newId = -1
+
                     projectsSpecialties.forEach psp@{ psp ->
                         if (psp.course == null) {
                             val isNormal = psp.specialty.name.endsWith("б")
@@ -105,6 +107,7 @@ class AlgorithmViewModel(
                                     (1..2).forEach { pr ->
                                         newProjectSpecialties.add(
                                             psp.copy(
+                                                id = newId--,
                                                 course = number,
                                                 priority = pr
                                             )
@@ -113,6 +116,7 @@ class AlgorithmViewModel(
                                 } else {
                                     newProjectSpecialties.add(
                                         psp.copy(
+                                            id = newId--,
                                             course = number
                                         )
                                     )

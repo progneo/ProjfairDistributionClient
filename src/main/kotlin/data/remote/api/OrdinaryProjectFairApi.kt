@@ -5,6 +5,10 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface OrdinaryProjectFairApi {
+
+    @GET("departments")
+    suspend fun getDepartments(): List<DepartmentResponse>
+
     @GET("institutes")
     suspend fun getInstitutes(): List<InstituteResponse>
 

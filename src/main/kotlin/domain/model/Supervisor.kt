@@ -10,6 +10,7 @@ import ui.filter.FilterEntity
 open class Supervisor(
     @PrimaryKey override var id: Int,
     var roles: RealmList<SupervisorRole> = realmListOf(),
+
     override var name: String,
     var department: Department? = null,
 ): Entity(), RealmObject, FilterEntity {

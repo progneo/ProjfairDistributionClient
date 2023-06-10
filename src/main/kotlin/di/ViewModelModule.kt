@@ -112,7 +112,7 @@ interface ViewModelModule {
             getSupervisorsUseCase: GetSupervisorsUseCase,
             @Preview syncProjectUseCase: SyncProjectUseCase,
             getLogsUseCase: GetLogsUseCase,
-            saveLogUseCase: SaveLogUseCase
+            saveLogUseCase: SaveLogUseCase,
         ): PreviewViewModel {
             return PreviewViewModel(
                 getStudentsUseCase = getStudentsUseCase,
@@ -143,6 +143,10 @@ interface ViewModelModule {
             @Review syncProjectUseCase: SyncProjectUseCase,
             getLogsUseCase: GetLogsUseCase,
             saveLogUseCase: SaveLogUseCase,
+            insertParticipationOnServerUseCase: InsertParticipationOnServerUseCase,
+            updateProjectsOnServerUseCase: UpdateProjectsOnServerUseCase,
+            updateParticipationOnServerUseCase: UpdateParticipationOnServerUseCase,
+            getParticipationLastIndexUseCase: GetParticipationLastIndexUseCase
         ): ReviewViewModel {
             return ReviewViewModel(
                 getStudentsUseCase = getStudentsUseCase,
@@ -156,6 +160,10 @@ interface ViewModelModule {
                 syncProjectUseCase = syncProjectUseCase,
                 getLogsUseCase = getLogsUseCase,
                 saveLogUseCase = saveLogUseCase,
+                insertParticipationOnServerUseCase = insertParticipationOnServerUseCase,
+                updateProjectsOnServerUseCase = updateProjectsOnServerUseCase,
+                updateParticipationOnServerUseCase = updateParticipationOnServerUseCase,
+                getParticipationLastIndexUseCase = getParticipationLastIndexUseCase
             )
         }
 
@@ -171,7 +179,7 @@ interface ViewModelModule {
             insertParticipationsUseCase: InsertParticipationsUseCase,
             deleteAllStudentsUseCase: DeleteAllStudentsUseCase,
             deleteAllProjectsUseCase: DeleteAllProjectsUseCase,
-            deleteAllParticipationsUseCase: DeleteAllParticipationsUseCase
+            deleteAllParticipationsUseCase: DeleteAllParticipationsUseCase,
         ): AlgorithmViewModel {
             return AlgorithmViewModel(
                 getStudentsUseCase = getStudentsUseCase,
@@ -192,7 +200,7 @@ interface ViewModelModule {
         fun providePreviewParticipationDetailsViewModel(
             @Preview getParticipationsUseCase: GetParticipationsUseCase,
             @Preview getStudentsUseCase: GetStudentsUseCase,
-            @Preview updateParticipationUseCase: UpdateParticipationUseCase
+            @Preview updateParticipationUseCase: UpdateParticipationUseCase,
         ): ParticipationDetailsViewModel {
             return ParticipationDetailsViewModel(
                 getParticipationsUseCase = getParticipationsUseCase,
@@ -206,7 +214,7 @@ interface ViewModelModule {
         fun provideReviewParticipationDetailsViewModel(
             @Review getParticipationsUseCase: GetParticipationsUseCase,
             @Review getStudentsUseCase: GetStudentsUseCase,
-            @Review updateParticipationUseCase: UpdateParticipationUseCase
+            @Review updateParticipationUseCase: UpdateParticipationUseCase,
         ): ParticipationDetailsViewModel {
             return ParticipationDetailsViewModel(
                 getParticipationsUseCase = getParticipationsUseCase,

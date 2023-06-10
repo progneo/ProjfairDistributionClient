@@ -169,8 +169,7 @@ fun AlgorithmScreen(
                     val distributionResults = DistributionLauncher(
                         students = algorithmViewModel.students.value.toMutableList(),
                         projects = algorithmViewModel.projects.value.toMutableList(),
-                        //participations = algorithmViewModel.participations.value.toMutableList(),
-                        participations = mutableListOf(),
+                        participations = algorithmViewModel.participations.value.toMutableList(),
                         institutes = algorithmViewModel.institutes.value.toMutableList(),
                         distributionRule = DistributionRule(
                             maxPlaces = upperBoundary,

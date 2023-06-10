@@ -66,6 +66,7 @@ interface DatabaseModule {
                     LogTypeRealm::class,
                     LogSourceRealm::class,
                     Log::class,
+                    ParticipationSize::class
                 )
             ).name("review.realm").build()
 

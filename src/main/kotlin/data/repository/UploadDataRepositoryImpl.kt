@@ -1,11 +1,13 @@
 package data.repository
 
+import di.Review
 import domain.repository.*
+import io.realm.kotlin.Realm
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class UploadDataRepositoryImpl @Inject constructor(
+class UploadDataRepositoryImpl(
     private val ioDispatcher: CoroutineDispatcher,
     private val studentRepository: StudentRepository,
     private val projectRepository: ProjectRepository,
@@ -14,6 +16,7 @@ class UploadDataRepositoryImpl @Inject constructor(
     private val departmentRepository: DepartmentRepository,
     private val supervisorRepository: SupervisorRepository,
     private val loggingRepository: LoggingRepository,
+    private val realm: Realm
 ) : UploadDataRepository {
 
     override val studentsDownloadFlow = studentRepository.downloadFlow
@@ -38,6 +41,9 @@ class UploadDataRepositoryImpl @Inject constructor(
 
     override suspend fun rebaseData() {
         coroutineScope.launch {
+            realm.writeBlocking {
+                deleteAll()
+            }
             loggingRepository.deleteAll()
             studentRepository.rebaseStudents()
             projectRepository.rebaseProjects()

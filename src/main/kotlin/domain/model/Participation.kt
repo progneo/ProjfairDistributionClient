@@ -3,6 +3,7 @@ package domain.model
 import domain.model.base.Entity
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
+import ui.details.participation.viewmodel.ParticipationDetailsViewModel.Companion.projectId
 
 open class Participation(
     @PrimaryKey override var id: Int,
@@ -30,5 +31,17 @@ open class Participation(
                 "projectId=$projectId," +
                 "priority=$priority" +
                 "}"
+    }
+}
+
+open class ParticipationSize(
+    @PrimaryKey override var id: Int,
+    var participationLastId: Int
+) : RealmObject, LoggingEntity() {
+
+    constructor() : this(0, 0)
+
+    override fun members(): List<Any?> {
+        return listOf(id, participationLastId)
     }
 }

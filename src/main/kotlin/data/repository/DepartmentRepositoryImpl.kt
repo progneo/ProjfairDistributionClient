@@ -1,5 +1,6 @@
 package data.repository
 
+import com.grapecity.documents.excel.drawing.b.it
 import data.local.dao.DepartmentDao
 import data.mapper.departmentResponseToDepartment
 import data.remote.api.AdminProjectFairApi
@@ -17,7 +18,6 @@ class DepartmentRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val departmentDao: DepartmentDao,
     private val projectFairApi: OrdinaryProjectFairApi,
-    private val adminProjectFairApi: AdminProjectFairApi,
 ) : DepartmentRepository {
 
     override val downloadFlow = MutableStateFlow<Float>(0f)
@@ -52,7 +52,7 @@ class DepartmentRepositoryImpl @Inject constructor(
 
     override suspend fun uploadDepartments() {
         withContext(ioDispatcher) {
-            val departments = adminProjectFairApi.getDepartments().map { departmentResponseToDepartment(it)!! }
+            val departments = projectFairApi.getDepartments().map { departmentResponseToDepartment(it)!! }
             insertDepartment(departments)
             downloadFlow.value = 1f
         }
