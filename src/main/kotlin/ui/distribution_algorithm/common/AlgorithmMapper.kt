@@ -93,7 +93,8 @@ fun Participation.toAlgorithmModel(): AlgorithmParticipation {
         studentId = this.studentId,
         stateId = 0,
         studentNumz = this.studentNumz,
-        studentName = this.studentName
+        studentName = this.studentName,
+        updatedAt = this.updatedAt
     )
 }
 
@@ -104,7 +105,8 @@ fun AlgorithmParticipation.fromAlgorithmModel(): Participation {
         projectId = this.projectId,
         studentId = this.studentId,
         studentNumz = this.studentNumz,
-        studentName = this.studentName
+        studentName = this.studentName,
+        updatedAt = this.updatedAt
     )
 }
 

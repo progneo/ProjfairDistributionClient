@@ -12,12 +12,13 @@ open class Participation(
     var studentName: String,
     var projectId: Int,
     var priority: Int,
+    var updatedAt: String,
 ) : RealmObject, LoggingEntity() {
 
-    constructor() : this(0, 0, 0, "", 0, 0)
+    constructor() : this(0, 0, 0, "", 0, 0, "")
 
     override fun members(): List<Any?> {
-        return listOf(id, studentId, projectId, priority)
+        return listOf(id, studentId, projectId, priority, updatedAt)
     }
 
     override fun toLog(): String {
@@ -30,6 +31,7 @@ open class Participation(
                 "studentId=$studentId," +
                 "projectId=$projectId," +
                 "priority=$priority" +
+                "updatedAt=$updatedAt" +
                 "}"
     }
 }

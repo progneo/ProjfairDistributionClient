@@ -7,5 +7,6 @@ data class ParticipationResponse(
     val priority: Int,
     @SerializedName("project_id") val projectId: String,
     @SerializedName("candidate_id") val candidateId: String,
-    val candidate: StudentParticipationResponse? = null
+    val candidate: StudentParticipationResponse? = null,
+    @SerializedName("updated_at") val updatedAt: String
 )

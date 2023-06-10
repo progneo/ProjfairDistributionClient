@@ -31,6 +31,8 @@ import ui.details.participation.widget.ChooseParticipationTable
 import ui.details.participation.widget.ParticipationTable
 import ui.filter.FilterNode
 import ui.filter.FilterType
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun ParticipationDetailsScreen(
@@ -154,13 +156,17 @@ fun ParticipationDetailsScreen(
                                     it.studentId == student.id && it.projectId == project.id
                                 }!!
 
+                                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                val currentDate = sdf.format(Date())
+
                                 val tempParticipation = Participation(
                                     id = foundPart.id,
                                     studentId = student.id,
                                     studentNumz = student.numz,
                                     studentName = student.name,
                                     projectId = participationDetailsViewModel.currentProject!!.id,
-                                    priority = 1
+                                    priority = 1,
+                                    updatedAt = currentDate
                                 )
                                 newParts.add(tempParticipation)
                             }
@@ -198,6 +204,8 @@ fun ParticipationDetailsScreen(
                             val foundPart = participationDetailsViewModel.requiredParticipation.value.find {
                                 it.studentId == student.id && it.projectId == participationDetailsViewModel.currentProject?.id
                             }
+                            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            val currentDate = sdf.format(Date())
                             newParts.add(
                                 Participation(
                                     id = foundPart?.id ?: 0,
@@ -205,7 +213,8 @@ fun ParticipationDetailsScreen(
                                     studentNumz = student.numz,
                                     studentName = student.name,
                                     projectId = project.id,
-                                    priority = 1
+                                    priority = 1,
+                                    updatedAt = currentDate
                                 )
                             )
                         }
@@ -252,6 +261,8 @@ fun ParticipationDetailsScreen(
                                 it.studentId == student.id && it.projectId == participationDetailsViewModel.currentProject?.id
                             }
 
+                            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                            val currentDate = sdf.format(Date())
                             newProjectParts.add(
                                 Participation(
                                     id = foundPart?.id ?: 0,
@@ -259,7 +270,8 @@ fun ParticipationDetailsScreen(
                                     studentNumz = student.numz,
                                     studentName = student.name,
                                     projectId = project.id,
-                                    priority = 1
+                                    priority = 1,
+                                    updatedAt = currentDate
                                 )
                             )
                         }
@@ -276,6 +288,8 @@ fun ParticipationDetailsScreen(
                                     it.studentId == student.id && it.projectId == project.id
                                 }
 
+                                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                val currentDate = sdf.format(Date())
                                 newChooseParts.add(
                                     Participation(
                                         id = foundPart?.id ?: 0,
@@ -283,7 +297,8 @@ fun ParticipationDetailsScreen(
                                         studentNumz = student.numz,
                                         studentName = student.name,
                                         projectId = participationDetailsViewModel.currentProject!!.id,
-                                        priority = 1
+                                        priority = 1,
+                                        updatedAt = currentDate
                                     )
                                 )
                             }

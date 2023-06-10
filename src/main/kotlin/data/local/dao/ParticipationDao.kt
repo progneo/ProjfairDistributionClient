@@ -9,6 +9,9 @@ import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.query.max
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
 import javax.inject.Inject
 
 class PreviewParticipationDao @Inject constructor(
@@ -37,13 +40,16 @@ open class ParticipationDao(
             items.forEach { part ->
                 if (part.id == 0) {
                     val newId = query<Participation>().max<Int>("id").find()!! + 1
+                    val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    val currentDate = sdf.format(Date())
                     val newPart = Participation(
                         id = newId,
                         studentId = part.studentId,
                         studentNumz = part.studentNumz,
                         studentName = part.studentName,
                         projectId = part.projectId,
-                        priority = part.priority
+                        priority = part.priority,
+                        updatedAt = currentDate
                     )
                     copyToRealm(newPart, UpdatePolicy.ALL)
                 } else {

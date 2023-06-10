@@ -9,6 +9,7 @@ fun participationToParticipationResponse(participation: Participation): Particip
         id = participation.id,
         projectId = participation.projectId.toString(),
         priority = participation.priority,
-        candidateId = participation.studentId.toString()
+        candidateId = participation.studentId.toString(),
+        updatedAt = participation.updatedAt
     )
 }

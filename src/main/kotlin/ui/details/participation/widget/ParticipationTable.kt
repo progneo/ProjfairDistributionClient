@@ -35,6 +35,10 @@ import ui.common.BaseGodViewModel
 import ui.details.participation.viewmodel.ParticipationDetailsViewModel
 import ui.details.project.di.ProjectDetailsComponent
 import ui.preview.viewmodel.PreviewViewModel
+import java.text.DateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private const val KEY = "PROJECT_PARTICIPATION"
 
@@ -51,6 +55,9 @@ fun ParticipationTableItem(
     }
 
     if (participationDetailsViewModel.selectedProjectStudents.value.isEmpty()) isSelected = false
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX")
+    val date = LocalDate.parse(participation.updatedAt, formatter)
 
     Row(
         modifier = modifier
@@ -69,14 +76,22 @@ fun ParticipationTableItem(
         Text(
             text = student?.name ?: "Не найдено",
             modifier = Modifier
-                .fillMaxWidth(0.6f),
+                .weight(4f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+            modifier = Modifier
+                .weight(3f)
+                .wrapContentWidth(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Text(
             text = participation.priority.toString(),
             modifier = Modifier
-                .fillMaxWidth(0.5f)
+                .weight(1f)
                 .wrapContentWidth(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -84,7 +99,7 @@ fun ParticipationTableItem(
         Text(
             text = student?.group ?: "Не найдено",
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(2f)
                 .wrapContentWidth(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -105,19 +120,25 @@ fun ParticipationTableHead(
         Text(
             text = "ФИО",
             modifier = Modifier
-                .fillMaxWidth(0.6f)
+                .weight(4f)
+                .wrapContentWidth()
+        )
+        Text(
+            text = "Дата",
+            modifier = Modifier
+                .weight(3f)
                 .wrapContentWidth()
         )
         Text(
             text = "Приоритет",
             modifier = Modifier
-                .fillMaxWidth(0.5f)
+                .weight(1f)
                 .wrapContentWidth()
         )
         Text(
             text = "Группа",
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(2f)
                 .wrapContentWidth()
         )
     }

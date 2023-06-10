@@ -10,6 +10,7 @@ fun participationResponseToParticipation(participation: ParticipationResponse): 
         studentNumz = participation.candidate?.numz!!.toInt(),
         studentName = participation.candidate.fio,
         projectId = participation.projectId.toInt(),
-        priority = participation.priority
+        priority = participation.priority,
+        updatedAt = participation.updatedAt
     )
 }
