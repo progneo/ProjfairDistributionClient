@@ -12,9 +12,7 @@ import domain.usecase.project.*
 import domain.usecase.specialty.GetSpecialtiesUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.supervisor.GetSupervisorsUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import ui.common.BaseGodViewModel
 import ui.common.BaseGodViewModelType
 import ui.preview.widget.PreviewTabPage
@@ -51,6 +49,12 @@ class ReviewViewModel(
 
     var reviewTabPage = mutableStateOf(PreviewTabPage.Students)
 
+    private val newCoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        println(exception)
+    }
+
     override fun getType(): BaseGodViewModelType {
         return BaseGodViewModelType.REVIEW
     }
@@ -60,14 +64,18 @@ class ReviewViewModel(
         updateProjects: List<Project> = emptyList(),
         updateParticipation: List<Participation> = emptyList(),
     ) {
-        coroutineScope.launch {
-            insertParticipationOnServerUseCase(insertParticipation)
+        newCoroutineScope.launch(exceptionHandler) {
+            //insertParticipationOnServerUseCase(insertParticipation)
             updateProjectsOnServerUseCase(updateProjects)
-            updateParticipationOnServerUseCase(updateParticipation)
+            updateParticipationOnServerUseCase(updateParticipation+insertParticipation)
         }
     }
 
     fun getParticipationLastIndex(): Int {
         return getParticipationLastIndexUseCase()
+    }
+
+    fun stopLoading() {
+        newCoroutineScope.coroutineContext.cancelChildren()
     }
 }

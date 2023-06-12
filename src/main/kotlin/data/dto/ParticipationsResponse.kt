@@ -1,6 +1,6 @@
 package data.dto
 
 data class ParticipationsResponse(
-    val data: List<ParticipationResponse>,
+    val data: List<ParticipationStateObjectResponse>,
     val participationCount: Int
 )

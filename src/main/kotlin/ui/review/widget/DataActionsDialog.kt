@@ -28,6 +28,7 @@ import domain.model.DistributionResults
 import domain.model.Student
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ui.distribution_algorithm.widget.AlgorithmDialog
 import ui.review.viewmodel.ReviewViewModel
 import java.io.File
 
@@ -39,6 +40,7 @@ fun DataActionsDialog(
     onDismissRequest: () -> Unit,
 ) {
     val defaultPathText = "Выберите папку для выгрузки"
+    var showLoading by remember { mutableStateOf(false) }
 
     val filePathText = remember {
         mutableStateOf<String?>(null)
@@ -177,6 +179,7 @@ fun DataActionsDialog(
                 Spacer(Modifier.size(8.dp))
                 Button(
                     onClick = {
+                        showLoading = true
                         val partLastIndex = reviewViewModel.getParticipationLastIndex()
                         val oldParts = reviewViewModel.getAllParticipation().filter {
                             it.id <= partLastIndex
@@ -206,6 +209,14 @@ fun DataActionsDialog(
                 }
                 Spacer(Modifier.size(24.dp))
             }
+
+            ServerUploadDialog(
+                visible = showLoading,
+                onDismissRequest = {
+                    reviewViewModel.stopLoading()
+                    showLoading = false
+                }
+            )
 
             DirectoryPicker(
                 show = showDirPicker,

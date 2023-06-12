@@ -47,8 +47,7 @@ class ParticipationRepositoryImpl(
 
     override suspend fun updateParticipationOnServer(participation: List<Participation>) {
         participation.forEach {
-            adminProjectFairApi.updateParticipation(
-                it.id,
+            adminProjectFairApi.createOrUpdateParticipation(
                 participationToParticipationResponse(it)
             )
         }
@@ -138,7 +137,7 @@ class ParticipationRepositoryImpl(
                 deleteParticipation(it.value.participation, true)
             }
 
-            participationSizeDao.insert(ParticipationSize(0, participations.last().id))
+            participationSizeDao.insert(ParticipationSize(0, participations.maxOfOrNull { it.id }!!))
         }
     }
 
@@ -150,7 +149,9 @@ class ParticipationRepositoryImpl(
             insertParticipation(newParticipations)
             downloadFlow.value = 1f
 
-            participationSizeDao.insert(ParticipationSize(0, participations.last().id))
+            participations.maxOfOrNull { it.id }?.let {
+                participationSizeDao.insert(ParticipationSize(0, it))
+            }
         }
     }
 }

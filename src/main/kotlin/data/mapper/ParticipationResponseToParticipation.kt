@@ -1,9 +1,9 @@
 package data.mapper
 
-import data.dto.ParticipationResponse
+import data.dto.ParticipationStateObjectResponse
 import domain.model.Participation
 
-fun participationResponseToParticipation(participation: ParticipationResponse): Participation {
+fun participationResponseToParticipation(participation: ParticipationStateObjectResponse): Participation {
     return Participation(
         id = participation.id,
         studentId = participation.candidateId.toInt(),
@@ -11,6 +11,7 @@ fun participationResponseToParticipation(participation: ParticipationResponse): 
         studentName = participation.candidate.fio,
         projectId = participation.projectId.toInt(),
         priority = participation.priority,
-        updatedAt = participation.updatedAt
+        updatedAt = participation.updatedAt,
+        state = participation.state.id
     )
 }

@@ -1,8 +1,6 @@
 package data.remote.api
 
-import data.dto.DepartmentResponse
-import data.dto.ParticipationResponse
-import data.dto.ProjectResponse
+import data.dto.*
 import domain.model.Participation
 import retrofit2.http.*
 
@@ -11,12 +9,17 @@ interface AdminProjectFairApi {
     @PATCH("participations/{id}")
     suspend fun updateParticipation(
         @Path("id") id: Int,
-        @Body participation: ParticipationResponse
+        @Body participation: ParticipationStateIntResponse
     )
 
     @POST("participations")
     suspend fun createParticipation(
-        @Body participation: ParticipationResponse
+        @Body participation: ParticipationStateIntResponse
+    )
+
+    @POST("participations/updateOrCreate")
+    suspend fun createOrUpdateParticipation(
+        @Body participation: ParticipationStateIntResponse
     )
 
     @PATCH("projects/{id}")

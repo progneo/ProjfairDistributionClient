@@ -51,7 +51,6 @@ class AlgorithmViewModel(
     private fun getStudents() {
         coroutineScope.launch {
             getStudentsUseCase().collect {
-                val parts = participations.value.map { p -> p.studentId }
                 students.value = it.list.map { s -> s.toAlgorithmModel() }
                 println("CRINGE ${it.list.size} == ${students.value.size}")
                 println("SET ${participations.value.map { p -> p.studentId }.toSet().size}")

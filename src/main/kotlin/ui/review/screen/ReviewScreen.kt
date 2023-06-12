@@ -19,6 +19,7 @@ import navigation.ScreenRoute
 import ui.details.project.widget.EditableSearchField
 import ui.distribution_algorithm.common.toAlgorithmModel
 import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
+import ui.distribution_algorithm.widget.AlgorithmDialog
 import ui.filter.FilterConfigurationBlock
 import ui.preview.widget.*
 import ui.preview.widget.filter.ProjectFilterDialog

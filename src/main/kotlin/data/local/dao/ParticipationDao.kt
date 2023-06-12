@@ -50,7 +50,8 @@ open class ParticipationDao(
                         studentName = part.studentName,
                         projectId = part.projectId,
                         priority = part.priority,
-                        updatedAt = currentDate
+                        updatedAt = currentDate,
+                        state = 1
                     )
                     copyToRealm(newPart, UpdatePolicy.ALL)
                 } else {

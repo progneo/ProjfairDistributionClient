@@ -168,7 +168,8 @@ fun ParticipationDetailsScreen(
                                     studentName = student.name,
                                     projectId = participationDetailsViewModel.currentProject!!.id,
                                     priority = 1,
-                                    updatedAt = currentDate
+                                    updatedAt = currentDate,
+                                    state = 2
                                 )
                                 newParts.add(tempParticipation)
                             }
@@ -218,7 +219,8 @@ fun ParticipationDetailsScreen(
                                     studentName = student.name,
                                     projectId = project.id,
                                     priority = 1,
-                                    updatedAt = currentDate
+                                    updatedAt = currentDate,
+                                    state = 2
                                 )
                             )
                         }
@@ -275,7 +277,8 @@ fun ParticipationDetailsScreen(
                                     studentName = student.name,
                                     projectId = project.id,
                                     priority = 1,
-                                    updatedAt = currentDate
+                                    updatedAt = currentDate,
+                                    state = 2
                                 )
                             )
                         }
@@ -302,7 +305,8 @@ fun ParticipationDetailsScreen(
                                         studentName = student.name,
                                         projectId = participationDetailsViewModel.currentProject!!.id,
                                         priority = 1,
-                                        updatedAt = currentDate
+                                        updatedAt = currentDate,
+                                        state = 2
                                     )
                                 )
                             }

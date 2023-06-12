@@ -91,7 +91,7 @@ fun Participation.toAlgorithmModel(): AlgorithmParticipation {
         priority = this.priority,
         projectId = this.projectId,
         studentId = this.studentId,
-        stateId = 0,
+        stateId = this.state,
         studentNumz = this.studentNumz,
         studentName = this.studentName,
         updatedAt = this.updatedAt
@@ -106,7 +106,8 @@ fun AlgorithmParticipation.fromAlgorithmModel(): Participation {
         studentId = this.studentId,
         studentNumz = this.studentNumz,
         studentName = this.studentName,
-        updatedAt = this.updatedAt
+        updatedAt = this.updatedAt,
+        state = this.stateId
     )
 }
 

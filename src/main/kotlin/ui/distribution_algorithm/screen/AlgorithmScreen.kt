@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.grapecity.documents.excel.drawing.b.it
 import common.compose.BorderedTitledComposable
 import common.theme.BlueMainLight
 import common.theme.WhiteDark
@@ -150,26 +151,12 @@ fun AlgorithmScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 enabled = upperBoundary != 0 && lowerBoundary != 0 && upperBoundary >= lowerBoundary
             ) {
-
-
-//            distributionResults.institutesResults.forEach { instituteResults ->
-//                ExportDataToExcel.writeProjectsWithStudents(
-//                    students = algorithmViewModel.students.toList(),
-//                    notApplied = instituteResults.notAppliedStudents,
-//                    projects = instituteResults.projects,
-//                    participations = instituteResults.participation,
-//                    institute = instituteResults.institute,
-//                    isUniformly = true,
-//                    filePath = "E:/yadmin/"
-//                )
-//            }
-
                 coroutineScope.launch(Dispatchers.Default) {
                     showLoading = true
                     val distributionResults = DistributionLauncher(
                         students = algorithmViewModel.students.value.toMutableList(),
                         projects = algorithmViewModel.projects.value.toMutableList(),
-                        participations = algorithmViewModel.participations.value.toMutableList(),
+                        participations = algorithmViewModel.participations.value.map { it.stateId=0; it }.toMutableList(),
                         institutes = algorithmViewModel.institutes.value.toMutableList(),
                         distributionRule = DistributionRule(
                             maxPlaces = upperBoundary,

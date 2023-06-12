@@ -5,11 +5,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 abstract class BaseClient {
 
-    abstract val BASE_URL: String
+    abstract fun getBaseUrl(): String
 
     private fun getOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
@@ -22,7 +23,7 @@ abstract class BaseClient {
 
     fun getRetrofitClient(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(getBaseUrl())
             .client(getOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .build()
@@ -30,11 +31,18 @@ abstract class BaseClient {
 }
 
 object OrdinaryClient: BaseClient() {
-//    override val BASE_URL = "https://projfair.istu.edu/api/"
-    override val BASE_URL = "http://62.109.5.123/api/"
+
+    override fun getBaseUrl(): String {
+        return File("server_url.txt").bufferedReader().use {
+            it.readText()
+        }
+    }
 }
 
 object AdminClient: BaseClient() {
-    //override val BASE_URL = "https://projfair.istu.edu/api/admin/"
-    override val BASE_URL = "http://62.109.5.123/api/admin/"
+    override fun getBaseUrl(): String {
+        return File("server_url.txt").bufferedReader().use {
+            it.readText()+"admin/"
+        }
+    }
 }
