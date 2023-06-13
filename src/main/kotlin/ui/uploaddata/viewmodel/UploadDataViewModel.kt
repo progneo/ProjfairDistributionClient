@@ -16,9 +16,10 @@ import domain.usecase.supervisor.UploadSupervisorsUseCase
 import domain.usecase.uploaddata.CancelOperationsUseCase
 import domain.usecase.uploaddata.RebaseDataUseCase
 import domain.usecase.uploaddata.SyncDataUseCase
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import ui.uploaddata.contract.UploadDataContract
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class UploadDataViewModel(
@@ -44,53 +45,79 @@ class UploadDataViewModel(
     val departmentsDownloadFlow = downloadProgressInteractor.departmentsDownloadFlow
     val supervisorsDownloadFlow = downloadProgressInteractor.supervisorsDownloadFlow
 
+    val error = MutableStateFlow("")
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+        println(exception)
+        error.value = exception.toString()
+    }
+
+    private var newCoroutineScope = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler)
+
+    private fun updateCoroutineScope() {
+        if (!newCoroutineScope.isActive) {
+            newCoroutineScope = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler)
+        }
+    }
+
     fun syncData() {
-        coroutineScope.launch {
+        updateCoroutineScope()
+        newCoroutineScope.launch {
             syncDataUseCase()
         }
     }
 
     fun rebaseData() {
-        coroutineScope.launch {
+        updateCoroutineScope()
+        newCoroutineScope.launch {
             rebaseDataUseCase()
         }
     }
 
     fun syncByDownloadType(downloadType: DownloadType) {
-        coroutineScope.launch {
+        updateCoroutineScope()
+        newCoroutineScope.launch {
             when (downloadType) {
                 DownloadType.STUDENTS -> {
                     syncStudentsUseCase()
                 }
+
                 DownloadType.PROJECTS -> {
                     syncProjectsUseCase()
                 }
+
                 DownloadType.PARTICIPATIONS -> {
                     syncParticipationUseCase()
                 }
+
                 else -> {}
             }
         }
     }
 
     fun rebaseByDownloadType(downloadType: DownloadType) {
-        coroutineScope.launch {
+        updateCoroutineScope()
+        newCoroutineScope.launch {
             when (downloadType) {
                 DownloadType.STUDENTS -> {
                     rebaseStudentsUseCase()
                 }
+
                 DownloadType.PROJECTS -> {
                     rebaseProjectsUseCase()
                 }
+
                 DownloadType.PARTICIPATIONS -> {
                     rebaseParticipationUseCase()
                 }
+
                 DownloadType.DEPARTMENTS -> {
                     uploadDepartmentsUseCase()
                 }
+
                 DownloadType.SUPERVISORS -> {
                     uploadSupervisorsUseCase()
                 }
+
                 DownloadType.INSTITUTES -> {
                     uploadInstitutesUseCase()
                 }
@@ -99,18 +126,12 @@ class UploadDataViewModel(
     }
 
     fun cancelOperations() {
-        coroutineScope.launch {
-            cancelOperationsUseCase()
-        }
+        cancelOperationsUseCase()
+        newCoroutineScope.coroutineContext.cancelChildren()
     }
 }
 
-enum class DataActionType {
-    SYNC,
-    REBASE
-}
-
-enum class DownloadType(val title: String, val isMutable: Boolean, val order: Int): Comparator<DownloadType> {
+enum class DownloadType(val title: String, val isMutable: Boolean, val order: Int) : Comparator<DownloadType> {
     STUDENTS("Студенты", true, 0),
     PROJECTS("Проекты", true, 1),
     PARTICIPATIONS("Заявки", true, 2),

@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import common.compose.VisibleDialog
 import common.theme.BlueMainLight
 import common.theme.BlueMainLight25
-import ui.uploaddata.viewmodel.DataActionType
 import ui.uploaddata.viewmodel.DownloadType
 
 @Composable

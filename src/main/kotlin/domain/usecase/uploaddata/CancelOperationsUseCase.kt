@@ -8,7 +8,7 @@ class CancelOperationsUseCase(
     private val uploadDataRepository: UploadDataRepository
 ) {
 
-    suspend operator fun invoke() {
+    operator fun invoke() {
         uploadDataRepository.stopOperations()
     }
 }

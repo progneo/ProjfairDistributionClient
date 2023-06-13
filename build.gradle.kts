@@ -82,7 +82,7 @@ compose.desktop {
         nativeDistributions {
             includeAllModules = true
             targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi)
-            packageName = "Adminka"
+            packageName = "YarmarkaARM"
             packageVersion = "1.0.0"
             outputBaseDir.set(project.buildDir.resolve("E:/"))
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))

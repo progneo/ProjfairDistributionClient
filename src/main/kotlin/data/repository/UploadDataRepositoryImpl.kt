@@ -16,7 +16,7 @@ class UploadDataRepositoryImpl(
     private val departmentRepository: DepartmentRepository,
     private val supervisorRepository: SupervisorRepository,
     private val loggingRepository: LoggingRepository,
-    private val realm: Realm
+    private val realm: Realm,
 ) : UploadDataRepository {
 
     override val studentsDownloadFlow = studentRepository.downloadFlow
@@ -26,36 +26,29 @@ class UploadDataRepositoryImpl(
     override val departmentsDownloadFlow = departmentRepository.downloadFlow
     override val supervisorsDownloadFlow = supervisorRepository.downloadFlow
 
-    val coroutineScope = CoroutineScope(ioDispatcher)
-
     override suspend fun syncData() {
-        coroutineScope.launch {
-            studentRepository.syncStudents()
-            projectRepository.syncProjects()
-            participationRepository.syncParticipations()
-            instituteRepository.uploadInstitutes()
-            departmentRepository.uploadDepartments()
-            supervisorRepository.uploadSupervisors()
-        }
+        studentRepository.syncStudents()
+        projectRepository.syncProjects()
+        participationRepository.syncParticipations()
+        instituteRepository.uploadInstitutes()
+        departmentRepository.uploadDepartments()
+        supervisorRepository.uploadSupervisors()
     }
 
     override suspend fun rebaseData() {
-        coroutineScope.launch {
-            realm.writeBlocking {
-                deleteAll()
-            }
-            loggingRepository.deleteAll()
-            studentRepository.rebaseStudents()
-            projectRepository.rebaseProjects()
-            participationRepository.rebaseParticipations()
-            instituteRepository.uploadInstitutes()
-            departmentRepository.uploadDepartments()
-            supervisorRepository.uploadSupervisors()
+        realm.writeBlocking {
+            deleteAll()
         }
+        loggingRepository.deleteAll()
+        studentRepository.rebaseStudents()
+        projectRepository.rebaseProjects()
+        participationRepository.rebaseParticipations()
+        instituteRepository.uploadInstitutes()
+        departmentRepository.uploadDepartments()
+        supervisorRepository.uploadSupervisors()
     }
 
     override fun stopOperations() {
-        coroutineScope.coroutineContext.cancelChildren()
         studentRepository.downloadFlow.value = 0f
         projectRepository.downloadFlow.value = 0f
         participationRepository.downloadFlow.value = 0f

@@ -211,6 +211,7 @@ fun ChooseParticipationTable(
             showBackButton = showBackButton,
             showOutStudentsButton = showOutStudentsButton,
             onShowOutStudentsClicked = {
+                participationDetailsViewModel.clearSelectedChooseStudents()
                 showOutStudentsButton = false
                 val currentFilterNode = filterStack.last()
                 val newFilterNode = FilterNode(
@@ -227,14 +228,23 @@ fun ChooseParticipationTable(
                 currentFilterTitle = filterStack.last().type.title
             },
             onBackClicked = {
+                participationDetailsViewModel.clearSelectedChooseStudents()
                 if (filterStack.last().selectedValue != null || filterStack.last().type == FilterType.OUT_STUDENTS) {
                     filterStack.removeLast()
+                    println("===========")
+                    filterStack.forEach(::println)
+                    println("===========")
                     val filterValue = filterStack.last().selectedValue
                     currentItems = viewModel.getValuesByType(
                         filterType = filterStack.last().type,
                         institute = filterValue as? Institute,
                         department = filterValue as? Department,
-                        project = filterValue as? Project
+                        project = if (filterValue is Student) {
+                            filterStack[filterStack.size - 2].selectedValue as Project
+                        } else {
+                            filterValue as? Project
+                        },
+                        requiredParticipation = requiredParticipation
                     )
                     currentFilterTitle = filterStack.last().type.title
                 }
@@ -259,9 +269,13 @@ fun ChooseParticipationTable(
 
             ) {
             items(currentItems) { item ->
-                onNodeOpened(filterStack.last().type == FilterType.STUDENT, filterStack.last().type == FilterType.OUT_STUDENTS)
+                onNodeOpened(
+                    filterStack.last().type == FilterType.STUDENT,
+                    filterStack.last().type == FilterType.OUT_STUDENTS
+                )
                 participationDetailsViewModel.currentProject = filterStack.last().selectedValue as? Project
-                showBackButton = filterStack.last().selectedValue != null || filterStack.last().type == FilterType.OUT_STUDENTS
+                showBackButton =
+                    filterStack.last().selectedValue != null || filterStack.last().type == FilterType.OUT_STUDENTS
                 ChooseParticipationTableItem(
                     modifier = Modifier
                         .fillMaxWidth(),

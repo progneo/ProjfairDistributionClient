@@ -12,11 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.theme.WhiteDark
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import navigation.NavController
 import ui.uploaddata.viewmodel.DownloadType
 import ui.uploaddata.viewmodel.UploadDataViewModel
 import ui.uploaddata.widget.DownloadProgressDialog
+import ui.uploaddata.widget.ErrorDialog
 import ui.uploaddata.widget.UpdateDataButton
 
 @Composable
@@ -28,6 +30,8 @@ fun UploadDataScreen(
         modifier = Modifier.fillMaxSize().background(WhiteDark)
     ) {
         var showDownloadProgress by remember { mutableStateOf(false) }
+        var showError by remember { mutableStateOf(false) }
+        var errorText by remember { mutableStateOf("") }
 
         var studentsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.studentsDownloadFlow.value) }
         var projectsDownloadProgress by remember { mutableStateOf(uploadDataViewModel.projectsDownloadFlow.value) }
@@ -102,6 +106,15 @@ fun UploadDataScreen(
                 supervisorsDownloadProgress = downloadProgress
                 if (downloadProgressStateMap[DownloadType.SUPERVISORS] != null) {
                     downloadProgressStateMap[DownloadType.SUPERVISORS] = downloadProgress
+                }
+            }
+        }
+
+        rememberCoroutineScope().launch {
+            uploadDataViewModel.error.collect { errorString ->
+                if (errorString != "") {
+                    errorText = errorString
+                    showError = true
                 }
             }
         }
@@ -183,6 +196,17 @@ fun UploadDataScreen(
                 uploadDataViewModel.cancelOperations()
                 showDownloadProgress = false
             }
+        )
+
+        ErrorDialog(
+            visible = showError,
+            errorText = errorText,
+             onDismissRequest = {
+                 showError = false
+                 showDownloadProgress = false
+                 errorText = ""
+                 uploadDataViewModel.error.value = ""
+             }
         )
     }
 }

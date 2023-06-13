@@ -192,6 +192,17 @@
     *;
 }
 
+-keep class ui.filter.FilterEntity {
+    # TODO OPTIMIZE Only keep actually required symbols
+    *;
+}
+
+-keep class kotlin.reflect.jvm.internal.** { *; }
+-keep class ru.student.distribution.classes.** { *; }
+-keep class kotlin.Metadata { *; }
+-dontnote kotlin.internal.PlatformImplementationsKt
+-dontnote kotlin.reflect.jvm.internal.**
+
 # Un-comment for debugging
 #-printconfiguration /tmp/full-r8-config.txt
 #-keepattributes LineNumberTable,SourceFile
