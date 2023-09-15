@@ -15,13 +15,13 @@ interface OrdinaryProjectFairApi {
     @GET("candidates")
     suspend fun getCandidates(): List<StudentResponse>
 
-    @GET("projects/filter?state=[2]&pageSize=max")
+    @GET("projects/filter?state=[5]&pageSize=max")
     suspend fun getProjects(): ProjectsResponse
 
     @GET("projects/{id}")
     suspend fun getProjectById(@Path("id") id: Int): ProjectResponse
 
-    @GET("participations/filter?state=[2]&pageSize=max")
+    @GET("participations/filter?state=[1]&pageSize=max")
     suspend fun getParticipations(): ParticipationsResponse
 
     @GET("specialities")
