@@ -39,7 +39,7 @@ dependencies {
     api("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 
-    implementation("com.github.mal1s:algorithm-student-distribution:2.0.2")
+    implementation("com.github.mal1s:algorithm-student-distribution:2.0.4")
 
     implementation("io.realm.kotlin:library-sync:1.8.0")
     implementation("io.realm.kotlin:library-base:1.8.0")
