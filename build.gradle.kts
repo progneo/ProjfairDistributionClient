@@ -83,7 +83,7 @@ compose.desktop {
             targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Msi)
             packageName = "YarmarkaARM"
             packageVersion = "1.0.0"
-            outputBaseDir.set(project.buildDir.resolve("E:/"))
+            outputBaseDir.set(project.buildDir.resolve("C:/"))
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
             windows {
                 msiPackageVersion = "1.0.0"
