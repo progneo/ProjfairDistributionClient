@@ -1,8 +1,11 @@
 package data.remote.api
 
 import data.dto.*
+import data.enums.ParticipationState
+import data.enums.ProjectState
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface OrdinaryProjectFairApi {
 
@@ -15,14 +18,22 @@ interface OrdinaryProjectFairApi {
     @GET("candidates")
     suspend fun getCandidates(): List<StudentResponse>
 
-    @GET("projects/filter?state=[5]&pageSize=max")
-    suspend fun getProjects(): ProjectsResponse
+    @GET("projects/filter")
+    suspend fun getProjects(
+        @Query("state") states: String = arrayListOf(ProjectState.UNDER_CONSIDERATION.id)
+            .joinToString(",", "[", "]"),
+        @Query("pageSize") pageSize: String = "max"
+    ): ProjectsResponse
 
     @GET("projects/{id}")
     suspend fun getProjectById(@Path("id") id: Int): ProjectResponse
 
-    @GET("participations/filter?state=[1]&pageSize=max")
-    suspend fun getParticipations(): ParticipationsResponse
+    @GET("participations/filter")
+    suspend fun getParticipations(
+        @Query("state") states: String = arrayListOf(ParticipationState.DISTRIBUTION.id)
+            .joinToString(",", "[", "]"),
+        @Query("pageSize") pageSize: String = "max"
+    ): ParticipationsResponse
 
     @GET("specialities")
     suspend fun getSpecialties(): List<SpecialtyResponse>
