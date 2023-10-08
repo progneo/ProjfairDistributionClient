@@ -4,7 +4,6 @@ import base.mvi.BaseViewModel
 import domain.model.Participation
 import domain.model.Project
 import domain.model.Student
-import domain.usecase.participation.DeleteParticipationUseCase
 import domain.usecase.participation.GetParticipationsUseCase
 import domain.usecase.participation.UpdateParticipationUseCase
 import domain.usecase.student.GetStudentsUseCase
@@ -72,11 +71,13 @@ class ParticipationDetailsViewModel @Inject constructor(
     }
 
     fun setProjectParticipation(participation: List<Participation>) {
-        projectParticipation.value = participation.sortedWith(compareBy({ it.priority }, { it.studentName })).toMutableList()
+        projectParticipation.value =
+            participation.sortedWith(compareBy({ it.priority }, { it.studentName })).toMutableList()
     }
 
     fun setRequiredParticipation(participation: List<Participation>) {
-        requiredParticipation.value = participation.sortedWith(compareBy({ it.priority }, { it.studentName })).toMutableList()
+        requiredParticipation.value =
+            participation.sortedWith(compareBy({ it.priority }, { it.studentName })).toMutableList()
     }
 
     fun setOutStudents(students: List<Student>) {
@@ -93,7 +94,7 @@ class ParticipationDetailsViewModel @Inject constructor(
 
     fun updateParticipation() {
         coroutineScope.launch {
-            updateParticipationUseCase(requiredParticipation.value)
+            updateParticipationUseCase(projectParticipation.value)
         }
     }
 }
