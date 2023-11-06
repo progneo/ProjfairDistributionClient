@@ -1,9 +1,9 @@
 package common.file
 
 import com.grapecity.documents.excel.Workbook
-import org.apache.poi.ss.usermodel.WorkbookFactory
 import domain.model.*
 import io.realm.kotlin.ext.realmListOf
+import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -25,8 +25,11 @@ object ExportDataToExcel {
         isUniformly: Boolean = false,
         filePath: String,
     ) {
-        val finalPath = if (isUniformly) "$filePath/равномерно_${institute.name.unify()}.xlsx"
-        else "$filePath/${institute.name.unify()}.xlsx"
+        val finalPath = if (isUniformly) {
+            "$filePath/равномерно_${institute.name.unify()}.xlsx"
+        } else {
+            "$filePath/${institute.name.unify()}.xlsx"
+        }
 
         val workBook = Workbook()
 
@@ -42,10 +45,12 @@ object ExportDataToExcel {
             val partsCount = participations.count { it.projectId == project.id }
 
             workSheetStats.getRange("A$statIndex:F$statIndex").value =
-                arrayOf(project.name,
+                arrayOf(
+                    project.name,
                     project.id,
                     partsCount,
-                    if (partsCount == 0) "0%" else "${(participations.count { it.projectId == project.id && it.priority == 5 } / partsCount.toDouble() * 100).toInt()}%")
+                    if (partsCount == 0) "0%" else "${(participations.count { it.projectId == project.id && it.priority == 5 } / partsCount.toDouble() * 100).toInt()}%",
+                )
             statIndex++
         }
 
@@ -61,7 +66,7 @@ object ExportDataToExcel {
                 student.name,
                 student.group,
                 student.numz,
-                student.course
+                student.course,
             )
             studIndex++
         }
@@ -91,7 +96,7 @@ object ExportDataToExcel {
                     project.customer,
                     project.supervisors.toString().replace("[", "").replace("]", ""),
                     project.projectSpecialties.map { ps -> ps.specialty?.name }.toSet()
-                        .toString().replace("[", "").replace("]", "")
+                        .toString().replace("[", "").replace("]", ""),
                 )
             participationIndexExcel++
 
@@ -108,7 +113,7 @@ object ExportDataToExcel {
                     student.id,
                     p.priority,
                     if (p.priority == 5) "Молчун" else if (p.priority == 4) "Не попал на свои проекты по заявкам" else "Активный",
-                    student.course
+                    student.course,
                 )
                 participationIndexExcel++
             }
@@ -134,40 +139,48 @@ object ExportDataToExcel {
         val workSheetStats = workBook.worksheets.get(0)
         workSheetStats.name = "Статистика по студентам"
         workSheetStats.getRange("A$statIndex:F$statIndex").value =
-            arrayOf("project.id", "project.title", "supervisor.fio", "supervisor.id", "candidate.numz", "candidate.fio", "candidate.name")
+            arrayOf(
+                "project.id",
+                "project.title",
+                "supervisor.fio",
+                "supervisor.id",
+                "candidate.numz",
+                "candidate.fio",
+                "candidate.name",
+            )
 
         statIndex++
 
         for (project in projects) {
-            val supervisors = project.supervisors + if (project.supervisors.isEmpty())
+            val supervisors = project.supervisors + if (project.supervisors.isEmpty()) {
                 listOf(
                     Supervisor(
                         id = -1,
                         name = "Нет руководителя",
                         department = Department(id = 0, name = "", institute = Institute(0, "")),
-                        roles = realmListOf()
-                    )
+                        roles = realmListOf(),
+                    ),
                 )
-            else emptyList()
+            } else {
+                emptyList()
+            }
 
             val parts = participations.filter { part -> part.projectId == project.id }
 
-            for (supervisor in supervisors) {
-                for (part in parts) {
-                    val student = students.find { stud -> stud.id == part.studentId }!!
+            for (part in parts) {
+                val student = students.find { stud -> stud.id == part.studentId }!!
 
-                    workSheetStats.getRange("A$statIndex:G$statIndex").value =
-                        arrayOf(
-                            project.id,
-                            project.name,
-                            supervisor.name,
-                            supervisor.id,
-                            student.numz,
-                            student.name,
-                            institute.name
-                        )
-                    statIndex++
-                }
+                workSheetStats.getRange("A$statIndex:G$statIndex").value =
+                    arrayOf(
+                        project.id,
+                        project.name,
+                        supervisors.joinToString(", ") { supervisor -> supervisor.name },
+                        supervisors.joinToString(", ") { supervisor -> supervisor.id.toString() },
+                        student.numz,
+                        student.name,
+                        institute.name,
+                    )
+                statIndex++
             }
         }
 
@@ -187,8 +200,11 @@ object ExportDataToExcel {
 
         book.removeSheetAt(lastSheetNumber)
         File(newFilePath).mkdir()
-        val f = if (isUniformly) File("$newFilePath/равномерно_$institute.xlsx")
-        else File("$newFilePath/$institute.xlsx")
+        val f = if (isUniformly) {
+            File("$newFilePath/равномерно_$institute.xlsx")
+        } else {
+            File("$newFilePath/$institute.xlsx")
+        }
         File(filePath).delete()
         f.createNewFile()
         val outputStream = FileOutputStream(f)
