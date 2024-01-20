@@ -9,14 +9,13 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 abstract class BaseClient {
-
     abstract fun getBaseUrl(): String
 
     private fun getOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(180, TimeUnit.SECONDS)
+            .readTimeout(180, TimeUnit.SECONDS)
+            .writeTimeout(180, TimeUnit.SECONDS)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
     }
@@ -30,8 +29,7 @@ abstract class BaseClient {
     }
 }
 
-object OrdinaryClient: BaseClient() {
-
+object OrdinaryClient : BaseClient() {
     override fun getBaseUrl(): String {
         return File("server_url.txt").bufferedReader().use {
             it.readText()
@@ -39,10 +37,10 @@ object OrdinaryClient: BaseClient() {
     }
 }
 
-object AdminClient: BaseClient() {
+object AdminClient : BaseClient() {
     override fun getBaseUrl(): String {
         return File("server_url.txt").bufferedReader().use {
-            it.readText()+"admin/"
+            it.readText() + "admin/"
         }
     }
 }
