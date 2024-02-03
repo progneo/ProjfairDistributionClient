@@ -101,7 +101,7 @@ object ExportDataToExcel {
                     project.id,
                     project.name,
                     project.customer,
-                    project.supervisors.toString().replace("[", "").replace("]", ""),
+                    project.supervisors.joinToString { it.name },
                     project.projectSpecialties.map { ps -> ps.specialty?.name }.toSet()
                         .toString().replace("[", "").replace("]", ""),
                 )
