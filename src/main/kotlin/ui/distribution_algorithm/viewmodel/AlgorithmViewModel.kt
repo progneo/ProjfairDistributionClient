@@ -15,14 +15,9 @@ import domain.usecase.student.DeleteAllStudentsUseCase
 import domain.usecase.student.GetStudentsUseCase
 import domain.usecase.student.InsertStudentUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import ru.student.distribution.model.DistributionResults
-import ru.student.distribution.model.InstituteResults
-import ru.student.distribution.model.Participation
 import ui.distribution_algorithm.common.*
-import javax.inject.Inject
 
 class AlgorithmViewModel(
     private val getStudentsUseCase: GetStudentsUseCase,
@@ -36,13 +31,16 @@ class AlgorithmViewModel(
     private val deleteAllProjectsUseCase: DeleteAllProjectsUseCase,
     private val deleteAllParticipationsUseCase: DeleteAllParticipationsUseCase,
 ) : BaseViewModel() {
-
     val students = MutableStateFlow<List<AlgorithmStudent>>(emptyList())
     val projects = MutableStateFlow<List<AlgorithmProject>>(emptyList())
     val participations = MutableStateFlow<List<AlgorithmParticipation>>(emptyList())
     val institutes = MutableStateFlow<List<AlgorithmInstitute>>(emptyList())
 
     init {
+        getAllData()
+    }
+
+    private fun getAllData() {
         getParticipations()
         getProjects()
         getInstitutes()
@@ -52,9 +50,6 @@ class AlgorithmViewModel(
         coroutineScope.launch {
             getStudentsUseCase().collect {
                 students.value = it.list.map { s -> s.toAlgorithmModel() }
-                println("CRINGE ${it.list.size} == ${students.value.size}")
-                println("SET ${participations.value.map { p -> p.studentId }.toSet().size}")
-                println("CRINGE OLD = ${participations.value.size}")
             }
         }
     }
@@ -64,34 +59,37 @@ class AlgorithmViewModel(
             getProjectsUseCase().collect {
                 val temp = mutableListOf<CleanProject>()
                 it.list.forEach { project ->
-                    val projectCopy = CleanProject(
-                        id = project.id,
-                        name = project.name,
-                        places = project.places,
-                        freePlaces = project.freePlaces,
-                        goal = project.goal,
-                        description = project.description,
-                        difficulty = project.difficulty,
-                        dateStart = project.dateStart,
-                        dateEnd = project.dateEnd,
-                        customer = project.customer,
-                        productResult = project.productResult,
-                        studyResult = project.studyResult,
-                        department = project.department ?: Department(
-                            id = -1,
-                            name = "-1",
-                            institute = Institute(-1, "-1")
-                        ),
-                        supervisors = project.supervisors.toList(),
-                        projectSpecialties = project.projectSpecialties.map { oldPsp ->
-                            CleanProjectSpecialty(
-                                id = oldPsp.id,
-                                course = oldPsp.course,
-                                specialty = oldPsp.specialty!!,
-                                priority = oldPsp.priority
-                            )
-                        }
-                    )
+                    val projectCopy =
+                        CleanProject(
+                            id = project.id,
+                            name = project.name,
+                            places = project.places,
+                            freePlaces = project.freePlaces,
+                            goal = project.goal,
+                            description = project.description,
+                            difficulty = project.difficulty,
+                            dateStart = project.dateStart,
+                            dateEnd = project.dateEnd,
+                            customer = project.customer,
+                            productResult = project.productResult,
+                            studyResult = project.studyResult,
+                            department =
+                                project.department ?: Department(
+                                    id = -1,
+                                    name = "-1",
+                                    institute = Institute(-1, "-1"),
+                                ),
+                            supervisors = project.supervisors.toList(),
+                            projectSpecialties =
+                                project.projectSpecialties.map { oldPsp ->
+                                    CleanProjectSpecialty(
+                                        id = oldPsp.id,
+                                        course = oldPsp.course,
+                                        specialty = oldPsp.specialty!!,
+                                        priority = oldPsp.priority,
+                                    )
+                                },
+                        )
                     val projectsSpecialties = projectCopy.projectSpecialties
                     val newProjectSpecialties = mutableListOf<CleanProjectSpecialty>()
 
@@ -108,16 +106,16 @@ class AlgorithmViewModel(
                                             psp.copy(
                                                 id = newId--,
                                                 course = number,
-                                                priority = pr
-                                            )
+                                                priority = pr,
+                                            ),
                                         )
                                     }
                                 } else {
                                     newProjectSpecialties.add(
                                         psp.copy(
                                             id = newId--,
-                                            course = number
-                                        )
+                                            course = number,
+                                        ),
                                     )
                                 }
                             }
@@ -128,8 +126,8 @@ class AlgorithmViewModel(
 
                     temp.add(
                         projectCopy.copy(
-                            projectSpecialties = newProjectSpecialties
-                        )
+                            projectSpecialties = newProjectSpecialties,
+                        ),
                     )
                 }
                 projects.value = temp.map { p -> p.toAlgorithmModel() }
@@ -176,8 +174,9 @@ class AlgorithmViewModel(
     }
 
     fun insertNewParticipation(participation: List<AlgorithmParticipation>) {
+        getAllData()
         insertStudents()
-        insertProjects()
         insertParticipation(participation)
+        insertProjects()
     }
 }

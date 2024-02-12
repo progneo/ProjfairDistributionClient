@@ -2,8 +2,6 @@ package ui.preview.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,13 +64,15 @@ fun PreviewScreen(
         }
     }
 
-    val specialtySelected = remember {
-        mutableStateOf(false)
-    }
+    val specialtySelected =
+        remember {
+            mutableStateOf(false)
+        }
 
-    val instituteSelected = remember {
-        mutableStateOf(false)
-    }
+    val instituteSelected =
+        remember {
+            mutableStateOf(false)
+        }
 
     val studentFilterConfiguration = previewViewModel.studentFilterConfiguration.collectAsState()
     val projectFilterConfiguration = previewViewModel.projectFilterConfiguration.collectAsState()
@@ -83,8 +83,9 @@ fun PreviewScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                 ) {
                     Row {
                         TabHome(
@@ -94,17 +95,18 @@ fun PreviewScreen(
                             onSelectedTab = {
                                 previewViewModel.previewTabPage.value = it as PreviewTabPage
                                 previewTabPage = it
-                            }
+                            },
                         )
 
                         if (previewTabPage == Students) {
                             RadioButtonGroupRow(
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                titles = listOf(
-                                    Title(Enrolled.title, Enrolled.name),
-                                    Title(Uncounted.title, Uncounted.name)
-                                ),
-                                selected = studentTabPageToIndex()
+                                titles =
+                                    listOf(
+                                        Title(Enrolled.title, Enrolled.name),
+                                        Title(Uncounted.title, Uncounted.name),
+                                    ),
+                                selected = studentTabPageToIndex(),
                             ) {
                                 studentsTabPage = StudentsTabPage.fromString(it.name!!)
                             }
@@ -115,9 +117,10 @@ fun PreviewScreen(
                         Students -> {
                             Row {
                                 FilterConfigurationBlock(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically),
-                                    studentFilterConfiguration.value
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.CenterVertically),
+                                    studentFilterConfiguration.value,
                                 ) {
                                     showFilter = true
                                 }
@@ -128,13 +131,13 @@ fun PreviewScreen(
                                     content = "Поиск",
                                     onDataChanged = { searchString ->
                                         previewViewModel.lastSearchStudentString.value = searchString
-                                    }
+                                    },
                                 )
                                 Spacer(Modifier.size(24.dp))
                                 BaseButton(
                                     modifier = Modifier.align(Alignment.CenterVertically),
                                     icon = FontAwesomeIcons.Solid.ClipboardList,
-                                    requiredSize = DpSize(50.dp, 50.dp)
+                                    requiredSize = DpSize(50.dp, 50.dp),
                                 ) {
                                     showLogging = true
                                 }
@@ -144,9 +147,10 @@ fun PreviewScreen(
                         Projects -> {
                             Row {
                                 FilterConfigurationBlock(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically),
-                                    projectFilterConfiguration.value
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.CenterVertically),
+                                    projectFilterConfiguration.value,
                                 ) {
                                     showFilter = true
                                 }
@@ -157,13 +161,13 @@ fun PreviewScreen(
                                     content = "Поиск",
                                     onDataChanged = { searchString ->
                                         previewViewModel.lastSearchProjectString.value = searchString
-                                    }
+                                    },
                                 )
                                 Spacer(Modifier.size(24.dp))
                                 BaseButton(
                                     modifier = Modifier.align(Alignment.CenterVertically),
                                     icon = FontAwesomeIcons.Solid.ClipboardList,
-                                    requiredSize = DpSize(50.dp, 50.dp)
+                                    requiredSize = DpSize(50.dp, 50.dp),
                                 ) {
                                     showLogging = true
                                 }
@@ -189,16 +193,17 @@ fun PreviewScreen(
                         val project = previewViewModel.getProjectById(projectId)
 
                         if (project != null) {
-                            val bundle = Bundle().apply {
-                                put("project", project)
-                            }
+                            val bundle =
+                                Bundle().apply {
+                                    put("project", project)
+                                }
                             navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle, previewViewModel)
                         }
                     },
                     onSpecialtyClicked = {
                         specialtySelected.value = !specialtySelected.value
                         previewViewModel.filterStudentsBySpecialty(specialtySelected.value)
-                    }
+                    },
                 )
             }
 
@@ -209,20 +214,22 @@ fun PreviewScreen(
                     navController = navController,
                     baseGodViewModel = previewViewModel,
                     instituteSelected = instituteSelected.value,
+                    isReview = false,
                     onInstituteClicked = {
                         instituteSelected.value = !instituteSelected.value
                         previewViewModel.filterProjectsByInstitute(instituteSelected.value)
-                    }
+                    },
                 )
             }
         }
 
         ProjectFilterDialog(
             visible = showFilter,
-            instituteFilterConfiguration = when (previewTabPage) {
-                Students -> studentFilterConfiguration.value.copy()
-                Projects -> projectFilterConfiguration.value.copy()
-            },
+            instituteFilterConfiguration =
+                when (previewTabPage) {
+                    Students -> studentFilterConfiguration.value.copy()
+                    Projects -> projectFilterConfiguration.value.copy()
+                },
             viewModel = previewViewModel,
             onApplyClicked = { filterConfig ->
                 when (previewTabPage) {
@@ -239,7 +246,7 @@ fun PreviewScreen(
             },
             onDismissRequest = {
                 showFilter = false
-            }
+            },
         )
 
         LoggingDialog(
@@ -249,7 +256,7 @@ fun PreviewScreen(
             projects = previewViewModel.getAllProjectsFlow().value,
             onDismissRequest = {
                 showLogging = false
-            }
+            },
         )
     }
 }

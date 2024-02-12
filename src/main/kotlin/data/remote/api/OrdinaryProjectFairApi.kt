@@ -8,7 +8,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface OrdinaryProjectFairApi {
-
     @GET("departments")
     suspend fun getDepartments(): List<DepartmentResponse>
 
@@ -20,19 +19,23 @@ interface OrdinaryProjectFairApi {
 
     @GET("projects/filter")
     suspend fun getProjects(
-        @Query("state") states: String = arrayListOf(ProjectState.UNDER_CONSIDERATION.id)
-            .joinToString(",", "[", "]"),
-        @Query("pageSize") pageSize: String = "max"
+        @Query("state") states: String =
+            arrayListOf(ProjectState.COLLECT_PARTICIPATION.id)
+                .joinToString(",", "[", "]"),
+        @Query("pageSize") pageSize: String = "max",
     ): ProjectsResponse
 
     @GET("projects/{id}")
-    suspend fun getProjectById(@Path("id") id: Int): ProjectResponse
+    suspend fun getProjectById(
+        @Path("id") id: Int,
+    ): ProjectResponse
 
     @GET("participations/filter")
     suspend fun getParticipations(
-        @Query("state") states: String = arrayListOf(ParticipationState.DISTRIBUTION.id)
-            .joinToString(",", "[", "]"),
-        @Query("pageSize") pageSize: String = "max"
+        @Query("state") states: String =
+            arrayListOf(ParticipationState.DISTRIBUTION.id)
+                .joinToString(",", "[", "]"),
+        @Query("pageSize") pageSize: String = "max",
     ): ParticipationsResponse
 
     @GET("specialities")

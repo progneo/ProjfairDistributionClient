@@ -28,6 +28,7 @@ import compose.icons.TablerIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.SortAlphaDown
 import compose.icons.tablericons.ArrowsSort
+import domain.model.Participation
 import domain.model.Project
 import kotlinx.coroutines.launch
 import navigation.Bundle
@@ -43,31 +44,77 @@ fun ProjectTableItem(
     project: Project,
 ) {
     Row(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier =
+            modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Text(
             text = project.name,
-            modifier = Modifier
-                .fillMaxWidth(0.6f),
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.6f),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         Text(
-            text = project.freePlaces.toString(),
-            modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .wrapContentWidth(),
+            text = "${project.places}",
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.3f)
+                    .wrapContentWidth(),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
         Text(
             text = project.department?.institute?.name ?: "",
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+fun ProjectReviewTableItem(
+    modifier: Modifier = Modifier,
+    project: Project,
+    participationList: List<Participation>,
+) {
+    val silentParticipationsCount = participationList.filter { it.priority == 5 }.size
+
+    Row(
+        modifier =
+            modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        Text(
+            text = project.name,
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.6f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text = "${participationList.size}(${participationList.size - silentParticipationsCount}:$silentParticipationsCount)/${project.places}",
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.3f)
+                    .wrapContentWidth(),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text = project.department?.institute?.name ?: "",
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
@@ -76,46 +123,52 @@ fun ProjectTableItem(
 fun ProjectTableHead(
     modifier: Modifier = Modifier,
     instituteSelected: Boolean,
+    isReview: Boolean,
     onInstituteClicked: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
-            .background(GrayLight)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+                .background(GrayLight)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = "Название",
-            modifier = Modifier
-                .fillMaxWidth(0.6f)
-                .wrapContentWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.6f)
+                    .wrapContentWidth(),
         )
         Text(
-            text = "Свободные места",
-            modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .wrapContentWidth()
+            text = if (isReview) "Занятые места" else "Количество мест",
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.3f)
+                    .wrapContentWidth(),
         )
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onInstituteClicked()
-                }
-                .wrapContentWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onInstituteClicked()
+                    }
+                    .wrapContentWidth(),
         ) {
             Text(
                 text = "Институт",
-                modifier = Modifier
-                    .wrapContentWidth()
+                modifier =
+                    Modifier
+                        .wrapContentWidth(),
             )
             Spacer(Modifier.size(8.dp))
             Icon(
                 modifier = Modifier.size(20.dp, 20.dp),
                 imageVector = if (instituteSelected) FontAwesomeIcons.Solid.SortAlphaDown else TablerIcons.ArrowsSort,
                 contentDescription = null,
-                tint = BlueMainDark
+                tint = BlueMainDark,
             )
         }
     }
@@ -128,77 +181,108 @@ fun ProjectTable(
     navController: NavController,
     baseGodViewModel: BaseGodViewModel,
     instituteSelected: Boolean,
+    isReview: Boolean,
     onInstituteClicked: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .border(
-                BorderStroke(2.dp, BlueMainLight),
-                RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
-            )
+        modifier =
+            modifier
+                .fillMaxSize()
+                .border(
+                    BorderStroke(2.dp, BlueMainLight),
+                    RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+                ),
     ) {
         ProjectTableHead(
             modifier = Modifier.fillMaxWidth(),
             instituteSelected = instituteSelected,
-            onInstituteClicked = onInstituteClicked
+            isReview = isReview,
+            onInstituteClicked = onInstituteClicked,
         )
 
         val scrollState = rememberForeverLazyListState(KEY)
         val coroutineScope = rememberCoroutineScope()
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
         ) {
             LazyColumn(
                 state = scrollState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .draggable(
-                        orientation = Orientation.Vertical,
-                        state = rememberDraggableState { delta ->
-                            coroutineScope.launch {
-                                scrollState.scrollBy(-delta)
-                            }
-                        }
-                    ),
-
-                ) {
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .draggable(
+                            orientation = Orientation.Vertical,
+                            state =
+                                rememberDraggableState { delta ->
+                                    coroutineScope.launch {
+                                        scrollState.scrollBy(-delta)
+                                    }
+                                },
+                        ),
+            ) {
                 items(projects) { project ->
-                    ProjectTableItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                val bundle = Bundle().apply {
-                                    put("project", project)
-                                }
-                                println(bundle)
-                                navController.navigate(
-                                    ScreenRoute.PROJECT_DETAILS,
-                                    bundle,
-                                    baseGodViewModel
-                                )
-                            },
-                        project = project
-                    )
+                    if (isReview) {
+                        ProjectReviewTableItem(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        val bundle =
+                                            Bundle().apply {
+                                                put("project", project)
+                                            }
+                                        println(bundle)
+                                        navController.navigate(
+                                            ScreenRoute.PROJECT_DETAILS,
+                                            bundle,
+                                            baseGodViewModel,
+                                        )
+                                    },
+                            project = project,
+                            participationList = baseGodViewModel.getParticipationListWithProjectId(project.id),
+                        )
+                    } else {
+                        ProjectTableItem(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        val bundle =
+                                            Bundle().apply {
+                                                put("project", project)
+                                            }
+                                        println(bundle)
+                                        navController.navigate(
+                                            ScreenRoute.PROJECT_DETAILS,
+                                            bundle,
+                                            baseGodViewModel,
+                                        )
+                                    },
+                            project = project,
+                        )
+                    }
                     Divider()
                 }
             }
 
             VerticalScrollbar(
                 modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(
-                    scrollState = scrollState
-                ),
-                style = ScrollbarStyle(
-                    minimalHeight = LocalScrollbarStyle.current.minimalHeight,
-                    thickness = 16.dp,
-                    shape = LocalScrollbarStyle.current.shape,
-                    hoverDurationMillis = LocalScrollbarStyle.current.hoverDurationMillis,
-                    unhoverColor = LocalScrollbarStyle.current.unhoverColor,
-                    hoverColor = LocalScrollbarStyle.current.hoverColor
-                )
+                adapter =
+                    rememberScrollbarAdapter(
+                        scrollState = scrollState,
+                    ),
+                style =
+                    ScrollbarStyle(
+                        minimalHeight = LocalScrollbarStyle.current.minimalHeight,
+                        thickness = 16.dp,
+                        shape = LocalScrollbarStyle.current.shape,
+                        hoverDurationMillis = LocalScrollbarStyle.current.hoverDurationMillis,
+                        unhoverColor = LocalScrollbarStyle.current.unhoverColor,
+                        hoverColor = LocalScrollbarStyle.current.hoverColor,
+                    ),
             )
         }
     }

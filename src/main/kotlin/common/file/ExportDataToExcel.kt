@@ -123,7 +123,7 @@ object ExportDataToExcel {
                         if (p.priority == 5) {
                             "Молчун"
                         } else if (p.priority == 4) {
-                            "Не попал на свои проекты по заявкам"
+                            "Автоматическая заявка"
                         } else {
                             "Активный"
                         },

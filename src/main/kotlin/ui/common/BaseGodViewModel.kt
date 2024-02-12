@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import ui.distribution_algorithm.common.toAlgorithmModel
 import ui.filter.FilterEntity
 import ui.filter.FilterType
 import ui.preview.widget.StudentsTabPage
@@ -28,7 +27,7 @@ import ui.preview.widget.filter.StudentFilterApplier
 enum class BaseGodViewModelType {
     PREVIEW,
     REVIEW,
-    NONE
+    NONE,
 }
 
 open class BaseGodViewModel(
@@ -44,7 +43,6 @@ open class BaseGodViewModel(
     private val getLogsUseCase: GetLogsUseCase,
     private val saveLogUseCase: SaveLogUseCase,
 ) : BaseViewModel() {
-
     private val _students = MutableStateFlow<List<Student>>(emptyList())
     private val _projects = MutableStateFlow<List<Project>>(emptyList())
     private val _participations = MutableStateFlow<List<Participation>>(emptyList())
@@ -83,15 +81,14 @@ open class BaseGodViewModel(
     var lastSearchProjectString = MutableStateFlow("")
     var searchProjectString = lastSearchProjectString.debounce(400)
 
-
     var lastSearchSupervisorString = MutableStateFlow("")
     var searchSupervisorString = lastSearchStudentString.debounce(400)
     val searchSupervisors = MutableStateFlow<List<Supervisor>>(emptyList())
 
     init {
         getStudents()
-        getProjects()
         getParticipations()
+        getProjects()
         getInstitutes()
         getDepartments()
         getSpecialties()
@@ -136,18 +133,6 @@ open class BaseGodViewModel(
                 filterProjects(projectFilterConfiguration.value)
                 fillDepartmentsWithProjects()
                 fillInstitutesWithProjects()
-
-//                withContext(Dispatchers.Default) {
-//                    File("E:/BULLSHIT/output.txt").createNewFile()
-//
-//                    File("E:/BULLSHIT/output.txt").printWriter().use { out ->
-//                        it.list.forEach { proj ->
-//                            if (proj.department == null) {
-//                                out.println("projId = ${proj.id}, projName = \"${proj.name.take(30)}...\", supervisors = ${proj.supervisors}")
-//                            }
-//                        }
-//                    }
-//                }
             }
         }
     }
@@ -172,9 +157,10 @@ open class BaseGodViewModel(
             filteredDepartments.value = listOf(Department.Base) + _departments.value
             return
         }
-        filteredDepartments.value = listOf(Department.Base) + _departments.value.filter { dep ->
-            dep.institute?.id == institute.id
-        }
+        filteredDepartments.value = listOf(Department.Base) +
+            _departments.value.filter { dep ->
+                dep.institute?.id == institute.id
+            }
     }
 
     private fun fillDepartmentsWithProjects() {
@@ -236,8 +222,11 @@ open class BaseGodViewModel(
         return _participations.value
     }
 
-    fun updateParticipation(participation: Participation) {
+    fun getParticipationListWithProjectId(projectId: Int): List<Participation> {
+        return _participations.value.filter { it.projectId == projectId }
+    }
 
+    fun updateParticipation(participation: Participation) {
     }
 
     private fun getSupervisors() {
@@ -249,13 +238,14 @@ open class BaseGodViewModel(
     }
 
     fun filterSupervisors() {
-        searchSupervisors.value = _supervisors.value.filter { supervisor ->
-            supervisor.name
-                .lowercase()
-                .contains(lastSearchSupervisorString.value.lowercase())
-        }.sortedBy { supervisor ->
-            supervisor.name
-        }
+        searchSupervisors.value =
+            _supervisors.value.filter { supervisor ->
+                supervisor.name
+                    .lowercase()
+                    .contains(lastSearchSupervisorString.value.lowercase())
+            }.sortedBy { supervisor ->
+                supervisor.name
+            }
     }
 
     private fun getLogs() {
@@ -288,7 +278,10 @@ open class BaseGodViewModel(
         return _projects.value.find { proj -> proj.id == projectId }
     }
 
-    fun syncProject(id: Int, onDataAction: (Project) -> Unit) {
+    fun syncProject(
+        id: Int,
+        onDataAction: (Project) -> Unit,
+    ) {
         coroutineScope.launch {
             syncProjectUseCase(id).collect {
                 onDataAction(it)
@@ -304,10 +297,10 @@ open class BaseGodViewModel(
                 _filteredStudentsWithParticipationsByDepartments.value.sortedWith(
                     compareBy(
                         { it.specialty?.name },
-                        { it.name })
+                        { it.name },
+                    ),
                 )
             filterStudentsByString(lastSearchStudentString.value)
-
 
             _studentsWithoutParticipations.value =
                 _studentsWithoutParticipations.value.sortedWith(compareBy({ it.specialty?.name }, { it.name }))
@@ -329,37 +322,45 @@ open class BaseGodViewModel(
         _filteredStudentsWithParticipations.value =
             _filteredStudentsWithParticipationsByDepartments.value.filter { student ->
                 student.name.lowercase().contains(search) ||
-                        student.group.lowercase().contains(search) ||
-                        student.numz.toString().lowercase().contains(search) ||
-                        student.specialty!!.name.lowercase().contains(search)
+                    student.group.lowercase().contains(search) ||
+                    student.numz.toString().lowercase().contains(search) ||
+                    student.specialty!!.name.lowercase().contains(search)
             }
         _filteredStudentsWithoutParticipations.value =
             _filteredStudentsWithoutParticipationsByDepartments.value.filter { student ->
                 student.name.lowercase().contains(search) ||
-                        student.group.lowercase().contains(search) ||
-                        student.numz.toString().lowercase().contains(search) ||
-                        student.specialty!!.name.lowercase().contains(search)
+                    student.group.lowercase().contains(search) ||
+                    student.numz.toString().lowercase().contains(search) ||
+                    student.specialty!!.name.lowercase().contains(search)
             }
     }
 
     fun filterStudents(instituteFilterConfiguration: InstituteFilterConfiguration) {
         val institute =
-            if (instituteFilterConfiguration.selectedInstitute is Institute.Base) null
-            else instituteFilterConfiguration.selectedInstitute
+            if (instituteFilterConfiguration.selectedInstitute is Institute.Base) {
+                null
+            } else {
+                instituteFilterConfiguration.selectedInstitute
+            }
         val department =
-            if (instituteFilterConfiguration.selectedDepartment is Department.Base) null
-            else instituteFilterConfiguration.selectedDepartment
+            if (instituteFilterConfiguration.selectedDepartment is Department.Base) {
+                null
+            } else {
+                instituteFilterConfiguration.selectedDepartment
+            }
 
-        val newStudentsWithParticipations = StudentFilterApplier.applyAndGet(
-            students = _studentsWithParticipations.value,
-            institute = institute,
-            department = department
-        )
-        val newStudentsWithoutParticipations = StudentFilterApplier.applyAndGet(
-            students = _studentsWithoutParticipations.value,
-            institute = institute,
-            department = department
-        )
+        val newStudentsWithParticipations =
+            StudentFilterApplier.applyAndGet(
+                students = _studentsWithParticipations.value,
+                institute = institute,
+                department = department,
+            )
+        val newStudentsWithoutParticipations =
+            StudentFilterApplier.applyAndGet(
+                students = _studentsWithoutParticipations.value,
+                institute = institute,
+                department = department,
+            )
         _filteredStudentsWithParticipationsByDepartments.value = newStudentsWithParticipations
         _filteredStudentsWithoutParticipationsByDepartments.value = newStudentsWithoutParticipations
         filterStudentsByString(lastSearchStudentString.value)
@@ -368,28 +369,36 @@ open class BaseGodViewModel(
     fun filterProjectsByString(searchString: String) {
         val search = searchString.lowercase()
         lastSearchProjectString.value = search
-        filteredProjects.value = _filteredProjectsByDepartments.value.filter { project ->
-            project.name.lowercase().contains(search) ||
+        filteredProjects.value =
+            _filteredProjectsByDepartments.value.filter { project ->
+                project.name.lowercase().contains(search) ||
                     project.department?.name?.lowercase()?.contains(search) == true ||
                     project.department?.institute?.name?.lowercase()?.contains(search) == true ||
                     project.supervisors.toString().lowercase().contains(search) ||
                     project.customer.lowercase().contains(search)
-        }
+            }
     }
 
     fun filterProjects(instituteFilterConfiguration: InstituteFilterConfiguration) {
         val institute =
-            if (instituteFilterConfiguration.selectedInstitute is Institute.Base) null
-            else instituteFilterConfiguration.selectedInstitute
+            if (instituteFilterConfiguration.selectedInstitute is Institute.Base) {
+                null
+            } else {
+                instituteFilterConfiguration.selectedInstitute
+            }
         val department =
-            if (instituteFilterConfiguration.selectedDepartment is Department.Base) null
-            else instituteFilterConfiguration.selectedDepartment
+            if (instituteFilterConfiguration.selectedDepartment is Department.Base) {
+                null
+            } else {
+                instituteFilterConfiguration.selectedDepartment
+            }
 
-        val newProjects = ProjectFilterApplier.applyAndGet(
-            projects = _projects.value,
-            institute = institute,
-            department = department
-        )
+        val newProjects =
+            ProjectFilterApplier.applyAndGet(
+                projects = _projects.value,
+                institute = institute,
+                department = department,
+            )
         _filteredProjectsByDepartments.value = newProjects
         filterProjectsByString(lastSearchProjectString.value)
     }
@@ -434,11 +443,13 @@ open class BaseGodViewModel(
                 val studentsParticipations =
                     requiredParticipation.filter { part ->
                         part.projectId == project.id
-                    }.sortedWith(compareBy({ part ->
-                        part.priority
-                    }, { part ->
-                        part.studentName
-                    })).map { part ->
+                    }.sortedWith(
+                        compareBy({ part ->
+                            part.priority
+                        }, { part ->
+                            part.studentName
+                        }),
+                    ).map { part ->
                         part.studentId
                     }.sorted()
 
@@ -471,13 +482,14 @@ open class BaseGodViewModel(
         val excessProj = _projects.value.toMutableList()
 
         _institutes.value.forEach {
-            val proj = _projects.value.filter { p ->
-                p.projectSpecialties
-                    .map { ps -> ps.specialty }
-                    .map { s -> s!!.institute }
-                    .map { i -> i!!.id }
-                    .contains(it.id)
-            }
+            val proj =
+                _projects.value.filter { p ->
+                    p.projectSpecialties
+                        .map { ps -> ps.specialty }
+                        .map { s -> s!!.institute }
+                        .map { i -> i!!.id }
+                        .contains(it.id)
+                }
 
             val projId = proj.map { p -> p.id }
 
@@ -488,21 +500,23 @@ open class BaseGodViewModel(
             instituteResults.add(
                 InstituteResults(
                     institute = it,
-                    notAppliedStudents = _students.value.filter { stud ->
-                        stud.specialty?.institute?.id == it.id && !parts.contains(stud.id)
-                    },
-                    participation = _participations.value.filter { p ->
-                        projId.contains(p.projectId)
-                    },
-                    projects = proj
-                )
+                    notAppliedStudents =
+                        _students.value.filter { stud ->
+                            stud.specialty?.institute?.id == it.id && !parts.contains(stud.id)
+                        },
+                    participation =
+                        _participations.value.filter { p ->
+                            projId.contains(p.projectId)
+                        },
+                    projects = proj,
+                ),
             )
         }
 
         return DistributionResults(
             participation = _participations.value,
             instituteResults = instituteResults,
-            excessProjects = excessProj
+            excessProjects = excessProj,
         )
     }
 }

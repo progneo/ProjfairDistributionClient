@@ -17,9 +17,6 @@ import navigation.Bundle
 import navigation.NavController
 import navigation.ScreenRoute
 import ui.details.project.widget.EditableSearchField
-import ui.distribution_algorithm.common.toAlgorithmModel
-import ui.distribution_algorithm.viewmodel.AlgorithmViewModel
-import ui.distribution_algorithm.widget.AlgorithmDialog
 import ui.filter.FilterConfigurationBlock
 import ui.preview.widget.*
 import ui.preview.widget.filter.ProjectFilterDialog
@@ -49,13 +46,15 @@ fun ReviewScreen(
     val students = reviewViewModel.getFilteredStudents(studentsTabPage).collectAsState()
     val projects = reviewViewModel.filteredProjects.collectAsState()
 
-    val specialtySelected = remember {
-        mutableStateOf(false)
-    }
+    val specialtySelected =
+        remember {
+            mutableStateOf(false)
+        }
 
-    val instituteSelected = remember {
-        mutableStateOf(false)
-    }
+    val instituteSelected =
+        remember {
+            mutableStateOf(false)
+        }
 
     val studentFilterConfiguration = reviewViewModel.studentFilterConfiguration.collectAsState()
     val projectFilterConfiguration = reviewViewModel.projectFilterConfiguration.collectAsState()
@@ -78,8 +77,9 @@ fun ReviewScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                 ) {
                     Row {
                         TabHome(
@@ -89,17 +89,18 @@ fun ReviewScreen(
                             onSelectedTab = {
                                 reviewViewModel.reviewTabPage.value = it as PreviewTabPage
                                 previewTabPage = it
-                            }
+                            },
                         )
 
                         if (previewTabPage == PreviewTabPage.Students) {
                             RadioButtonGroupRow(
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                titles = listOf(
-                                    Title(StudentsTabPage.Enrolled.title, StudentsTabPage.Enrolled.name),
-                                    Title(StudentsTabPage.Uncounted.title, StudentsTabPage.Uncounted.name)
-                                ),
-                                selected = studentTabPageToIndex()
+                                titles =
+                                    listOf(
+                                        Title(StudentsTabPage.Enrolled.title, StudentsTabPage.Enrolled.name),
+                                        Title(StudentsTabPage.Uncounted.title, StudentsTabPage.Uncounted.name),
+                                    ),
+                                selected = studentTabPageToIndex(),
                             ) {
                                 studentsTabPage = StudentsTabPage.fromString(it.name!!)
                             }
@@ -111,9 +112,10 @@ fun ReviewScreen(
                             PreviewTabPage.Students -> {
                                 Row {
                                     FilterConfigurationBlock(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically),
-                                        studentFilterConfiguration.value
+                                        modifier =
+                                            Modifier
+                                                .align(Alignment.CenterVertically),
+                                        studentFilterConfiguration.value,
                                     ) {
                                         showFilter = true
                                     }
@@ -124,7 +126,7 @@ fun ReviewScreen(
                                         content = "Поиск",
                                         onDataChanged = { searchString ->
                                             reviewViewModel.lastSearchStudentString.value = searchString
-                                        }
+                                        },
                                     )
                                 }
                             }
@@ -132,9 +134,10 @@ fun ReviewScreen(
                             PreviewTabPage.Projects -> {
                                 Row {
                                     FilterConfigurationBlock(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically),
-                                        projectFilterConfiguration.value
+                                        modifier =
+                                            Modifier
+                                                .align(Alignment.CenterVertically),
+                                        projectFilterConfiguration.value,
                                     ) {
                                         showFilter = true
                                     }
@@ -145,7 +148,7 @@ fun ReviewScreen(
                                         content = "Поиск",
                                         onDataChanged = { searchString ->
                                             reviewViewModel.lastSearchProjectString.value = searchString
-                                        }
+                                        },
                                     )
                                 }
                             }
@@ -158,7 +161,7 @@ fun ReviewScreen(
                             icon = Icons.Default.Menu,
                             onClick = {
                                 showDataActions = true
-                            }
+                            },
                         )
                     }
                 }
@@ -180,16 +183,17 @@ fun ReviewScreen(
                         val project = reviewViewModel.getProjectById(projectId)
 
                         if (project != null) {
-                            val bundle = Bundle().apply {
-                                put("project", project)
-                            }
+                            val bundle =
+                                Bundle().apply {
+                                    put("project", project)
+                                }
                             navController.navigate(ScreenRoute.PROJECT_DETAILS, bundle, reviewViewModel)
                         }
                     },
                     onSpecialtyClicked = {
                         specialtySelected.value = !specialtySelected.value
                         reviewViewModel.filterStudentsBySpecialty(specialtySelected.value)
-                    }
+                    },
                 )
             }
 
@@ -200,20 +204,22 @@ fun ReviewScreen(
                     navController = navController,
                     baseGodViewModel = reviewViewModel,
                     instituteSelected = instituteSelected.value,
+                    isReview = true,
                     onInstituteClicked = {
                         instituteSelected.value = !instituteSelected.value
                         reviewViewModel.filterProjectsByInstitute(instituteSelected.value)
-                    }
+                    },
                 )
             }
         }
 
         ProjectFilterDialog(
             visible = showFilter,
-            instituteFilterConfiguration = when (previewTabPage) {
-                PreviewTabPage.Students -> studentFilterConfiguration.value.copy()
-                PreviewTabPage.Projects -> projectFilterConfiguration.value.copy()
-            },
+            instituteFilterConfiguration =
+                when (previewTabPage) {
+                    PreviewTabPage.Students -> studentFilterConfiguration.value.copy()
+                    PreviewTabPage.Projects -> projectFilterConfiguration.value.copy()
+                },
             viewModel = reviewViewModel,
             onApplyClicked = { filterConfig ->
                 when (previewTabPage) {
@@ -230,7 +236,7 @@ fun ReviewScreen(
             },
             onDismissRequest = {
                 showFilter = false
-            }
+            },
         )
 
         DataActionsDialog(
@@ -239,7 +245,7 @@ fun ReviewScreen(
             reviewViewModel = reviewViewModel,
             onDismissRequest = {
                 showDataActions = false
-            }
+            },
         )
     }
 }

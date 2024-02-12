@@ -14,7 +14,6 @@ import com.grapecity.documents.excel.drawing.b.it
 import common.compose.BorderedTitledComposable
 import common.theme.BlueMainLight
 import common.theme.WhiteDark
-import domain.model.GeneratedDistribution
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import navigation.NavController
@@ -51,27 +50,26 @@ fun AlgorithmScreen(
         mutableStateOf(false)
     }
 
-    println("$lowerBoundary $upperBoundary")
-
     Box(
-        modifier = Modifier.fillMaxSize().background(WhiteDark)
+        modifier = Modifier.fillMaxSize().background(WhiteDark),
     ) {
         Column(
-            modifier = Modifier
-                .size(500.dp, Dp.Unspecified)
-                .align(Alignment.Center)
+            modifier =
+                Modifier
+                    .size(500.dp, Dp.Unspecified)
+                    .align(Alignment.Center),
         ) {
             BorderedTitledComposable(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                title = "Тип распределения"
+                title = "Тип распределения",
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(16.dp),
                 ) {
                     Row {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically).weight(8f),
-                            text = "Равномерное распределение"
+                            text = "Равномерное распределение",
                         )
                         RadioButton(
                             modifier = Modifier.weight(2f),
@@ -80,29 +78,32 @@ fun AlgorithmScreen(
                                 isUniform = true
                                 isByHigh = false
                             },
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = BlueMainLight,
-                                unselectedColor = BlueMainLight
-                            )
+                            colors =
+                                RadioButtonDefaults.colors(
+                                    selectedColor = BlueMainLight,
+                                    unselectedColor = BlueMainLight,
+                                ),
                         )
                     }
                     Spacer(Modifier.size(16.dp))
                     Row {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically).weight(8f),
-                            text = "По максимальному заполнению проектов"
+                            text = "По максимальному заполнению проектов",
                         )
                         RadioButton(
                             modifier = Modifier.weight(2f),
                             selected = isByHigh,
+                            enabled = false,
                             onClick = {
                                 isByHigh = true
                                 isUniform = false
                             },
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = BlueMainLight,
-                                unselectedColor = BlueMainLight
-                            )
+                            colors =
+                                RadioButtonDefaults.colors(
+                                    selectedColor = BlueMainLight,
+                                    unselectedColor = BlueMainLight,
+                                ),
                         )
                     }
                 }
@@ -110,15 +111,15 @@ fun AlgorithmScreen(
             Spacer(Modifier.size(32.dp))
             BorderedTitledComposable(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                title = "Количество мест"
+                title = "Количество мест",
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(16.dp),
                 ) {
                     Row {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically).weight(8f),
-                            text = "Верхняя граница"
+                            text = "Верхняя граница",
                         )
                         EditableNumberField(
                             modifier = Modifier.weight(2f),
@@ -126,14 +127,14 @@ fun AlgorithmScreen(
                             maxNumberCount = 2,
                             onDataChanged = {
                                 upperBoundary = it.toIntOrNull() ?: 0
-                            }
+                            },
                         )
                     }
                     Spacer(Modifier.size(16.dp))
                     Row {
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically).weight(8f),
-                            text = "Нижняя граница"
+                            text = "Нижняя граница",
                         )
                         EditableNumberField(
                             modifier = Modifier.weight(2f),
@@ -141,7 +142,7 @@ fun AlgorithmScreen(
                             editableNumber = lowerBoundary,
                             onDataChanged = {
                                 lowerBoundary = it.toIntOrNull() ?: 0
-                            }
+                            },
                         )
                     }
                 }
@@ -149,22 +150,27 @@ fun AlgorithmScreen(
             Spacer(Modifier.size(32.dp))
             LaunchButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                enabled = upperBoundary != 0 && lowerBoundary != 0 && upperBoundary >= lowerBoundary
+                enabled = upperBoundary != 0 && lowerBoundary != 0 && upperBoundary >= lowerBoundary,
             ) {
                 coroutineScope.launch(Dispatchers.Default) {
                     showLoading = true
-                    val distributionResults = DistributionLauncher(
-                        students = algorithmViewModel.students.value.toMutableList(),
-                        projects = algorithmViewModel.projects.value.toMutableList(),
-                        participations = algorithmViewModel.participations.value.map { it.stateId=0; it }.toMutableList(),
-                        institutes = algorithmViewModel.institutes.value.toMutableList(),
-                        distributionRule = DistributionRule(
-                            maxPlaces = upperBoundary,
-                            minPlaces = lowerBoundary
-                        ),
-                        specialInstitute = algorithmViewModel.institutes.value.find { it.id == 0 }!!
-                    ).launch()
-                    println("CRINGE NEW ${distributionResults.participation.size}")
+                    val distributionResults =
+                        DistributionLauncher(
+                            students = algorithmViewModel.students.value.toMutableList(),
+                            projects = algorithmViewModel.projects.value.toMutableList(),
+                            participations =
+                                algorithmViewModel.participations.value.map {
+                                    it.stateId = 0
+                                    it
+                                }.toMutableList(),
+                            institutes = algorithmViewModel.institutes.value.toMutableList(),
+                            distributionRule =
+                                DistributionRule(
+                                    maxPlaces = upperBoundary,
+                                    minPlaces = lowerBoundary,
+                                ),
+                            specialInstitute = algorithmViewModel.institutes.value.find { it.id == 0 }!!,
+                        ).launch()
                     algorithmViewModel.insertNewParticipation(distributionResults.participation)
                     showLoading = false
                     navController.navigate(ScreenRoute.REVIEW)
@@ -177,7 +183,7 @@ fun AlgorithmScreen(
             modifier = Modifier.align(Alignment.Center),
             onDismissRequest = {
                 showLoading = false
-            }
+            },
         )
     }
 }
