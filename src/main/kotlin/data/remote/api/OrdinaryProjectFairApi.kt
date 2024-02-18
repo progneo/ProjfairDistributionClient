@@ -20,7 +20,7 @@ interface OrdinaryProjectFairApi {
     @GET("projects/filter")
     suspend fun getProjects(
         @Query("state") states: String =
-            arrayListOf(ProjectState.COLLECT_PARTICIPATION.id)
+            arrayListOf(ProjectState.PROCESSING_PARTICIPATION.id)
                 .joinToString(",", "[", "]"),
         @Query("pageSize") pageSize: String = "max",
     ): ProjectsResponse
