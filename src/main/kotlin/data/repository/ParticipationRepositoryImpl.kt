@@ -26,7 +26,6 @@ class ParticipationRepositoryImpl(
     private val adminProjectFairApi: AdminProjectFairApi,
     private val loggingRepository: LoggingRepository,
 ) : ParticipationRepository {
-
     override val downloadFlow = MutableStateFlow<Float>(0f)
 
     override fun getParticipations(): Flow<ResultsChange<Participation>> {
@@ -48,23 +47,27 @@ class ParticipationRepositoryImpl(
     override suspend fun updateParticipationOnServer(participation: List<Participation>) {
         participation.forEach {
             adminProjectFairApi.createOrUpdateParticipation(
-                participationToParticipationResponse(it)
+                participationToParticipationResponse(it),
             )
         }
     }
 
-    override suspend fun insertParticipation(participation: Participation, byRebase: Boolean) {
+    override suspend fun insertParticipation(
+        participation: Participation,
+        byRebase: Boolean,
+    ) {
         withContext(ioDispatcher) {
             participationDao.insert(participation)
             if (!byRebase) {
                 loggingRepository.saveLog(
-                    log = Log(
-                        id = UUID.randomUUID().toString(),
-                        dateTime = getCurrentDateTime(),
-                        participation = participation,
-                    ),
+                    log =
+                        Log(
+                            id = UUID.randomUUID().toString(),
+                            dateTime = getCurrentDateTime(),
+                            participation = participation,
+                        ),
                     logType = LogType.SAVE,
-                    logSource = LogSource.SERVER
+                    logSource = LogSource.SERVER,
                 )
             }
         }
@@ -79,25 +82,32 @@ class ParticipationRepositoryImpl(
     override suspend fun insertParticipationOnServer(participations: List<Participation>) {
         participations.forEach {
             adminProjectFairApi.createParticipation(
-                participationToParticipationResponse(it)
+                participationToParticipationResponse(it),
             )
         }
     }
 
-    override suspend fun deleteParticipation(participation: Participation, byServer: Boolean) {
+    override suspend fun deleteParticipation(
+        participation: Participation,
+        byServer: Boolean,
+    ) {
         participationDao.delete<Participation>(participation)
         loggingRepository.saveLog(
-            log = Log(
-                id = UUID.randomUUID().toString(),
-                dateTime = getCurrentDateTime(),
-                participation = participation,
-            ),
+            log =
+                Log(
+                    id = UUID.randomUUID().toString(),
+                    dateTime = getCurrentDateTime(),
+                    participation = participation,
+                ),
             logType = LogType.REMOVE,
-            logSource = if (byServer) LogSource.SERVER else LogSource.USER
+            logSource = if (byServer) LogSource.SERVER else LogSource.USER,
         )
     }
 
-    override suspend fun deleteParticipation(participation: List<Participation>, byServer: Boolean) {
+    override suspend fun deleteParticipation(
+        participation: List<Participation>,
+        byServer: Boolean,
+    ) {
         participationDao.delete<Participation>(participation)
     }
 
@@ -106,7 +116,6 @@ class ParticipationRepositoryImpl(
     }
 
     override suspend fun syncParticipations() {
-
         data class ParticipationAlive(
             var isAlive: Boolean,
             val participation: Participation,

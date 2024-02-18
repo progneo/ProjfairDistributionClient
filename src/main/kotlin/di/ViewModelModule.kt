@@ -26,9 +26,7 @@ import ui.uploaddata.viewmodel.UploadDataViewModel
 
 @Module
 interface ViewModelModule {
-
     companion object {
-
         @Preview
         @AppScope
         @Provides
@@ -60,7 +58,7 @@ interface ViewModelModule {
                 uploadDepartmentsUseCase = uploadDepartmentsUseCase,
                 uploadInstitutesUseCase = uploadInstitutesUseCase,
                 cancelOperationsUseCase = cancelOperationsUseCase,
-                downloadProgressInteractor = downloadProgressInteractor
+                downloadProgressInteractor = downloadProgressInteractor,
             )
         }
 
@@ -95,7 +93,7 @@ interface ViewModelModule {
                 uploadDepartmentsUseCase = uploadDepartmentsUseCase,
                 uploadInstitutesUseCase = uploadInstitutesUseCase,
                 cancelOperationsUseCase = cancelOperationsUseCase,
-                downloadProgressInteractor = downloadProgressInteractor
+                downloadProgressInteractor = downloadProgressInteractor,
             )
         }
 
@@ -125,7 +123,7 @@ interface ViewModelModule {
                 getSupervisorsUseCase = getSupervisorsUseCase,
                 syncProjectUseCase = syncProjectUseCase,
                 getLogsUseCase = getLogsUseCase,
-                saveLogUseCase = saveLogUseCase
+                saveLogUseCase = saveLogUseCase,
             )
         }
 
@@ -146,7 +144,7 @@ interface ViewModelModule {
             insertParticipationOnServerUseCase: InsertParticipationOnServerUseCase,
             updateProjectsOnServerUseCase: UpdateProjectsOnServerUseCase,
             updateParticipationOnServerUseCase: UpdateParticipationOnServerUseCase,
-            getParticipationLastIndexUseCase: GetParticipationLastIndexUseCase
+            getParticipationLastIndexUseCase: GetParticipationLastIndexUseCase,
         ): ReviewViewModel {
             return ReviewViewModel(
                 getStudentsUseCase = getStudentsUseCase,
@@ -163,7 +161,7 @@ interface ViewModelModule {
                 insertParticipationOnServerUseCase = insertParticipationOnServerUseCase,
                 updateProjectsOnServerUseCase = updateProjectsOnServerUseCase,
                 updateParticipationOnServerUseCase = updateParticipationOnServerUseCase,
-                getParticipationLastIndexUseCase = getParticipationLastIndexUseCase
+                getParticipationLastIndexUseCase = getParticipationLastIndexUseCase,
             )
         }
 
@@ -191,7 +189,7 @@ interface ViewModelModule {
                 insertParticipationsUseCase = insertParticipationsUseCase,
                 deleteAllStudentsUseCase = deleteAllStudentsUseCase,
                 deleteAllProjectsUseCase = deleteAllProjectsUseCase,
-                deleteAllParticipationsUseCase = deleteAllParticipationsUseCase
+                deleteAllParticipationsUseCase = deleteAllParticipationsUseCase,
             )
         }
 
@@ -201,11 +199,13 @@ interface ViewModelModule {
             @Preview getParticipationsUseCase: GetParticipationsUseCase,
             @Preview getStudentsUseCase: GetStudentsUseCase,
             @Preview updateParticipationUseCase: UpdateParticipationUseCase,
+            @Preview deleteParticipationsUseCase: DeleteParticipationUseCase,
         ): ParticipationDetailsViewModel {
             return ParticipationDetailsViewModel(
                 getParticipationsUseCase = getParticipationsUseCase,
                 getStudentsUseCase = getStudentsUseCase,
-                updateParticipationUseCase = updateParticipationUseCase
+                updateParticipationUseCase = updateParticipationUseCase,
+                deleteParticipationUseCase = deleteParticipationsUseCase,
             )
         }
 
@@ -215,11 +215,13 @@ interface ViewModelModule {
             @Review getParticipationsUseCase: GetParticipationsUseCase,
             @Review getStudentsUseCase: GetStudentsUseCase,
             @Review updateParticipationUseCase: UpdateParticipationUseCase,
+            @Review deleteParticipationsUseCase: DeleteParticipationUseCase,
         ): ParticipationDetailsViewModel {
             return ParticipationDetailsViewModel(
                 getParticipationsUseCase = getParticipationsUseCase,
                 getStudentsUseCase = getStudentsUseCase,
-                updateParticipationUseCase = updateParticipationUseCase
+                updateParticipationUseCase = updateParticipationUseCase,
+                deleteParticipationUseCase = deleteParticipationsUseCase,
             )
         }
     }
