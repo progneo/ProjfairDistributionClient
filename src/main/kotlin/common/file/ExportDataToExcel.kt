@@ -112,22 +112,26 @@ object ExportDataToExcel {
             participationIndexExcel++
 
             for (p in projectParticipations.sortedBy { it.priority }) {
-                val student = students.find { it.id == p.studentId }!!
+                val student = students.find { it.id == p.studentId }
 
                 workSheet.getRange("A$participationIndexExcel:F$participationIndexExcel").value =
                     arrayOf(
-                        student.name,
-                        student.group,
-                        student.id,
+                        student?.name,
+                        student?.group,
+                        student?.id,
                         p.priority,
-                        if (p.priority == 5) {
-                            "Молчун"
-                        } else if (p.priority == 4) {
-                            "Автоматическая заявка"
-                        } else {
-                            "Активный"
+                        when (p.priority) {
+                            5 -> {
+                                "Молчун"
+                            }
+                            4 -> {
+                                "Автоматическая заявка"
+                            }
+                            else -> {
+                                "Активный"
+                            }
                         },
-                        student.course,
+                        student?.course,
                     )
                 participationIndexExcel++
             }
@@ -152,7 +156,7 @@ object ExportDataToExcel {
         var statIndex = 1
         val workSheetStats = workBook.worksheets.get(0)
         workSheetStats.name = "Статистика по студентам"
-        workSheetStats.getRange("A$statIndex:F$statIndex").value =
+        workSheetStats.getRange("A$statIndex:I$statIndex").value =
             arrayOf(
                 "project.id",
                 "project.title",
@@ -160,7 +164,9 @@ object ExportDataToExcel {
                 "supervisor.id",
                 "candidate.numz",
                 "candidate.fio",
-                "candidate.name",
+                "institute.name",
+                "candidate.group",
+                "candidate.course",
             )
 
         statIndex++
@@ -185,17 +191,19 @@ object ExportDataToExcel {
 
             for (supervisor in supervisors) {
                 for (part in parts) {
-                    val student = students.find { stud -> stud.id == part.studentId }!!
+                    val student = students.find { stud -> stud.id == part.studentId }
 
-                    workSheetStats.getRange("A$statIndex:G$statIndex").value =
+                    workSheetStats.getRange("A$statIndex:I$statIndex").value =
                         arrayOf(
                             project.id,
                             project.name,
                             supervisor.name,
                             supervisor.id,
-                            student.numz,
-                            student.name,
+                            student?.numz,
+                            student?.name,
                             institute.name,
+                            student?.group,
+                            student?.course,
                         )
                     statIndex++
                 }
