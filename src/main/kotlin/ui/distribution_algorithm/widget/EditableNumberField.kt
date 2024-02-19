@@ -6,12 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.compose.BorderedTitledComposable
@@ -20,14 +17,16 @@ import common.theme.BlueMainLight
 @Composable
 fun EditableNumberField(
     modifier: Modifier = Modifier,
+    title: String? = null,
     editableNumber: Int,
     maxNumberCount: Int,
-    onDataChanged: (String) -> Unit
+    onDataChanged: (String) -> Unit,
 ) {
     val stringPool = "01234567890"
 
     BorderedTitledComposable(
-        modifier = modifier
+        modifier = modifier,
+        title = title ?: "",
     ) {
         BasicTextField(
             value = if (editableNumber == 0) "" else editableNumber.toString(),
@@ -36,10 +35,11 @@ fun EditableNumberField(
                     onDataChanged(it)
                 }
             },
-            textStyle = TextStyle(
-                fontSize = 18.sp,
-                color = BlueMainLight,
-            ),
+            textStyle =
+                TextStyle(
+                    fontSize = 18.sp,
+                    color = BlueMainLight,
+                ),
             modifier = Modifier.fillMaxWidth(),
             decorationBox = { innerTextField ->
                 Box(modifier = Modifier.padding(12.dp)) {
